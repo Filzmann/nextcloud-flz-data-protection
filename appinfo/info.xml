@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>filzmann_data_protection</id>
+    <name>Data Protection Center</name>
+    <name lang="de">Datenschutz-Center</name>
+    <summary>Provider-based personal data access and retention coordination for Nextcloud.</summary>
+    <summary lang="de">Providerbasierte Datenauskunft und Retention-Koordination für Nextcloud.</summary>
+    <description>Aggregates transparent personal-data reports through public, versioned provider contracts without directly accessing data owned by other apps.</description>
+    <description lang="de">Aggregiert verständliche Auskünfte über öffentliche, versionierte Providerverträge ohne direkten Zugriff auf Daten anderer Apps.</description>
+    <version>0.1.0</version>
+    <licence>agpl</licence>
+    <author>Simon Filzmann</author>
+    <namespace>FilzmannDataProtection</namespace>
+    <category>tools</category>
+    <dependencies>
+        <nextcloud min-version="29" max-version="35"/>
+    </dependencies>
+    <navigations>
+        <navigation>
+            <name>Data Protection</name>
+            <route>filzmann_data_protection.page.index</route>
+            <order>85</order>
+        </navigation>
+    </navigations>
+</info>
+
