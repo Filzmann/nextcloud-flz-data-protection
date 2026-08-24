@@ -27,13 +27,14 @@ final class PersonalDataAggregator {
         $reports = [];
 
         foreach ($registration->providers() as $appId => $provider) {
-            $descriptor = $provider->descriptor();
-            if (!$descriptor->supportsSubjectType($request->subject()->subjectType())) {
-                $reports[$appId] = new ProviderReport('not_applicable', [], [], null, $descriptor->displayName());
-                continue;
-            }
-
+            $descriptor = null;
             try {
+                $descriptor = $provider->descriptor();
+                if (!$descriptor->supportsSubjectType($request->subject()->subjectType())) {
+                    $reports[$appId] = new ProviderReport('not_applicable', [], [], null, $descriptor->displayName());
+                    continue;
+                }
+
                 $providerRequest = $request->forProvider($appId, min($request->pageLimit(), $descriptor->maxPageSize()));
                 $page = $provider->collect($providerRequest);
                 $reports[$appId] = new ProviderReport(
@@ -44,7 +45,13 @@ final class PersonalDataAggregator {
                     $descriptor->displayName(),
                 );
             } catch (Throwable) {
-                $reports[$appId] = new ProviderReport('failed', [], ['Provider unavailable.'], null, $descriptor->displayName());
+                $reports[$appId] = new ProviderReport(
+                    'failed',
+                    [],
+                    ['Provider unavailable.'],
+                    null,
+                    $descriptor?->displayName(),
+                );
             }
         }
 

@@ -90,6 +90,36 @@ $assertSame('complete', $partial['providers']['filzmann_permission_matrix']['sta
 $assertSame('failed', $partial['providers']['bad_provider']['status'], 'Ein Providerfehler wurde nicht isoliert sichtbar gemacht.');
 $assertSame(false, str_contains(json_encode($partial, JSON_THROW_ON_ERROR), 'synthetic private detail'), 'Interne Providerdetails sind ausgetreten.');
 
+$unstablePolicyProvider = new class($policy) implements RetentionProvider {
+    private int $policyCalls = 0;
+
+    public function __construct(private RetentionPolicy $policy) {}
+    public function descriptor(): RetentionProviderDescriptor {
+        return new RetentionProviderDescriptor('unstable_policy_provider', 'Instabiler Policy-Provider', '1.0', 20);
+    }
+    public function policies(): array {
+        $this->policyCalls++;
+        if ($this->policyCalls > 1) throw new RuntimeException('synthetic policy detail must not escape');
+        return [$this->policy];
+    }
+    public function preview(RetentionPreviewRequest $request): RetentionPreviewPage {
+        throw new RuntimeException('Preview must not run after the policy catalog failed.');
+    }
+};
+$policyFailureEvents = new class($provider, $unstablePolicyProvider) implements IEventDispatcher {
+    public function __construct(private RetentionProvider $good, private RetentionProvider $unstable) {}
+    public function dispatchTyped(Event $event): Event {
+        if (!$event instanceof RegisterRetentionProvidersEvent) throw new RuntimeException('Unexpected event.');
+        $event->register($this->good);
+        $event->register($this->unstable);
+        return $event;
+    }
+};
+$policyFailureReport = (new RetentionPreviewAggregator($policyFailureEvents))->collect('2026-08-23T12:00:00+00:00', 100);
+$assertSame('complete', $policyFailureReport['providers']['filzmann_permission_matrix']['status'], 'Ein Policy-Katalogfehler hat einen intakten Provider verdeckt.');
+$assertSame('failed', $policyFailureReport['providers']['unstable_policy_provider']['status'], 'Ein Policy-Katalogfehler wurde nicht appweise isoliert.');
+$assertSame(false, str_contains(json_encode($policyFailureReport, JSON_THROW_ON_ERROR), 'synthetic policy detail'), 'Interne Policy-Fehlerdetails sind ausgetreten.');
+
 $event = new RegisterRetentionProvidersEvent();
 $event->register($provider);
 $event->register($provider);

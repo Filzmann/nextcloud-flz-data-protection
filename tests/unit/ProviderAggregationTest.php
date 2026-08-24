@@ -131,4 +131,41 @@ $assertSame('failed', $report->providers()['failing_app']->status(), 'Ein Provid
 $assertSame('Provider unavailable.', $report->providers()['failing_app']->restrictions()[0] ?? null, 'Interne Fehlerdetails sind in den Bericht gelangt.');
 $assertSame(false, $report->isRegistrySnapshotComplete(), 'Ein Teilbericht wurde fälschlich für den Registry-Snapshot als vollständig markiert.');
 
+$unstableDescriptorProvider = new class implements PersonalDataProvider {
+    private int $descriptorCalls = 0;
+
+    public function descriptor(): ProviderDescriptor {
+        $this->descriptorCalls++;
+        if ($this->descriptorCalls > 2) {
+            throw new RuntimeException('synthetic descriptor detail must not escape');
+        }
+
+        return new ProviderDescriptor('unstable_app', 'Unstable app', '1.0', ['nextcloud-user'], ['personal-data'], 100);
+    }
+
+    public function collect(PersonalDataRequest $request): PersonalDataPage {
+        throw new RuntimeException('The provider must not be queried after its descriptor failed.');
+    }
+};
+$descriptorEvents = new class($provider('reference_app'), $unstableDescriptorProvider) implements IEventDispatcher {
+    public function __construct(private PersonalDataProvider $good, private PersonalDataProvider $unstable) {
+    }
+
+    public function dispatchTyped(Event $event): Event {
+        if (!$event instanceof RegisterPersonalDataProvidersEvent) {
+            throw new RuntimeException('Unexpected event type.');
+        }
+        $event->register($this->good);
+        $event->register($this->unstable);
+        return $event;
+    }
+};
+$descriptorFailureReport = (new PersonalDataAggregator($descriptorEvents))->collect($request);
+$assertSame('complete', $descriptorFailureReport->providers()['reference_app']->status(), 'Ein Descriptorfehler hat einen intakten Provider verdeckt.');
+$assertSame('failed', $descriptorFailureReport->providers()['unstable_app']->status(), 'Ein Descriptorfehler wurde nicht appweise isoliert.');
+$assertSame(false, str_contains(
+    json_encode($descriptorFailureReport->providers()['unstable_app']->restrictions(), JSON_THROW_ON_ERROR),
+    'synthetic descriptor detail',
+), 'Interne Descriptordetails sind ausgetreten.');
+
 echo "Provider aggregation test passed.\n";

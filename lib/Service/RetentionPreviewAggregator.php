@@ -22,13 +22,15 @@ final class RetentionPreviewAggregator {
 
         $reports = [];
         foreach ($event->providers() as $appId => $provider) {
-            $descriptor = $provider->descriptor();
-            $policies = array_map(static fn($policy): array => $policy->toArray(), $provider->policies());
-            $candidates = [];
-            $warnings = [];
-            $status = 'complete';
+            $descriptor = null;
             try {
-                foreach ($provider->policies() as $policy) {
+                $descriptor = $provider->descriptor();
+                $providerPolicies = $provider->policies();
+                $policies = array_map(static fn($policy): array => $policy->toArray(), $providerPolicies);
+                $candidates = [];
+                $warnings = [];
+                $status = 'complete';
+                foreach ($providerPolicies as $policy) {
                     $page = $provider->preview(new RetentionPreviewRequest(
                         $policy->policyId(),
                         $evaluatedAt,
@@ -43,18 +45,22 @@ final class RetentionPreviewAggregator {
                     $warnings = [...$warnings, ...$page->warnings()];
                     if ($page->status() === 'partial') $status = 'partial';
                 }
+                $reports[$appId] = [
+                    'displayName' => $descriptor->displayName(),
+                    'status' => $status,
+                    'policies' => $policies,
+                    'candidates' => $candidates,
+                    'warnings' => $warnings,
+                ];
             } catch (\Throwable) {
-                $status = 'failed';
-                $candidates = [];
-                $warnings = ['Provider-Vorschau fehlgeschlagen.'];
+                $reports[$appId] = [
+                    'displayName' => $descriptor?->displayName() ?? $appId,
+                    'status' => 'failed',
+                    'policies' => [],
+                    'candidates' => [],
+                    'warnings' => ['Provider-Vorschau fehlgeschlagen.'],
+                ];
             }
-            $reports[$appId] = [
-                'displayName' => $descriptor->displayName(),
-                'status' => $status,
-                'policies' => $policies,
-                'candidates' => $candidates,
-                'warnings' => $warnings,
-            ];
         }
         foreach ($event->registrationFailures() as $appId => $_failure) {
             $reports[$appId] = [
