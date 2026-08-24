@@ -16,6 +16,7 @@ final class ProviderReport {
         private array $entries,
         private array $restrictions,
         private ?string $nextCursor,
+        private ?string $displayName = null,
     ) {
     }
 
@@ -35,5 +36,9 @@ final class ProviderReport {
 
     public function nextCursor(): ?string {
         return $this->nextCursor;
+    }
+
+    public function displayName(): ?string {
+        return $this->displayName;
     }
 }

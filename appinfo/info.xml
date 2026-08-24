@@ -16,6 +16,10 @@
     <dependencies>
         <nextcloud min-version="29" max-version="35"/>
     </dependencies>
+    <settings>
+        <admin>OCA\FilzmannDataProtection\Settings\Admin</admin>
+        <admin-section>OCA\FilzmannDataProtection\Settings\AdminSection</admin-section>
+    </settings>
     <navigations>
         <navigation>
             <name>Data Protection</name>
@@ -24,4 +28,3 @@
         </navigation>
     </navigations>
 </info>
-

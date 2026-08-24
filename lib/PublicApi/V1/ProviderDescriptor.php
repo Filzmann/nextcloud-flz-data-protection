@@ -25,8 +25,23 @@ final class ProviderDescriptor {
         if ($displayName === '') {
             throw new InvalidArgumentException('Provider display name must not be empty.');
         }
-        if ($subjectTypes === [] || $capabilities === [] || $maxPageSize < 1 || $maxPageSize > 1000) {
+        if (!preg_match('/^[1-9][0-9]*\.[0-9]+$/', $contractVersion)) {
+            throw new InvalidArgumentException('Invalid provider contract version.');
+        }
+        if (
+            $subjectTypes === []
+            || $capabilities === []
+            || count($subjectTypes) !== count(array_unique($subjectTypes))
+            || count($capabilities) !== count(array_unique($capabilities))
+            || $maxPageSize < 1
+            || $maxPageSize > 1000
+        ) {
             throw new InvalidArgumentException('Invalid provider limits.');
+        }
+        foreach (array_merge($subjectTypes, $capabilities) as $identifier) {
+            if (!is_string($identifier) || !preg_match('/^[a-z][a-z0-9-]{1,63}$/', $identifier)) {
+                throw new InvalidArgumentException('Invalid provider capability or subject type.');
+            }
         }
     }
 

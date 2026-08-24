@@ -27,6 +27,20 @@ final class PersonalDataPage {
                 throw new InvalidArgumentException('Invalid personal data entry.');
             }
         }
+        foreach ($restrictions as $restriction) {
+            if (!is_string($restriction) || trim($restriction) === '') {
+                throw new InvalidArgumentException('Invalid provider restriction.');
+            }
+        }
+        if ($status === 'partial' && $restrictions === []) {
+            throw new InvalidArgumentException('Partial provider pages require a restriction.');
+        }
+        if ($status === 'not_applicable' && ($entries !== [] || $nextCursor !== null)) {
+            throw new InvalidArgumentException('Not-applicable provider pages cannot contain data or a cursor.');
+        }
+        if ($nextCursor !== null && ($nextCursor === '' || strlen($nextCursor) > 1024)) {
+            throw new InvalidArgumentException('Invalid provider cursor.');
+        }
     }
 
     public function status(): string {

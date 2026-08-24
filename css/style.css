@@ -10,9 +10,25 @@
 }
 
 .data-protection-header,
-.data-protection-empty {
+.data-protection-report {
     width: min(100%, 960px);
     margin: 0 auto;
+}
+
+.data-protection-report + .data-protection-report {
+    margin-top: 24px;
+}
+
+.data-protection-admin {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 960px;
+}
+
+.data-protection-warning {
+    padding: 16px;
+    border-inline-start: 4px solid var(--color-warning);
+    background: var(--color-background-dark);
 }
 
 .data-protection-kicker {
@@ -25,7 +41,9 @@
     margin: 0 0 24px;
 }
 
-.data-protection-empty {
+.data-protection-report,
+.data-protection-provider,
+.data-protection-entry {
     box-sizing: border-box;
     padding: 24px;
     border: 1px solid var(--color-border);
@@ -33,13 +51,71 @@
     background: var(--color-background-dark);
 }
 
-.data-protection-empty h2 {
+.data-protection-report > h2,
+.data-protection-provider h2,
+.data-protection-entry h3 {
     margin-top: 0;
+}
+
+.data-protection-provider,
+.data-protection-entry {
+    margin-top: 20px;
+    background: var(--color-main-background);
+}
+
+.data-protection-provider-status,
+.data-protection-summary {
+    font-weight: 600;
+}
+
+.data-protection-restrictions {
+    margin-inline-start: 24px;
+}
+
+.data-protection-metadata {
+    margin: 16px 0;
+}
+
+.data-protection-definition {
+    display: grid;
+    grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+    gap: 8px 16px;
+    padding: 6px 0;
+}
+
+.data-protection-definition dt {
+    font-weight: 600;
+}
+
+.data-protection-definition dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.data-protection-table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.data-protection-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-protection-table th,
+.data-protection-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+    text-align: start;
+    vertical-align: top;
 }
 
 @media (max-width: 600px) {
     #data-protection-app {
         padding: 20px 16px;
     }
-}
 
+    .data-protection-definition {
+        grid-template-columns: 1fr;
+    }
+}

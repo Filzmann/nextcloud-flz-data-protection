@@ -20,6 +20,9 @@ final class PersonalDataProviderRegistry {
         if ($descriptor->contractVersion() !== self::CONTRACT_VERSION) {
             throw new DomainException('Incompatible provider contract version.');
         }
+        if (!in_array('personal-data', $descriptor->capabilities(), true)) {
+            throw new DomainException('Personal-data capability is missing.');
+        }
         if (isset($this->providers[$appId])) {
             throw new DomainException('Duplicate provider app ID.');
         }
@@ -32,4 +35,3 @@ final class PersonalDataProviderRegistry {
         return $this->providers;
     }
 }
-

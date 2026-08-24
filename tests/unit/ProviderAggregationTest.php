@@ -8,8 +8,11 @@ use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
 use OCA\FilzmannDataProtection\PublicApi\V1\ProviderDescriptor;
+use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
 use OCA\FilzmannDataProtection\Service\PersonalDataAggregator;
 use OCA\FilzmannDataProtection\Service\PersonalDataProviderRegistry;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventDispatcher;
 
 $assertSame = static function (mixed $expected, mixed $actual, string $message): void {
     if ($expected !== $actual) {
@@ -34,6 +37,7 @@ $provider = static function (string $appId, bool $fails = false): PersonalDataPr
             return new PersonalDataPage('complete', [new PersonalDataEntry(
                 categoryId: 'profile',
                 categoryLabel: 'Profile',
+                reference: 'profile:synthetic-user',
                 summary: 'Synthetic account reference',
                 purpose: 'Account administration',
                 source: 'Authenticated account',
@@ -81,6 +85,7 @@ try {
     new PersonalDataEntry(
         categoryId: 'profile',
         categoryLabel: 'Profile',
+        reference: 'profile:synthetic-user',
         summary: 'Synthetic account reference',
         purpose: '',
         source: 'Authenticated account',
@@ -101,12 +106,27 @@ $request = new PersonalDataRequest(
     'de',
     'access-report',
     50,
-    null,
+    [],
 );
-$report = (new PersonalDataAggregator($registry))->collect($request);
+$events = new class($registry) implements IEventDispatcher {
+    public function __construct(private PersonalDataProviderRegistry $registry) {
+    }
 
-$assertSame(['reference_app', 'failing_app'], array_keys($report->providers()), 'Der feste Registry-Snapshot wurde verändert.');
+    public function dispatchTyped(Event $event): Event {
+        if (!$event instanceof RegisterPersonalDataProvidersEvent) {
+            throw new RuntimeException('Unexpected event type.');
+        }
+        foreach ($this->registry->snapshot() as $provider) {
+            $event->register($provider);
+        }
+        return $event;
+    }
+};
+$report = (new PersonalDataAggregator($events))->collect($request);
+
+$assertSame(['failing_app', 'reference_app'], array_keys($report->providers()), 'Der deterministische Registry-Snapshot wurde verändert.');
 $assertSame('complete', $report->providers()['reference_app']->status(), 'Der erfolgreiche Providerstatus fehlt.');
+$assertSame('REFERENCE_APP', $report->providers()['reference_app']->displayName(), 'Der verständliche Providername ging bei der Aggregation verloren.');
 $assertSame('failed', $report->providers()['failing_app']->status(), 'Ein Providerfehler wurde nicht isoliert.');
 $assertSame('Provider unavailable.', $report->providers()['failing_app']->restrictions()[0] ?? null, 'Interne Fehlerdetails sind in den Bericht gelangt.');
 $assertSame(false, $report->isRegistrySnapshotComplete(), 'Ein Teilbericht wurde fälschlich für den Registry-Snapshot als vollständig markiert.');

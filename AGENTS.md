@@ -39,6 +39,10 @@ verboten.
 - Berichte werden ohne gesonderten Speicher- und Löschvertrag nicht zentral
   persistiert. Retention beginnt ausschließlich mit Dry Run; unbekannte oder
   widersprüchliche Zustände lösen keine destruktive Maßnahme aus.
+- Native Nextcloud-Admins dürfen das operative REVIEW nach Neuinstallation
+  standardmäßig lesen. Dieses fachliche Leserecht bleibt getrennt vom
+  technischen Konfigurationsrecht, ist abschaltbar und wird in der
+  Administration ausdrücklich zur späteren Neubewertung ausgewiesen.
 - Testdaten und Beispiele sind synthetisch, neutral und datenschutzarm.
 
 ## Stop-Gates
