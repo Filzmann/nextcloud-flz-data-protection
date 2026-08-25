@@ -30,7 +30,6 @@ final class RetentionSettingsController extends Controller {
             $params = $this->request->getParams();
             return new JSONResponse($this->settings->save([
                 'reviewer_groups' => $params['reviewer_groups'] ?? '',
-                'allow_nextcloud_admin_review' => $params['allow_nextcloud_admin_review'] ?? false,
             ]));
         } catch (InvalidArgumentException $e) {
             return new JSONResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);

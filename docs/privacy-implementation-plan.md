@@ -5,9 +5,10 @@ authenticated Nextcloud UID. Self-service must construct that reference on
 the server. External applicants or employees without a Nextcloud account are
 not mapped to this subject type.
 
-The app initially stores no personal report content. Before persistence,
-exports, admin access or retention execution are implemented, dedicated
-permission, storage, audit, lifecycle and deletion decisions are required.
+The app stores no personal report content. Its only own personal records are
+the security-relevant, app-local temporary admin-access intervals. Further
+persistence, exports or retention execution require dedicated permission,
+storage, audit, lifecycle and deletion decisions.
 
 Implemented contract foundation:
 
@@ -35,9 +36,12 @@ Implemented contract foundation:
   assets. The initially disabled app state was restored afterwards.
 - public V1 retention-preview types, lazy registry and failure-isolated
   aggregation with no execution method and `REVIEW` as the only action;
-- a protected transient REVIEW dashboard. Native Nextcloud admins have
-  initial read access by default, independently configurable from the
-  dedicated review groups and accompanied by an explicit reassessment note;
+- a protected transient REVIEW dashboard. Configured review groups have
+  explicit access; native Nextcloud admins require a per-admin app-local grant
+  that expires after at most 24 hours. Technical settings access remains
+  separate and Nextcloud-native;
+- app-local PersonalDataProvider and PermissionProvider coverage for the
+  temporary grant audit, self-service, REVIEW and technical configuration;
 - `filzmann_permission_matrix` as the first standalone preview provider for
   due export metadata and audit records, using separate configurable periods
   of 180 days by default and selecting no UIDs or free details.
@@ -49,8 +53,7 @@ Next implementation gates:
    contract level and the disabled runtime state is verified;
 2. decide and explicitly approve each next single consumer migration;
 3. validate the configured dedicated review groups in the target organization
-   and decide whether the initially enabled Nextcloud-admin read right remains
-   necessary;
+   and keep temporary admin grants exceptional;
 4. keep third-person content and security secrets inside each provider's
    domain projection;
 5. keep retention execution blocked until policy, lifecycle, concurrency and

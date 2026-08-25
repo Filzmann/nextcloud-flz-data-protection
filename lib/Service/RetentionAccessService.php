@@ -12,12 +12,13 @@ final class RetentionAccessService {
         private IUserSession $session,
         private IGroupManager $groups,
         private RetentionSettingsService $settings,
+        private TemporaryAdminAccessChecker $temporaryAdminAccess,
     ) {}
 
     public function canReview(): bool {
         $uid = $this->session->getUser()?->getUID();
         if ($uid === null || trim($uid) === '') return false;
-        if ($this->settings->allowNextcloudAdmins() && $this->groups->isAdmin($uid)) return true;
+        if ($this->groups->isAdmin($uid) && $this->temporaryAdminAccess->hasActiveGrant($uid)) return true;
         foreach ($this->settings->reviewerGroups() as $groupId) {
             if ($this->groups->isInGroup($uid, $groupId)) return true;
         }

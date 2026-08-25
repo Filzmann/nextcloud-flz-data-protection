@@ -23,16 +23,20 @@ remain visible and are not replaced by heuristic fallback access.
   completeness states and text-only rendering of provider values.
 - public V1 retention-preview contract with lazy discovery, provider failure
   isolation and `REVIEW` as the only supported action;
-- a transient operational REVIEW dashboard. Native Nextcloud admins can read
-  it by default after installation, but that read right is independently
-  configurable and should be reassessed after a dedicated privacy-review
-  group has been established.
+- a transient operational REVIEW dashboard for configured privacy-review
+  groups. Native Nextcloud administration alone grants no fachlich access;
+  per-admin access can be activated app-locally for at most 24 hours and its
+  actual interval remains auditable;
+- a public PermissionProvider that distinguishes self-service, REVIEW and
+  technical configuration, plus a PersonalDataProvider for the subject's own
+  admin-access audit references without exposing other admin identifiers.
 
 The provider APIs remain pre-release and are not yet approved for external
 releases. `adroom` is the first personal-data pilot consumer; the Permission
 Matrix is the first standalone retention-preview consumer. No report
-persistence, retention execution, data deletion, anonymization or audit
-persistence is part of version `0.1.0`.
+persistence, retention execution, data deletion or anonymization is part of
+version `0.1.1`; only the security-relevant temporary admin-access history is
+persisted app-locally.
 
 ## Tests
 

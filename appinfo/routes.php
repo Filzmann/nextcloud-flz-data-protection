@@ -8,5 +8,8 @@ return [
         ['name' => 'self_service#report', 'url' => '/api/v1/self-service-report', 'verb' => 'GET'],
         ['name' => 'retention_review#report', 'url' => '/api/v1/retention-review', 'verb' => 'GET'],
         ['name' => 'retention_settings#save', 'url' => '/api/v1/retention-settings', 'verb' => 'POST'],
+        ['name' => 'temporary_admin_access#status', 'url' => '/api/v1/admin/full-access', 'verb' => 'GET'],
+        ['name' => 'temporary_admin_access#activate', 'url' => '/api/v1/admin/full-access', 'verb' => 'POST'],
+        ['name' => 'temporary_admin_access#revoke', 'url' => '/api/v1/admin/full-access/{targetUid}', 'verb' => 'DELETE'],
     ],
 ];

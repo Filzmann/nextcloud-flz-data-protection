@@ -13,6 +13,7 @@ use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProviderDescriptor;
 use OCA\FilzmannDataProtection\Service\RetentionAccessService;
 use OCA\FilzmannDataProtection\Service\RetentionPreviewAggregator;
 use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
+use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessChecker;
 use OCP\AppFramework\Http\Http;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;
@@ -63,14 +64,18 @@ $events = new class($provider, $dispatches) implements IEventDispatcher {
 $request = new class implements IRequest {};
 $settings = new RetentionSettingsService($store, $groups);
 $aggregator = new RetentionPreviewAggregator($events);
+$grants = new class implements TemporaryAdminAccessChecker {
+    public array $active = ['admin-user'];
+    public function hasActiveGrant(string $uid): bool { return in_array($uid, $this->active, true); }
+};
 
-$denied = new RetentionReviewController($request, new RetentionAccessService($sessionFor('ordinary-user'), $groups, $settings), $aggregator);
+$denied = new RetentionReviewController($request, new RetentionAccessService($sessionFor('ordinary-user'), $groups, $settings, $grants), $aggregator);
 $assertSame(Http::STATUS_FORBIDDEN, $denied->report()->getStatus(), 'Ein unberechtigtes Konto erhielt die REVIEW-Vorschau.');
 $assertSame(0, $dispatches, 'Ein verweigerter REVIEW-Aufruf hat Provider entdeckt.');
 
-$allowed = new RetentionReviewController($request, new RetentionAccessService($sessionFor('admin-user'), $groups, $settings), $aggregator);
+$allowed = new RetentionReviewController($request, new RetentionAccessService($sessionFor('admin-user'), $groups, $settings, $grants), $aggregator);
 $response = $allowed->report();
-$assertSame(Http::STATUS_OK, $response->getStatus(), 'Der anfängliche Adminzugriff wurde nicht erlaubt.');
+$assertSame(Http::STATUS_OK, $response->getStatus(), 'Die aktive Adminfreigabe wurde nicht erlaubt.');
 $assertSame(1, $dispatches, 'Der erlaubte REVIEW-Aufruf muss genau eine Discovery auslösen.');
 $assertSame('REVIEW', $response->getData()['providers']['review_app']['candidates'][0]['action'] ?? null, 'Die API liefert keinen REVIEW-Kandidaten.');
 $assertSame(0, (new ReflectionMethod($allowed, 'report'))->getNumberOfParameters(), 'Die REVIEW-API akzeptiert einen frei übermittelten Bewertungszeitpunkt.');

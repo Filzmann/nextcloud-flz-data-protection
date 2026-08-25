@@ -31,8 +31,12 @@ if (!/function report\(\): JSONResponse/.test(selfServiceController)) throw new 
 if (!template.includes('id="data-protection-app"')) throw new Error('Semantischer App-Root fehlt.');
 if (!template.includes('id="data-protection-retention"')) throw new Error('Operativer REVIEW-Bereich fehlt.');
 if (!info.includes('<admin>OCA\\FilzmannDataProtection\\Settings\\Admin</admin>')) throw new Error('Datenschutz-Administration fehlt.');
-if (!adminTemplate.includes('Nextcloud-Admins dürfen REVIEW-Kandidaten nach der Neuinstallation standardmäßig lesen')) throw new Error('Hinweis zum nur anfänglichen Admin-Leserecht fehlt.');
-if (!adminTemplate.includes('name="allow_nextcloud_admin_review"')) throw new Error('Admin-Leserecht ist nicht konfigurierbar.');
+if (!adminTemplate.includes('kein automatisches fachliches Leserecht')) throw new Error('Deny-by-default-Hinweis für native Admins fehlt.');
+if (!adminTemplate.includes('id="data-protection-full-access-form"')) throw new Error('App-lokale Adminfreigabe fehlt.');
+if (!adminTemplate.includes('value="1440"')) throw new Error('Die maximal kaufbare Dauer von 24 Stunden fehlt.');
+if (adminTemplate.includes('name="allow_nextcloud_admin_review"')) throw new Error('Der alte unbefristete Adminzugriff ist noch konfigurierbar.');
+if (!routes.includes("'url' => '/api/v1/admin/full-access'")) throw new Error('Adminfreigabe-API fehlt.');
+if (!adminScript.includes('data-protection-full-access-history')) throw new Error('Freigabehistorie wird nicht dargestellt.');
 if (!adminScript.includes('requesttoken: OC.requestToken')) throw new Error('Einstellungsspeicherung sendet kein CSRF-Token.');
 if (!reportView.includes('Noch sind keine Datenschutzprovider registriert.')) throw new Error('Fehlende Provider werden nicht transparent ausgewiesen.');
 if (!script.includes('/api/v1/self-service-report')) throw new Error('Self-Service-Bericht wird nicht geladen.');

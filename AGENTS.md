@@ -39,10 +39,15 @@ verboten.
 - Berichte werden ohne gesonderten Speicher- und Löschvertrag nicht zentral
   persistiert. Retention beginnt ausschließlich mit Dry Run; unbekannte oder
   widersprüchliche Zustände lösen keine destruktive Maßnahme aus.
-- Native Nextcloud-Admins dürfen das operative REVIEW nach Neuinstallation
-  standardmäßig lesen. Dieses fachliche Leserecht bleibt getrennt vom
-  technischen Konfigurationsrecht, ist abschaltbar und wird in der
-  Administration ausdrücklich zur späteren Neubewertung ausgewiesen.
+- Native Nextcloud-Admins erhalten kein automatisches fachliches REVIEW-Recht.
+  Der technische Adminbereich bleibt Nextcloud-nativ administrierbar; ein
+  fachlicher Vollzugriff wird je Admin app-lokal, serverseitig und für
+  höchstens 24 Stunden aktiviert. Beginn, geplantes Ende und Widerruf bleiben
+  auditierbar. Konfigurierte Datenschutz-Prüfgruppen behalten ihre expliziten
+  Fachrechte unabhängig davon.
+- Die App hält ihren eigenen `PersonalDataProvider` und `PermissionProvider`
+  synchron zu neuen Personenbezügen und Berechtigungen. Andere Apps werden
+  ausschließlich über die öffentlichen Providerereignisse ausgewertet.
 - Testdaten und Beispiele sind synthetisch, neutral und datenschutzarm.
 
 ## Stop-Gates
