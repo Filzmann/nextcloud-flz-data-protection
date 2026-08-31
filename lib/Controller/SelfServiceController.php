@@ -9,6 +9,7 @@ use OCA\FilzmannDataProtection\Exception\AuthenticationRequiredException;
 use OCA\FilzmannDataProtection\Service\SelfServiceReportService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -22,6 +23,7 @@ final class SelfServiceController extends Controller {
     }
 
     #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function report(): JSONResponse {
         try {
             return new JSONResponse($this->reports->report());

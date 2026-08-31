@@ -11,6 +11,7 @@ use OCA\FilzmannDataProtection\Service\RetentionAccessService;
 use OCA\FilzmannDataProtection\Service\RetentionPreviewAggregator;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Http;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -25,6 +26,7 @@ final class RetentionReviewController extends Controller {
     }
 
     #[NoAdminRequired]
+    #[NoCSRFRequired]
     public function report(): JSONResponse {
         if (!$this->access->canReview()) {
             return new JSONResponse(['message' => 'Zugriff verweigert.'], Http::STATUS_FORBIDDEN);
