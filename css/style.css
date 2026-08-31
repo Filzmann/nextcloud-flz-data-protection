@@ -63,6 +63,27 @@
     background: var(--color-main-background);
 }
 
+.data-protection-entry {
+    padding: 18px;
+}
+
+.data-protection-common {
+    margin: 16px 0;
+    padding: 14px 16px;
+    border-inline-start: 4px solid var(--color-primary-element);
+    background: var(--color-background-hover);
+}
+
+.data-protection-common h3,
+.data-protection-common p,
+.data-protection-category-summary {
+    margin: 0 0 8px;
+}
+
+.data-protection-common .data-protection-metadata {
+    margin: 0;
+}
+
 .data-protection-provider-status,
 .data-protection-summary {
     font-weight: 600;
@@ -100,6 +121,12 @@
 .data-protection-table {
     width: 100%;
     border-collapse: collapse;
+}
+
+.data-protection-table caption {
+    padding: 8px;
+    font-weight: 600;
+    text-align: start;
 }
 
 .data-protection-table th,

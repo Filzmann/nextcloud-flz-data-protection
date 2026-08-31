@@ -27,52 +27,114 @@
         return fragment;
     };
 
-    const attributesTable = (attributes) => {
+    const metadataFields = [
+        ['purpose', 'Zweck', (entry) => entry.purpose],
+        ['source', 'Herkunft', (entry) => entry.source],
+        ['recipientCategories', 'Empfängerkategorien', (entry) => (entry.recipientCategories || []).join(', ')],
+        ['retention', 'Aufbewahrung', (entry) => entry.retention],
+        ['thirdCountryTransfer', 'Drittlandübermittlung', (entry) => entry.thirdCountryTransfer],
+        ['automatedDecision', 'Automatisierte Entscheidung', (entry) => entry.automatedDecision],
+        ['thirdPartyContentNotice', 'Drittpersonenhinweis', (entry) => entry.thirdPartyContentNotice],
+    ];
+
+    const displayValue = (value) => {
+        if (value === null || value === undefined || value === '') return '—';
+        if (value === true) return 'Ja';
+        if (value === false) return 'Nein';
+        return String(value);
+    };
+
+    const sharedValue = (entries, getter) => {
+        if (entries.length === 0) return null;
+        const first = displayValue(getter(entries[0]));
+        return first !== '—' && entries.every((entry) => displayValue(getter(entry)) === first) ? first : null;
+    };
+
+    const commonValues = (entries, fields) => {
+        const values = new Map();
+        fields.forEach(([key, label, getter]) => {
+            const value = sharedValue(entries, getter);
+            if (value !== null) values.set(key, { label, value });
+        });
+        return values;
+    };
+
+    const commonBlock = (title, values, detail) => {
+        if (values.size === 0) return null;
+        const section = element('section', null, 'data-protection-common');
+        section.append(element('h3', title));
+        if (detail) section.append(element('p', detail));
+        const metadata = document.createElement('dl');
+        metadata.className = 'data-protection-metadata';
+        values.forEach(({ label, value }) => metadata.append(definition(label, value)));
+        section.append(metadata);
+        return section;
+    };
+
+    const humanReference = (entry) => {
+        const reference = String(entry.reference || '');
+        const separator = reference.lastIndexOf(':');
+        const identifier = separator >= 0 ? reference.slice(separator + 1) : reference;
+        const label = entry.categoryLabel || 'Datensatz';
+        if (/^[0-9]+$/.test(identifier)) return `${label} Nr. ${identifier}`;
+        return identifier ? `${label}, interne Kennung ${identifier.replaceAll('_', ' ').replaceAll('-', ' ')}` : label;
+    };
+
+    const entriesTable = (entries, columns) => {
         const wrapper = element('div', null, 'data-protection-table-wrapper');
         const table = document.createElement('table');
         table.className = 'data-protection-table';
+        const caption = element('caption', `${entries[0]?.categoryLabel || 'Datensätze'}: unterschiedliche gespeicherte Angaben`);
         const head = document.createElement('thead');
         const headRow = document.createElement('tr');
-        const nameHeader = element('th', 'Datenfeld');
-        const valueHeader = element('th', 'Gespeicherter Wert');
-        nameHeader.setAttribute('scope', 'col');
-        valueHeader.setAttribute('scope', 'col');
-        headRow.append(nameHeader, valueHeader);
+        columns.forEach(({ label }) => {
+            const header = element('th', label);
+            header.setAttribute('scope', 'col');
+            headRow.append(header);
+        });
         head.append(headRow);
 
         const body = document.createElement('tbody');
-        Object.entries(attributes || {}).forEach(([name, value]) => {
+        entries.forEach((entry) => {
             const row = document.createElement('tr');
-            const nameCell = element('th', name);
-            nameCell.setAttribute('scope', 'row');
-            row.append(nameCell, element('td', value === null ? '—' : value));
+            columns.forEach(({ getter }, index) => {
+                const cell = element(index === 0 ? 'th' : 'td', displayValue(getter(entry)));
+                if (index === 0) cell.setAttribute('scope', 'row');
+                row.append(cell);
+            });
             body.append(row);
         });
-        table.append(head, body);
+        table.append(caption, head, body);
         wrapper.append(table);
         return wrapper;
     };
 
-    const entryView = (entry) => {
+    const categoryView = (entries, providerCommon) => {
         const section = element('section', null, 'data-protection-entry');
-        section.append(element('h3', entry.categoryLabel || 'Datensatz'));
-        section.append(element('p', entry.summary || 'Keine Zusammenfassung vorhanden.'));
+        const label = entries[0]?.categoryLabel || 'Datensätze';
+        section.append(element('h3', `${label} (${entries.length})`));
 
-        const metadata = document.createElement('dl');
-        metadata.className = 'data-protection-metadata';
-        metadata.append(
-            definition('Referenz', entry.reference),
-            definition('Zweck', entry.purpose),
-            definition('Herkunft', entry.source),
-            definition('Empfängerkategorien', (entry.recipientCategories || []).join(', ')),
-            definition('Aufbewahrung', entry.retention),
-            definition('Drittlandübermittlung', entry.thirdCountryTransfer),
-            definition('Automatisierte Entscheidung', entry.automatedDecision),
-        );
-        if (entry.thirdPartyContentNotice) {
-            metadata.append(definition('Drittpersonenhinweis', entry.thirdPartyContentNotice));
+        const summary = sharedValue(entries, (entry) => entry.summary);
+        if (summary !== null) {
+            section.append(element('p', entries.length > 1 ? `${summary}: ${entries.length}-mal protokolliert.` : summary, 'data-protection-category-summary'));
         }
-        section.append(metadata, attributesTable(entry.attributes));
+
+        const categoryCommon = commonValues(entries, metadataFields.filter(([key]) => !providerCommon.has(key)));
+        const attributeNames = [...new Set(entries.flatMap((entry) => Object.keys(entry.attributes || {})))];
+        const commonAttributes = commonValues(entries, attributeNames.map((name) => [name, name, (entry) => entry.attributes?.[name]]));
+        const combined = new Map([...categoryCommon, ...commonAttributes]);
+        const common = commonBlock('Gilt für diesen Datentyp', combined);
+        if (common) section.append(common);
+
+        const columns = [{ label: 'Interne Zuordnung', getter: humanReference }];
+        if (summary === null) columns.push({ label: 'Datensatz', getter: (entry) => entry.summary });
+        attributeNames.filter((name) => !commonAttributes.has(name)).forEach((name) => {
+            columns.push({ label: name, getter: (entry) => entry.attributes?.[name] });
+        });
+        metadataFields.filter(([key, , getter]) => !providerCommon.has(key) && !categoryCommon.has(key) && entries.some((entry) => displayValue(getter(entry)) !== '—')).forEach(([, labelText, getter]) => {
+            columns.push({ label: labelText, getter });
+        });
+        section.append(entriesTable(entries, columns));
         return section;
     };
 
@@ -87,7 +149,23 @@
             provider.restrictions.forEach((restriction) => restrictions.append(element('li', restriction)));
             article.append(restrictions);
         }
-        (provider.entries || []).forEach((entry) => article.append(entryView(entry)));
+        const entries = provider.entries || [];
+        if (entries.length === 0) {
+            article.append(element('p', provider.status === 'failed' ? 'Diese App konnte für die Auskunft nicht erreicht werden.' : 'Für dich sind in dieser App keine Datensätze vorhanden.'));
+            return article;
+        }
+
+        const providerCommon = commonValues(entries, metadataFields);
+        const shared = commonBlock('Gilt für alle folgenden Daten', providerCommon, `${entries.length} gespeicherte Einträge`);
+        if (shared) article.append(shared);
+
+        const categories = new Map();
+        entries.forEach((entry) => {
+            const key = entry.categoryId || entry.categoryLabel || 'records';
+            if (!categories.has(key)) categories.set(key, []);
+            categories.get(key).push(entry);
+        });
+        categories.forEach((categoryEntries) => article.append(categoryView(categoryEntries, providerCommon)));
         return article;
     };
 

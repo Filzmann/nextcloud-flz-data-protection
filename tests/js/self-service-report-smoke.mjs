@@ -42,19 +42,25 @@ window.FilzmannDataProtection.reportView.render(container, {
             status: 'partial',
             restrictions: ['Weitere Datensätze können vorhanden sein.'],
             nextCursor: 'opaque-cursor',
-            entries: [{
-                categoryLabel: 'Buchung',
-                reference: 'booking:17',
-                summary: '<img src=x onerror=alert(1)>',
-                purpose: 'Raumkoordination',
-                source: 'Sitzungskonto',
-                recipientCategories: ['Instanzbenutzer*innen'],
-                retention: 'Prüfung erforderlich',
+            entries: Array.from({ length: 5 }, (_, index) => ({
+                categoryId: 'planning_activity',
+                categoryLabel: 'Bearbeitungsnachweis',
+                reference: `run_updated:${index + 1}`,
+                summary: 'Durchlauf bearbeitet',
+                purpose: 'Nachvollziehbarkeit der Planung',
+                source: 'Änderungsprotokoll der App',
+                recipientCategories: ['Berechtigte Planungsverantwortliche'],
+                retention: index === 4 ? 'Abweichende Prüffrist' : 'Prüfung erforderlich',
                 thirdCountryTransfer: 'Keine',
                 automatedDecision: 'Keine',
                 thirdPartyContentNotice: null,
-                attributes: { Raum: '<script>nicht ausführen</script>' },
-            }],
+                attributes: {
+                    Vorgang: 'Durchlauf bearbeitet',
+                    Zeitpunkt: `${index + 1}. August 2026`,
+                    Protokollart: '<script>nicht ausführen</script>',
+                    Hinweis: index === 0 ? '<img src=x onerror=alert(1)>' : null,
+                },
+            })),
         },
         missing_app: {
             status: 'missing',
@@ -74,6 +80,25 @@ if (!text.includes('nicht vollständig') || !text.includes('Teilweise') || !text
 }
 if (!text.includes('<img src=x onerror=alert(1)>') || !text.includes('<script>nicht ausführen</script>')) {
     throw new Error('Providerdaten werden nicht als Text dargestellt.');
+}
+if (text.includes('run_updated:2')) {
+    throw new Error('Eine technische Referenz wird unverändert Beschäftigten angezeigt.');
+}
+for (const expected of ['Gilt für alle folgenden Daten', '5 gespeicherte Einträge', 'Durchlauf bearbeitet: 5-mal protokolliert.', 'Bearbeitungsnachweis Nr. 2', 'Nachvollziehbarkeit der Planung']) {
+    if (!text.includes(expected)) throw new Error(`Die kompakte verständliche Auskunft fehlt: ${expected}`);
+}
+if (text.split('Nachvollziehbarkeit der Planung').length - 1 !== 1) {
+    throw new Error('Der für alle Einträge identische Zweck wird wiederholt dargestellt.');
+}
+if (text.split('<script>nicht ausführen</script>').length - 1 !== 1) {
+    throw new Error('Ein gemeinsames Datenfeld wird statt einmal vor der Datenliste mehrfach dargestellt.');
+}
+if (!text.includes('Abweichende Prüffrist') || !text.includes('Prüfung erforderlich')) {
+    throw new Error('Unterschiedliche Aufbewahrungsangaben wurden unzulässig zusammengefasst.');
+}
+const tables = nodes.filter((node) => node.tagName === 'TABLE');
+if (tables.length !== 1) {
+    throw new Error('Gleichartige Datensätze werden nicht in einer kompakten Tabelle zusammengefasst.');
 }
 if (nodes.some((node) => node.tagName === 'IMG' || node.tagName === 'SCRIPT')) {
     throw new Error('Providerdaten wurden als ausführbares Markup interpretiert.');
