@@ -9,7 +9,8 @@ const contracts = [
     [/\.data-protection-provider\s*\{[^}]*margin-top:\s*12px[^}]*padding:\s*14px/s, 'App-Karten benötigen weiterhin zu viel Platz.'],
     [/\.data-protection-entry\s*\{[^}]*margin-top:\s*10px[^}]*padding:\s*12px/s, 'Datentyp-Karten benötigen weiterhin zu viel Platz.'],
     [/\.data-protection-common\s*\{[^}]*margin:\s*8px\s+0[^}]*padding:\s*8px\s+10px/s, 'Gemeinsame graue Angaben sind nicht kompakt.'],
-    [/\.data-protection-definition\s*\{[^}]*gap:\s*4px\s+12px[^}]*padding:\s*3px\s+0/s, 'Metadatenzeilen sind nicht kompakt.'],
+    [/\.data-protection-definition\s*\{[^}]*gap:\s*2px\s+12px[^}]*padding:\s*1px\s+0/s, 'Metadatenzeilen sind nicht kompakt.'],
+    [/\.data-protection-definition dt,\s*\.data-protection-definition dd\s*\{[^}]*margin:\s*0[^}]*padding:\s*0[^}]*line-height:\s*1\.35/s, 'Nextcloud-Standardabstände zwischen Metadatenzeilen wurden nicht zurückgesetzt.'],
     [/\.data-protection-table th,\s*\.data-protection-table td\s*\{[^}]*padding:\s*5px\s+6px/s, 'Tabellenzeilen sind nicht kompakt.'],
 ];
 

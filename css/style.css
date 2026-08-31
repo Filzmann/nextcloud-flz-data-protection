@@ -106,8 +106,15 @@
 .data-protection-definition {
     display: grid;
     grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
-    gap: 4px 12px;
-    padding: 3px 0;
+    gap: 2px 12px;
+    padding: 1px 0;
+}
+
+.data-protection-definition dt,
+.data-protection-definition dd {
+    margin: 0;
+    padding: 0;
+    line-height: 1.35;
 }
 
 .data-protection-definition dt {
@@ -115,7 +122,6 @@
 }
 
 .data-protection-definition dd {
-    margin: 0;
     overflow-wrap: anywhere;
 }
 
