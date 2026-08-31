@@ -49,3 +49,4 @@ console.log('Filzmann Data Protection JavaScript/app contract passed.');
 await import('./js/self-service-request-smoke.mjs');
 await import('./js/self-service-report-smoke.mjs');
 await import('./js/retention-review-smoke.mjs');
+await import('./js/compact-report-layout-smoke.mjs');
