@@ -1,14 +1,9 @@
 # Roadmap – Datenschutz-Center
 
-The first supported subject type is `nextcloud-user`; its identifier is the
-authenticated Nextcloud UID. Self-service must construct that reference on
-the server. External applicants or employees without a Nextcloud account are
-not mapped to this subject type.
-
-The app stores no personal report content. Its only own personal records are
-the security-relevant, app-local temporary admin-access intervals. The
-implemented contract and product scope are documented in `README.md`; this
-roadmap contains only remaining app-local work.
+Diese Datei enthält ausschließlich offene Arbeit, zurückgestellte Vorhaben
+und Freigabegates. Der aktuelle Funktionsumfang steht in `README.md`,
+erledigte Änderungen in `CHANGELOG.md` und geltende Architektur in
+`docs/architecture.md`.
 
 ## Nextcloud compatibility gate
 

@@ -48,3 +48,11 @@ pilot history. Remaining app-local work is tracked in [ROADMAP.md](ROADMAP.md).
 php tests/run.php
 node tests/run-js.mjs
 ```
+
+## Dokumentation
+
+- [Architektur](docs/architecture.md)
+- [Manuelle Abnahme](docs/manual-acceptance.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+- [Arbeitsregeln](AGENTS.md)
