@@ -38,6 +38,10 @@ persistence, retention execution, data deletion or anonymization is part of
 version `0.1.1`; only the security-relevant temporary admin-access history is
 persisted app-locally.
 
+The initial consumer sequence started with `adroom`. Provider coverage of an
+installed workspace is discovered at runtime and is never inferred from that
+pilot history. Remaining app-local work is tracked in [ROADMAP.md](ROADMAP.md).
+
 ## Tests
 
 ```bash

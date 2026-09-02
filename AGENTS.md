@@ -12,6 +12,9 @@ Diese Datei und die beiden lokalen Skills bilden die vollständige Repository-St
 für einen direkten Start in diesem App-Repository; der
 Parent ist keine Laufzeitquelle für App-Regeln.
 
+Offene app-lokale Produkt- und Retentionaufgaben stehen ausschließlich in
+`ROADMAP.md`; implementierter Umfang steht in `README.md`.
+
 Die App ist eine eigenständige Kategorie-B-Laufzeit-App ohne verpflichtende
 Abhängigkeit zu LocalBase, OrgSuite oder einer Fachapp. Sie liest und ändert
 niemals Tabellen, Entitäten, AppConfig-/UserConfig-Werte, Dateien oder
