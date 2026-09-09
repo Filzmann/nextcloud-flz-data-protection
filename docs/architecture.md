@@ -17,6 +17,27 @@ Projektionen.
   der authentifizierten Session.
 - Providerfehler werden isoliert und dürfen einen Teilbericht nicht als
   vollständige Instanzauskunft erscheinen lassen.
+- Der additive öffentliche V1-`ProcessingMetadataProvider` liefert pro App
+  ausschließlich deren app-eigenen Katalog. Descriptor- und Katalog-App-ID
+  müssen übereinstimmen; inkompatible, doppelte oder fehlerhafte Provider
+  werden isoliert abgewiesen. Der Vertrag enthält keine personenbezogenen
+  Laufzeitdaten und erweitert den bestehenden `PersonalDataProvider` nicht.
+
+## Processing-Metadaten
+
+Der kanonische app-eigene Katalog liegt unter
+`resources/privacy-processing.json`. Er beschreibt derzeit die Verarbeitungen
+`article_15_aggregation` und `temporary_admin_full_access`. Bekannte Zwecke
+und technische Schutzgrenzen stammen aus der bestehenden App-Architektur;
+fehlende Rechtsgrundlagen, fachliche Verantwortlichkeiten, Retention- sowie
+Backup-/Restore-Entscheidungen sind strukturiert als
+`PRIVACY-DECISION-REQUIRED` ausgewiesen.
+
+Die öffentliche Registry liest Kataloge ausschließlich über registrierte
+Provider. Sie durchsucht weder andere App-Verzeichnisse noch fremde Tabellen,
+Dateien oder Konfigurationen. Root bleibt Eigentümer des gemeinsamen Schemas;
+die App besitzt ihren fachlichen Katalog und die Runtime-DTOs ihres
+öffentlichen Providervertrags.
 
 ## Persistenz, Rechte und Retention
 

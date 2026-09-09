@@ -48,9 +48,14 @@ verboten.
   höchstens 24 Stunden aktiviert. Beginn, geplantes Ende und Widerruf bleiben
   auditierbar. Konfigurierte Datenschutz-Prüfgruppen behalten ihre expliziten
   Fachrechte unabhängig davon.
-- Die App hält ihren eigenen `PersonalDataProvider` und `PermissionProvider`
-  synchron zu neuen Personenbezügen und Berechtigungen. Andere Apps werden
-  ausschließlich über die öffentlichen Providerereignisse ausgewertet.
+- Die App hält ihren eigenen `PersonalDataProvider`,
+  `ProcessingMetadataProvider` und `PermissionProvider` synchron zu neuen
+  Verarbeitungen, Personenbezügen und Berechtigungen. Der app-eigene
+  Processing-Katalog liegt ausschließlich unter
+  `resources/privacy-processing.json`, enthält keine personenbezogenen
+  Laufzeitdaten und weist fachliche Lücken als
+  `PRIVACY-DECISION-REQUIRED` aus. Andere Apps werden ausschließlich über die
+  öffentlichen Providerereignisse ausgewertet.
 - Testdaten und Beispiele sind synthetisch, neutral und datenschutzarm.
 
 ## Stop-Gates

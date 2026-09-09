@@ -30,6 +30,14 @@ remain visible and are not replaced by heuristic fallback access.
 - a public PermissionProvider that distinguishes self-service, REVIEW and
   technical configuration, plus a PersonalDataProvider for the subject's own
   admin-access audit references without exposing other admin identifiers.
+- a public additive V1 `ProcessingMetadataProvider` contract with a
+  duplicate- and version-safe lazy registry, strict app/catalog ownership,
+  failure isolation and a reusable contract-test kit;
+- the app-owned processing catalog
+  [`resources/privacy-processing.json`](resources/privacy-processing.json)
+  for Art.-15 aggregation and temporary admin full access. Open legal basis,
+  business ownership, retention and backup decisions remain explicitly
+  `PRIVACY-DECISION-REQUIRED` rather than receiving technical defaults.
 
 The provider APIs remain pre-release and are not yet approved for external
 releases. `adroom` is the first personal-data pilot consumer; the Permission

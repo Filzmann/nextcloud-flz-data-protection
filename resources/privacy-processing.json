@@ -1,0 +1,285 @@
+{
+  "schema_version": "1.0",
+  "app_id": "filzmann_data_protection",
+  "processings": [
+    {
+      "processing_id": "article_15_aggregation",
+      "name": "Aggregation einer Datenschutz-Auskunft",
+      "controller": {
+        "component": "Data Protection Center",
+        "business_owner": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Typisierte Subject-Referenz und flüchtig aggregierte Providerberichte",
+          "planned_processing": "Orchestrierung und Ausgabe einer app-übergreifenden Datenschutz-Auskunft",
+          "missing_decision": "Fachlich verantwortliche Stelle für den zentralen Auskunftsdienst",
+          "reason": "Die technische App-Eigentümerschaft legt keine fachliche Verantwortlichkeit fest.",
+          "technical_impact": "Die Verantwortlichkeit kann noch nicht verbindlich in Oberfläche und Verfahrensdokumentation ausgewiesen werden.",
+          "privacy_preserving_alternative": "Berichte weiterhin nur an die betroffene Person oder ausdrücklich berechtigte Prüfrollen ausgeben.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        }
+      },
+      "data_categories": [
+        "Typisierte Subject-Referenz",
+        "Von Fachapp-Providern gelieferte Auskunftsdaten und Processing-Metadaten",
+        "Provider-, Coverage- und Vollständigkeitsstatus"
+      ],
+      "data_subjects": [
+        "Betroffene Personen mit einem vom Provider unterstützten Subject-Typ"
+      ],
+      "purposes": [
+        "Bereitstellung einer verständlichen app-übergreifenden Datenschutz-Auskunft",
+        "Sichtbarer Nachweis unvollständiger, fehlender oder fehlgeschlagener Providerantworten"
+      ],
+      "access_roles": [
+        "Betroffene Person im sessiongebundenen Self-Service",
+        "Konfigurierte Datenschutz-Prüfgruppen",
+        "Nextcloud-Administration mit aktiver app-lokaler Freigabe von höchstens 24 Stunden"
+      ],
+      "recipients": [
+        {
+          "category": "Betroffene Person",
+          "allowed_disclosures": [
+            "Eigene, durch Provider freigegebene Auskunftsdaten und Processing-Metadaten"
+          ],
+          "conditions": [
+            "Self-Service-Subject wird serverseitig aus der authentifizierten Session gebunden"
+          ]
+        },
+        {
+          "category": "Ausdrücklich berechtigte Datenschutz-Prüfrolle",
+          "allowed_disclosures": [
+            "Für die konkrete autorisierte Admin-Auskunft erforderlicher Bericht"
+          ],
+          "conditions": [
+            "Serverseitige fachliche Berechtigungsprüfung"
+          ]
+        }
+      ],
+      "data_sources": [
+        "Lazy registrierte kompatible Privacy Provider der datenbesitzenden Apps"
+      ],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Auskunftsdaten aller beteiligten Provider",
+        "planned_processing": "Art.-15-Auskunft und administrative Datenschutzprüfung",
+        "missing_decision": "Anwendbare Rechtsgrundlage und deren verbindliche Dokumentation",
+        "reason": "Eine rechtliche Einordnung darf nicht aus der technischen Implementierung abgeleitet werden.",
+        "technical_impact": "Der Providervertrag kann die Rechtsgrundlage noch nicht als fachlich freigegeben ausweisen.",
+        "privacy_preserving_alternative": "Auskunft nur auf konkrete Anfrage, ohne zentrale Berichtspersistenz und mit Least Privilege bereitstellen.",
+        "responsible_party": "ungeklärt",
+        "blocking": false
+      },
+      "retention": {
+        "policy_id": "article_15_transient_report",
+        "trigger": "request_completed",
+        "duration_or_deadline": "Nur für die laufende Anfrage; keine serverseitige Berichtspersistenz",
+        "action": "delete",
+        "conditions_or_holds": [
+          "Ein später gespeicherter Export benötigt einen eigenen Speicher-, Rechte- und Löschvertrag"
+        ]
+      },
+      "logging": {
+        "audit_requirements": [
+          "Technischer Provider-, Coverage- und Fehlerstatus ohne Berichtsinhalte"
+        ],
+        "personal_data_policy": "Keine Providerberichtsinhalte, Secrets oder unnötigen personenbezogenen Werte in Standardlogs übernehmen."
+      },
+      "backup": {
+        "relevance": "excluded",
+        "restore_handling": "Flüchtige aggregierte Berichte werden von der App nicht persistiert und sind deshalb nicht Bestandteil app-eigener Backups."
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Der Vorgang erzeugt die zentrale Art.-15-Auskunft aus den Antworten der registrierten Provider.",
+        "other_outputs": [
+          "Unmittelbar ausgelieferter HTML-Bericht",
+          "Unmittelbar clientseitig erzeugter PDF-Bericht"
+        ],
+        "minimization": "Nur für die konkrete Anfrage erforderliche Providerfelder aggregieren; keine zentrale Schattenkopie anlegen."
+      },
+      "data_subject_rights": {
+        "article_15": "Über den sessiongebundenen Self-Service und getrennt autorisierte Admin-Auskunft unterstützt.",
+        "rectification": "Wird an die datenbesitzende Fachapp verwiesen; der Aggregator verändert keine fremden Daten.",
+        "restriction": "Wird durch den zuständigen App-Provider umgesetzt, soweit fachlich unterstützt.",
+        "erasure_or_anonymization": "Wird ausschließlich durch den zuständigen App-Provider umgesetzt; der Aggregator greift nicht auf fremde Speicher zu."
+      },
+      "international_transfers": "Das Datenschutz-Center übermittelt selbst keine Berichte an Drittländer; app-spezifische Übermittlungen werden durch den zuständigen Provider beschrieben.",
+      "automated_decisions": "Der Aggregator trifft keine automatisierte fachliche Entscheidung über die betroffene Person.",
+      "special_safeguards": [
+        "Serverseitige Subject- und Berechtigungsbindung",
+        "Providerweise Fehlerisolation",
+        "Sichtbare partial-, failed- und missing-Zustände",
+        "Keine SQL-, Reflection-, Datei-, AppConfig- oder Migrator-Fallbacks",
+        "Keine zentrale Persistenz der Providerberichtsinhalte"
+      ],
+      "systems": [
+        "Nextcloud",
+        "Data Protection Center",
+        "Lazy registrierte Privacy Provider"
+      ]
+    },
+    {
+      "processing_id": "temporary_admin_full_access",
+      "name": "Zeitlich begrenzte fachliche Adminfreigabe",
+      "controller": {
+        "component": "Data Protection Center",
+        "business_owner": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Freigabehistorie für fachlichen Admin-Vollzugriff",
+          "planned_processing": "Erteilen, Beenden, Widerrufen und Nachweisen zeitlich begrenzter fachlicher Freigaben",
+          "missing_decision": "Fachlich verantwortliche Stelle für Freigabeprozess und Nachweis",
+          "reason": "Technische Nextcloud-Administration und fachliche Datenschutzverantwortung sind getrennt.",
+          "technical_impact": "Die fachliche Ownerbezeichnung bleibt offen.",
+          "privacy_preserving_alternative": "Ohne aktive app-lokale Freigabe keinen fachlichen Admin-Vollzugriff erteilen.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        }
+      },
+      "data_categories": [
+        "Nextcloud-UIDs der Ziel-, freigebenden und widerrufenden Administrationskonten",
+        "Beginn, geplantes Ende, tatsächliches Ende und Status der Freigabe"
+      ],
+      "data_subjects": [
+        "Administrationskonten mit Bezug zu einer app-lokalen Vollzugriffsfreigabe"
+      ],
+      "purposes": [
+        "Technische Durchsetzung einer höchstens 24 Stunden gültigen fachlichen Adminfreigabe",
+        "Nachvollziehbarer Sicherheits- und Auditnachweis der Freigabehistorie"
+      ],
+      "access_roles": [
+        "Technische Nextcloud-Administration für Erteilen und Widerrufen",
+        "Betroffene Person für die eigene Art.-15-Projektion",
+        "Ausdrücklich berechtigte Datenschutz-Prüfrolle"
+      ],
+      "recipients": [
+        {
+          "category": "Betroffene Person",
+          "allowed_disclosures": [
+            "Eigene Rolle und Zeitpunkte im Freigabevorgang ohne Kennungen anderer beteiligter Personen"
+          ]
+        },
+        {
+          "category": "Ausdrücklich berechtigte Datenschutz-Prüfrolle",
+          "allowed_disclosures": [
+            "Für Prüfung und Audit erforderliche Freigabenachweise"
+          ],
+          "conditions": [
+            "Serverseitige fachliche Berechtigungsprüfung"
+          ]
+        }
+      ],
+      "data_sources": [
+        "App-lokaler Freigabevorgang im Nextcloud-Adminbereich",
+        "App-eigene Tabelle fdp_admin_access"
+      ],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Personenbezogene Adminfreigabehistorie",
+        "planned_processing": "Sicherheitsprüfung und Audit des fachlichen Vollzugriffs",
+        "missing_decision": "Anwendbare Rechtsgrundlage für Speicherung und Nutzung der Freigabehistorie",
+        "reason": "Die Rechtsgrundlage ist eine rechtliche beziehungsweise datenschutzrechtliche Entscheidung.",
+        "technical_impact": "Eine rechtlich freigegebene Angabe kann im Provider noch nicht ausgewiesen werden.",
+        "privacy_preserving_alternative": "Nur minimale UIDs und Zeitpunkte speichern und Berichtsausgaben auf den eigenen Bezug begrenzen.",
+        "responsible_party": "ungeklärt",
+        "blocking": false
+      },
+      "retention": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Adminfreigabehistorie mit UIDs und Zeitpunkten",
+        "planned_processing": "Aufbewahrung und spätere Löschung, Anonymisierung, Einschränkung oder Review",
+        "missing_decision": "Frist, Trigger, Sperren und Maßnahme nach Fristablauf",
+        "reason": "Der sicherheitsrelevante Beweiswert muss gegen Datenminimierung abgewogen werden.",
+        "technical_impact": "Kein RetentionProvider und keine automatische Maßnahme dürfen für diese Historie aktiviert werden.",
+        "privacy_preserving_alternative": "Keine zusätzlichen Historienfelder sammeln und Ausführung deaktiviert lassen.",
+        "responsible_party": "ungeklärt",
+        "blocking": true
+      },
+      "logging": {
+        "audit_requirements": [
+          "Beginn, geplantes Ende und Widerruf der app-lokalen Freigabe bleiben nachvollziehbar"
+        ],
+        "personal_data_policy": "Keine vollständigen Requests, Berichtsinhalte oder Kennungen unbeteiligter Personen in Standardlogs übernehmen."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Persistierte Adminfreigabehistorie",
+          "planned_processing": "Einbeziehung in Sicherung und Wiederherstellung der Nextcloud-Datenbank",
+          "missing_decision": "Betriebliche Backup-Relevanz und Aufbewahrungsdauer",
+          "reason": "Der App-Code kennt den betrieblichen Backupzyklus nicht.",
+          "technical_impact": "Die App kann keinen vollständigen Entfall aus Sicherungen behaupten.",
+          "privacy_preserving_alternative": "Keine separate app-eigene Backupkopie anlegen.",
+          "responsible_party": "ungeklärt",
+          "blocking": false
+        },
+        "restore_handling": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Nach Restore wieder vorhandene Adminfreigabehistorie",
+          "planned_processing": "Erneute Anwendung der festzulegenden Retention-Regel nach Wiederherstellung",
+          "missing_decision": "Umgang mit nach Restore bereits abgelaufenen Nachweisen",
+          "reason": "Ohne Retentionentscheidung kann kein Restore-Nachlauf festgelegt werden.",
+          "technical_impact": "Keine automatische Löschung oder Anonymisierung nach Restore.",
+          "privacy_preserving_alternative": "Freigaben technisch anhand ihres Endzeitpunkts als inaktiv behandeln und keine Rechte reaktivieren.",
+          "responsible_party": "ungeklärt",
+          "blocking": true
+        }
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Eigene Rollen und Zeitpunkte werden über den app-eigenen PersonalDataProvider ausgegeben.",
+        "other_outputs": [
+          "Autorisierte administrative Prüfung der Freigabehistorie"
+        ],
+        "minimization": "In der Selbstauskunft Kennungen anderer beteiligter Administrationskonten neutralisieren."
+      },
+      "data_subject_rights": {
+        "article_15": "Subjectgebundene Projektion der eigenen Beteiligung ist implementiert.",
+        "rectification": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Historische Freigabenachweise",
+          "planned_processing": "Berichtigung eines fehlerhaften Nachweises",
+          "missing_decision": "Zulässiger Korrekturweg ohne Verlust der Auditnachvollziehbarkeit",
+          "reason": "Eine technische Überschreibung könnte den Beweiswert zerstören.",
+          "technical_impact": "Kein generischer Berichtigungsbefehl wird angeboten.",
+          "privacy_preserving_alternative": "Fehler zunächst manuell prüfen und keine Originalwerte ungeprüft verändern.",
+          "responsible_party": "ungeklärt",
+          "blocking": true
+        },
+        "restriction": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Historische Freigabenachweise",
+          "planned_processing": "Einschränkung der weiteren Verarbeitung",
+          "missing_decision": "Fachliche Sperrgründe und deren technische Wirkung",
+          "reason": "Sperrgründe und Auditfolgen sind nicht technisch ableitbar.",
+          "technical_impact": "Kein automatischer Einschränkungspfad wird angeboten.",
+          "privacy_preserving_alternative": "Zugriff weiterhin auf ausdrücklich berechtigte Rollen begrenzen.",
+          "responsible_party": "ungeklärt",
+          "blocking": true
+        },
+        "erasure_or_anonymization": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "UIDs und Zeitpunkte in der Adminfreigabehistorie",
+          "planned_processing": "Löschung oder Anonymisierung nach Ende des erforderlichen Nachweises",
+          "missing_decision": "Erhaltungsbedarf, Frist, Sperren und fachlich zulässige Maßnahme",
+          "reason": "Der Sicherheitsnachweis darf nicht ohne freigegebene Abwägung zerstört werden.",
+          "technical_impact": "Keine Lösch- oder Anonymisierungsautomatik wird implementiert.",
+          "privacy_preserving_alternative": "Nur die bereits minimalen Nachweisfelder halten und Zugriffe beschränken.",
+          "responsible_party": "ungeklärt",
+          "blocking": true
+        }
+      },
+      "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen dieser Historie vorgesehen.",
+      "automated_decisions": "Der fachliche Vollzugriff endet serverseitig spätestens nach 24 Stunden; dies ist eine Sicherheitsbegrenzung und keine fachliche Entscheidung über die betroffene Person.",
+      "special_safeguards": [
+        "Nextcloud-Adminstatus allein erteilt keinen fachlichen Vollzugriff",
+        "Freigabe ist app-lokal und pro Administrationskonto höchstens 24 Stunden gültig",
+        "Self-Service-Ausgabe neutralisiert Kennungen anderer beteiligter Personen",
+        "Keine Retention-Ausführung ohne fachliche Entscheidung"
+      ],
+      "systems": [
+        "Nextcloud",
+        "Data Protection Center",
+        "App-eigene Datenbanktabelle fdp_admin_access"
+      ]
+    }
+  ]
+}
