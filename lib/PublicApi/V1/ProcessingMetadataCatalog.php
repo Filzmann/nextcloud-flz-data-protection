@@ -89,7 +89,8 @@ final class ProcessingMetadataCatalog {
 
     private static function assertRecipients(mixed $value): void {
         if (self::isDecisionRequired($value)) return;
-        if (!is_array($value) || $value === [] || !array_is_list($value)) {
+        if (!is_array($value) || $value === [] || !array_is_list($value)
+            || count($value) !== count(array_unique($value, SORT_REGULAR))) {
             throw new InvalidArgumentException('Invalid recipients.');
         }
         foreach ($value as $recipient) {

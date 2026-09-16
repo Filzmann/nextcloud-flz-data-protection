@@ -92,6 +92,14 @@ $duplicate = $payload;
 $duplicate['processings'][] = $processing;
 $expectInvalid($duplicate, 'Eine doppelte processing_id wurde akzeptiert.');
 
+foreach (require dirname(__DIR__) . '/fixtures/processing-metadata-recipients.php' as $name => $case) {
+    if ($case['valid']) {
+        $assertSame($case['payload'], ProcessingMetadataCatalog::fromArray($case['payload'])->toArray(), 'Gültige Empfänger wurden verändert: ' . $name);
+    } else {
+        $expectInvalid($case['payload'], 'Schemawidrige Empfänger wurden akzeptiert: ' . $name);
+    }
+}
+
 $runtimeData = $payload;
 $runtimeData['personal_runtime_data'] = [['uid' => 'synthetic-user']];
 $expectInvalid($runtimeData, 'Personenbezogene Laufzeitdaten wurden im Metadatenkatalog akzeptiert.');
