@@ -136,7 +136,7 @@
         }
       },
       "data_categories": [
-        "Nextcloud-UIDs der Ziel-, freigebenden und widerrufenden Administrationskonten",
+        "Nextcloud-UID des Zielkontos (aktives Nextcloud-Administrationskonto) sowie UIDs der freigebenden und widerrufenden Mitglieder von Datenschutzbeauftragte",
         "Beginn, geplantes Ende, tatsächliches Ende und Status der Freigabe"
       ],
       "data_subjects": [
@@ -147,7 +147,8 @@
         "Nachvollziehbarer Sicherheits- und Auditnachweis der Freigabehistorie"
       ],
       "access_roles": [
-        "Technische Nextcloud-Administration für Erteilen und Widerrufen",
+        "Erteilen und Widerrufen: Mitglied der kanonischen Nextcloud-Gruppe Datenschutzbeauftragte; nativer Adminstatus ist dafür weder erforderlich noch ausreichend",
+        "Ziel: ausschließlich aktives Nextcloud-Administrationskonto",
         "Betroffene Person für die eigene Art.-15-Projektion",
         "Ausdrücklich berechtigte Datenschutz-Prüfrolle"
       ],
@@ -273,7 +274,8 @@
         "Nextcloud-Adminstatus allein erteilt keinen fachlichen Vollzugriff",
         "Freigabe ist app-lokal und pro Administrationskonto höchstens 24 Stunden gültig",
         "Self-Service-Ausgabe neutralisiert Kennungen anderer beteiligter Personen",
-        "Keine Retention-Ausführung ohne fachliche Entscheidung"
+        "Keine Retention-Ausführung ohne fachliche Entscheidung",
+        "Die Laufzeitdurchsetzung der Ziel- und Gruppenbedingungen sowie Allow-, Deny- und Manipulationsprüfungen stehen aus; diese Metadaten aktivieren keine Rechte"
       ],
       "systems": [
         "Nextcloud",
