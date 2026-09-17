@@ -46,3 +46,18 @@ nur die sicherheitsrelevante Historie zeitlich begrenzter
 Adminvollzugriffsfreigaben. Retention bleibt ein read-only Preview-Vertrag;
 Ausführung, Löschung oder Anonymisierung benötigen einen getrennten,
 freigegebenen Lebenszyklusvertrag.
+
+Fachliche Datenschutzkonfiguration einschließlich app-eigener
+Aufbewahrungsfristen ist ausschließlich Mitgliedern der dedizierten
+Nextcloud-Gruppe `Datenschutzbeauftragte` erlaubt. Diese bestehende Gruppen-ID
+ist der kanonische Default; die nur für Entwicklungsumgebungen verwendete
+Bezeichnung `privacy-officer` ist keine Produktrolle. Native
+Nextcloud-Administration bleibt für technische App-Verwaltung zuständig,
+erteilt aber kein Recht zur fachlichen Datenschutzkonfiguration.
+
+Änderungen einer Aufbewahrungsfrist gelten auch für bereits vorhandene Daten
+und werden aus deren ursprünglichem fachlichem Trigger neu berechnet. Die
+spätere Umsetzung muss jede Policyversion und ihren Wirksamkeitszeitpunkt
+auditierbar halten und darf vor einer freigegebenen Regel für Sperren,
+Nebenläufigkeit, Backup/Restore, Fehlerdiagnostik und Roll-forward keine
+destruktive Maßnahme auslösen.
