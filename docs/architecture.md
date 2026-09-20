@@ -58,6 +58,26 @@ erteilt aber kein Recht zur fachlichen Datenschutzkonfiguration.
 Änderungen einer Aufbewahrungsfrist gelten auch für bereits vorhandene Daten
 und werden aus deren ursprünglichem fachlichem Trigger neu berechnet. Die
 spätere Umsetzung muss jede Policyversion und ihren Wirksamkeitszeitpunkt
-auditierbar halten und darf vor einer freigegebenen Regel für Sperren,
-Nebenläufigkeit, Backup/Restore, Fehlerdiagnostik und Roll-forward keine
-destruktive Maßnahme auslösen.
+24 Monate auditierbar halten; die Gruppe `Datenschutzbeauftragte` überprüft
+die Konfiguration mindestens jährlich.
+
+Die eigene Adminfreigabehistorie wird standardmäßig sechs Monate ab ihrem
+tatsächlichen Ende aufbewahrt und danach vollständig gelöscht, ohne
+anonymisierten oder statistischen Restbestand. Eine aktive rechtliche oder
+datenschutzrechtliche Sperre blockiert die Löschung; nur
+`Datenschutzbeauftragte` dürfen sie begründet und auditiert aufheben. Nach
+einem Restore wird die Frist aus dem ursprünglichen Ende neu bewertet,
+abgelaufene ungesperrte Historie erneut zur Löschung eingeplant und niemals
+eine fachliche Freigabe reaktiviert.
+
+Die künftige Löschung läuft automatisch ohne manuelle Einzelfreigabe. Nach
+automatischen Wiederholungsversuchen wird `Datenschutzbeauftragte` nur mit
+App, Datenklasse, Zeitpunkt und technischer Referenz benachrichtigt. Der
+inhaltsarme technische Fehlernachweis wird nach 30 Tagen gelöscht. Dieser
+Ausführungsvertrag ist nicht implementiert: Policyversion und
+Wirksamkeitszeitpunkt, Reihenfolge, Atomarität, Nebenläufigkeit, Idempotenz,
+Backupgrenze, Sperrdurchsetzung, Auditvollständigkeit, Fehlerrückbau sowie
+Provider-/Consumer-Verhalten müssen vor jeder destruktiven Maßnahme
+freigegeben und positiv wie negativ getestet werden. Das Datenschutz-Center
+koordiniert nur öffentliche Provider; es liest oder löscht niemals direkt in
+Fremdtabellen, fremden Dateien oder fremden App-Speichern.

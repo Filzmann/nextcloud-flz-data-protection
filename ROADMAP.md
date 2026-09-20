@@ -23,8 +23,11 @@ than hidden compatibility claims.
 
 ## Next implementation gates
 
-1. Decide a retention period and preview policy for the temporary app-local
-   admin-access audit before any retention execution is introduced.
+1. Implement the decided six-month default from the actual end of the
+   temporary app-local admin-access grant and `DELETE` without residual
+   statistics. Re-evaluate the original end after restore without reactivating
+   access; legal or privacy holds block deletion and only
+   `Datenschutzbeauftragte` may lift them with an audited reason.
 2. Enforce the dedicated Nextcloud group `Datenschutzbeauftragte` as the
    exclusive role for fachliche Datenschutzkonfiguration, remove any
    configuration path based only on native administration, validate the group
@@ -32,11 +35,14 @@ than hidden compatibility claims.
    `privacy-officer` as a product role;
 3. Keep third-person content and security secrets inside each provider's
    domain projection;
-4. Keep retention execution blocked until versioned policy and effective-time
-   audit, safe retroactive recalculation for existing data, lifecycle and
-   holds, concurrency, backup/restore, failure diagnostics and roll-forward
-   are approved and tested; the implemented V1 preview contract has no
-   execution method;
+4. Keep retention execution blocked until the 24-month configuration audit
+   with annual review, versioned policy and effective time, safe retroactive
+   recalculation, ordering, atomicity, concurrency, idempotency, operational
+   backup boundary, hold enforcement, audit completeness, automatic retries,
+   data-minimizing DPO notification, 30-day technical failure evidence,
+   rollback and provider/consumer behavior are approved and tested. Execution
+   is later automatic without manual release; the implemented V1 preview
+   contract still has no execution method;
 5. Add or migrate consumers only through separately approved app-local work.
    The physically missing, disabled and genuinely incompatible runtime states
    are already covered by the Root compatibility check and local contract
