@@ -29,8 +29,8 @@ Der kanonische app-eigene Katalog liegt unter
 `resources/privacy-processing.json`. Er beschreibt derzeit die Verarbeitungen
 `article_15_aggregation` und `temporary_admin_full_access`. Bekannte Zwecke
 und technische Schutzgrenzen stammen aus der bestehenden App-Architektur;
-fehlende Rechtsgrundlagen, fachliche Verantwortlichkeiten, Retention- sowie
-Backup-/Restore-Entscheidungen sind strukturiert als
+noch offene Rechtsgrundlagen, fachliche Verantwortlichkeiten sowie weitere
+noch nicht entschiedene Datenschutz- und Betriebsfragen sind strukturiert als
 `PRIVACY-DECISION-REQUIRED` ausgewiesen.
 
 Die öffentliche Registry liest Kataloge ausschließlich über registrierte

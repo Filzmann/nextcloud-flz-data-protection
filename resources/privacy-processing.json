@@ -185,15 +185,18 @@
         "blocking": false
       },
       "retention": {
-        "status": "PRIVACY-DECISION-REQUIRED",
-        "affected_data": "Adminfreigabehistorie mit UIDs und Zeitpunkten",
-        "planned_processing": "Aufbewahrung und spätere Löschung, Anonymisierung, Einschränkung oder Review",
-        "missing_decision": "Frist, Trigger, Sperren und Maßnahme nach Fristablauf",
-        "reason": "Der sicherheitsrelevante Beweiswert muss gegen Datenminimierung abgewogen werden.",
-        "technical_impact": "Kein RetentionProvider und keine automatische Maßnahme dürfen für diese Historie aktiviert werden.",
-        "privacy_preserving_alternative": "Keine zusätzlichen Historienfelder sammeln und Ausführung deaktiviert lassen.",
-        "responsible_party": "ungeklärt",
-        "blocking": true
+        "policy_id": "temporary_admin_access_history_default_six_months",
+        "trigger": "Tatsächliches Ende der zeitlich begrenzten app-lokalen Adminfreigabe",
+        "duration_or_deadline": "P6M als Standardwert",
+        "action": "delete",
+        "conditions_or_holds": [
+          "Nach Fristablauf wird die Adminfreigabehistorie vollständig gelöscht; es verbleibt kein anonymisierter oder statistischer Restbestand.",
+          "Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung.",
+          "Nur Mitglieder der Nextcloud-Gruppe Datenschutzbeauftragte dürfen eine Sperre begründet und auditiert aufheben.",
+          "Änderungen der Aufbewahrungsfrist werden anhand des ursprünglichen tatsächlichen Endes auch für vorhandene Historien neu berechnet.",
+          "Nach Restore wird der ursprüngliche Trigger erneut ausgewertet; bereits abgelaufene ungesperrte Historie wird wieder zur Löschung eingeplant und eine fachliche Freigabe niemals reaktiviert.",
+          "Keine destruktive Retention-Ausführung vor freigegebenem und getestetem Versions-, Wirksamkeitszeitpunkt-, Reihenfolge-, Atomaritäts-, Nebenläufigkeits-, Idempotenz-, Backupgrenz-, Sperr-, Audit-, Retry-, Fehlerdiagnostik-, Fehlerrückbau- und Provider-/Consumer-Vertrag."
+        ]
       },
       "logging": {
         "audit_requirements": [
@@ -213,17 +216,7 @@
           "responsible_party": "ungeklärt",
           "blocking": false
         },
-        "restore_handling": {
-          "status": "PRIVACY-DECISION-REQUIRED",
-          "affected_data": "Nach Restore wieder vorhandene Adminfreigabehistorie",
-          "planned_processing": "Erneute Anwendung der festzulegenden Retention-Regel nach Wiederherstellung",
-          "missing_decision": "Umgang mit nach Restore bereits abgelaufenen Nachweisen",
-          "reason": "Ohne Retentionentscheidung kann kein Restore-Nachlauf festgelegt werden.",
-          "technical_impact": "Keine automatische Löschung oder Anonymisierung nach Restore.",
-          "privacy_preserving_alternative": "Freigaben technisch anhand ihres Endzeitpunkts als inaktiv behandeln und keine Rechte reaktivieren.",
-          "responsible_party": "ungeklärt",
-          "blocking": true
-        }
+        "restore_handling": "Nach Restore wird die Aufbewahrungsfrist aus dem ursprünglichen tatsächlichen Ende der Adminfreigabe neu bewertet. Bereits abgelaufene ungesperrte Historie wird erneut zur Löschung eingeplant; eine fachliche Adminfreigabe wird durch Restore niemals reaktiviert."
       },
       "exports_and_reports": {
         "article_15_relevance": "Eigene Rollen und Zeitpunkte werden über den app-eigenen PersonalDataProvider ausgegeben.",
@@ -256,17 +249,7 @@
           "responsible_party": "ungeklärt",
           "blocking": true
         },
-        "erasure_or_anonymization": {
-          "status": "PRIVACY-DECISION-REQUIRED",
-          "affected_data": "UIDs und Zeitpunkte in der Adminfreigabehistorie",
-          "planned_processing": "Löschung oder Anonymisierung nach Ende des erforderlichen Nachweises",
-          "missing_decision": "Erhaltungsbedarf, Frist, Sperren und fachlich zulässige Maßnahme",
-          "reason": "Der Sicherheitsnachweis darf nicht ohne freigegebene Abwägung zerstört werden.",
-          "technical_impact": "Keine Lösch- oder Anonymisierungsautomatik wird implementiert.",
-          "privacy_preserving_alternative": "Nur die bereits minimalen Nachweisfelder halten und Zugriffe beschränken.",
-          "responsible_party": "ungeklärt",
-          "blocking": true
-        }
+        "erasure_or_anonymization": "Die Adminfreigabehistorie wird standardmäßig sechs Monate nach ihrem tatsächlichen Ende vollständig gelöscht, ohne anonymisierten oder statistischen Restbestand. Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung; nur Datenschutzbeauftragte dürfen sie begründet und auditiert aufheben. Die technische automatische Ausführung bleibt bis zur Freigabe und Prüfung des Retention-Ausführungsvertrags deaktiviert."
       },
       "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen dieser Historie vorgesehen.",
       "automated_decisions": "Der fachliche Vollzugriff endet serverseitig spätestens nach 24 Stunden; dies ist eine Sicherheitsbegrenzung und keine fachliche Entscheidung über die betroffene Person.",
