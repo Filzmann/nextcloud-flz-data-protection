@@ -15,7 +15,16 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Self-Service bindet ausschließlich das angemeldete Konto.
 - [ ] Fehlende, inkompatible und fehlerhafte Provider werden sichtbar ausgewiesen.
 - [ ] Teilberichte werden nicht als vollständig bezeichnet.
-- [ ] Review-Rechte und temporärer Adminvollzugriff wurden positiv und negativ geprüft.
+- [ ] Ein Mitglied von `Datenschutzbeauftragte` ohne nativen Adminstatus kann
+      die app-lokale Freigabesteuerung öffnen, einem bestätigten Admin für
+      höchstens 24 Stunden freigeben und widerrufen.
+- [ ] Ein nativer Admin ohne Mitgliedschaft in `Datenschutzbeauftragte` kann
+      weder Freigaben noch Historie verwalten und erhält ohne aktive Freigabe
+      nur die sichere Eintrittsmeldung ohne Direktlink.
+- [ ] Ein Konto mit beiden Rollen erhält in der Eintrittsmeldung den
+      Direktlink; gewöhnliche Konten sehen weder Meldung noch Link.
+- [ ] Unbekannte Zielkonten, Laufzeiten über 24 Stunden und manipulierte
+      Widerrufe bleiben ohne Freigabe- oder Historienmutation.
 - [ ] Retention-Preview verändert keine Daten.
 - [ ] Tastatur, Fokus, kleine Viewports und Scrollverhalten wurden geprüft.
 

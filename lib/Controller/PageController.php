@@ -6,6 +6,7 @@ namespace OCA\FilzmannDataProtection\Controller;
 
 use OCA\FilzmannDataProtection\AppInfo\Application;
 use OCA\FilzmannDataProtection\Service\RetentionAccessService;
+use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -13,15 +14,24 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 
 final class PageController extends Controller {
-    public function __construct(IRequest $request, private RetentionAccessService $retentionAccess) {
+    public function __construct(
+        IRequest $request,
+        private RetentionAccessService $retentionAccess,
+        private TemporaryAdminAccessService $adminAccess,
+    ) {
         parent::__construct(Application::APP_ID, $request);
     }
 
     #[NoAdminRequired]
     #[NoCSRFRequired]
     public function index(): TemplateResponse {
+        $canManageAdminAccess = $this->adminAccess->canManageGrants();
+        $showMissingAdminGrant = $this->adminAccess->currentAdminNeedsGrant();
         return new TemplateResponse(Application::APP_ID, 'index', [
             'canReviewRetention' => $this->retentionAccess->canReview(),
+            'canManageAdminAccess' => $canManageAdminAccess,
+            'showMissingAdminGrant' => $showMissingAdminGrant,
+            'showAdminAccessLink' => $showMissingAdminGrant && $canManageAdminAccess,
         ]);
     }
 }

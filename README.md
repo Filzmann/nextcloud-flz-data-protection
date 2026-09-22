@@ -25,8 +25,15 @@ remain visible and are not replaced by heuristic fallback access.
   isolation and `REVIEW` as the only supported action;
 - a transient operational REVIEW dashboard for configured privacy-review
   groups. Native Nextcloud administration alone grants no fachlich access;
-  per-admin access can be activated app-locally for at most 24 hours and its
-  actual interval remains auditable;
+  only current members of the canonical `Datenschutzbeauftragte` group may
+  activate or revoke app-local per-admin access for at most 24 hours. The
+  controls remain outside the technical admin settings, and the actual
+  interval remains auditable;
+- a protected-path notice shown only to native administrators without an
+  active grant. It links to the app-local grant controls only when the same
+  account is also a member of `Datenschutzbeauftragte`; ordinary and otherwise
+  unauthorized accounts receive neither the administrative state nor the
+  link;
 - a public PermissionProvider that distinguishes self-service, REVIEW and
   technical configuration, plus a PersonalDataProvider for the subject's own
   admin-access audit references without exposing other admin identifiers.

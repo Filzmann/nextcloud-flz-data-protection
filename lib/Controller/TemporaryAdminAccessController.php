@@ -11,6 +11,7 @@ use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessDeniedException;
 use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -26,6 +27,7 @@ final class TemporaryAdminAccessController extends Controller {
         parent::__construct(Application::APP_ID, $request);
     }
 
+    #[NoAdminRequired]
     #[NoCSRFRequired]
     public function status(): JSONResponse {
         try {
@@ -39,6 +41,7 @@ final class TemporaryAdminAccessController extends Controller {
         }
     }
 
+    #[NoAdminRequired]
     public function activate(string $targetUid, int $durationMinutes): JSONResponse {
         try {
             return new JSONResponse(['grant' => $this->serializeGrant($this->service->activate($targetUid, $durationMinutes))]);
@@ -51,6 +54,7 @@ final class TemporaryAdminAccessController extends Controller {
         }
     }
 
+    #[NoAdminRequired]
     public function revoke(string $targetUid): JSONResponse {
         try {
             return new JSONResponse(['revoked' => $this->service->revoke($targetUid)]);

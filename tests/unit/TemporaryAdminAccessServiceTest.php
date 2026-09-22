@@ -20,9 +20,10 @@ $session = new class($actor) implements IUserSession {
 };
 $groups = new class implements IGroupManager {
     public array $admins = ['admin-operator', 'admin-target'];
+    public array $memberships = ['privacy-officer' => ['Datenschutzbeauftragte']];
     public function isAdmin(string $uid): bool { return in_array($uid, $this->admins, true); }
-    public function isInGroup(string $uid, string $gid): bool { return false; }
-    public function groupExists(string $gid): bool { return false; }
+    public function isInGroup(string $uid, string $gid): bool { return in_array($gid, $this->memberships[$uid] ?? [], true); }
+    public function groupExists(string $gid): bool { return $gid === 'Datenschutzbeauftragte'; }
 };
 $clock = new class implements ITimeFactory {
     public function now(): DateTimeImmutable { return new DateTimeImmutable('2026-08-25T10:00:00+00:00'); }
@@ -75,6 +76,38 @@ $logger = new class implements LoggerInterface {
 };
 $service = new TemporaryAdminAccessService($session, $groups, $repository, $clock, $logger);
 
+$before = $repository->mutations;
+try {
+    $service->activate('admin-target', 60);
+    throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte freigeben.');
+} catch (TemporaryAdminAccessDeniedException) {
+}
+if ($repository->mutations !== $before) throw new RuntimeException('Abgewiesene Adminfreigabe darf nichts persistieren.');
+try {
+    $service->state();
+    throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte die Freigabehistorie lesen.');
+} catch (TemporaryAdminAccessDeniedException) {
+}
+
+$session->user = new class implements IUser { public function getUID(): string { return 'privacy-officer'; } };
+if (!$service->canManageGrants()) throw new RuntimeException('Datenschutzbeauftragte ohne nativen Adminstatus müssen die Freigabesteuerung erreichen.');
+if ($service->state()['history'] !== []) throw new RuntimeException('Leere Freigabehistorie wurde fehlerhaft gelesen.');
+
+$before = $repository->mutations;
+try {
+    $service->activate('ordinary', 60);
+    throw new RuntimeException('Nichtadministratives Zielkonto wurde akzeptiert.');
+} catch (InvalidArgumentException) {
+}
+if ($repository->mutations !== $before) throw new RuntimeException('Manipuliertes Zielkonto darf keine Historie verändern.');
+
+try {
+    $service->revoke('ordinary');
+    throw new RuntimeException('Nichtadministratives Widerrufsziel wurde akzeptiert.');
+} catch (InvalidArgumentException) {
+}
+if ($repository->mutations !== $before) throw new RuntimeException('Manipulierter Widerruf darf keine Historie verändern.');
+
 try {
     $service->activate('admin-target', 1441);
     throw new RuntimeException('Mehr als 24 Stunden wurden akzeptiert.');
@@ -89,6 +122,15 @@ if (!$service->hasActiveGrant('admin-target') || $service->hasActiveGrant('admin
 $groups->admins = ['admin-operator'];
 if ($service->hasActiveGrant('admin-target')) throw new RuntimeException('Entzogener Nextcloud-Adminstatus muss die Freigabe sofort unwirksam machen.');
 $groups->admins = ['admin-operator', 'admin-target'];
+$groups->memberships = [];
+$before = $repository->mutations;
+try {
+    $service->revoke('admin-target');
+    throw new RuntimeException('Entzogene Datenschutzrolle durfte widerrufen.');
+} catch (TemporaryAdminAccessDeniedException) {
+}
+if ($repository->mutations !== $before) throw new RuntimeException('Abgewiesener Widerruf darf keine Historie verändern.');
+$groups->memberships = ['privacy-officer' => ['Datenschutzbeauftragte']];
 if (!$service->revoke('admin-target') || $service->hasActiveGrant('admin-target')) throw new RuntimeException('Widerruf muss den aktiven Zeitraum beenden.');
 
 $repository->failReads = true;
@@ -98,9 +140,18 @@ $session->user = new class implements IUser { public function getUID(): string {
 $before = $repository->mutations;
 try {
     $service->activate('admin-target', 60);
-    throw new RuntimeException('Nicht-Admin durfte freigeben.');
+    throw new RuntimeException('Konto ohne Datenschutzrolle durfte freigeben.');
 } catch (TemporaryAdminAccessDeniedException) {
 }
 if ($repository->mutations !== $before) throw new RuntimeException('Abgewiesene Freigabe darf nichts persistieren.');
+
+$session->user = new class implements IUser { public function getUID(): string { return 'admin-operator'; } };
+if (!$service->currentAdminNeedsGrant()) throw new RuntimeException('Admin ohne aktive Freigabe muss den sicheren Eintrittshinweis erhalten.');
+if ($service->canManageGrants()) throw new RuntimeException('Nativer Adminstatus darf keinen Link zur Freigabesteuerung erteilen.');
+$groups->memberships['admin-operator'] = ['Datenschutzbeauftragte'];
+if (!$service->canManageGrants()) throw new RuntimeException('Admin mit Datenschutzrolle muss den Direktlink erhalten können.');
+
+$session->user = new class implements IUser { public function getUID(): string { return 'ordinary'; } };
+if ($service->currentAdminNeedsGrant()) throw new RuntimeException('Gewöhnliche Konten dürfen keinen administrativen Eintrittszustand sehen.');
 
 echo "Data Protection temporary admin access service tests passed.\n";

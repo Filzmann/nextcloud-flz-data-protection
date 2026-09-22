@@ -14,6 +14,7 @@ const script = read('js/main.js');
 const reportView = read('js/report-view.js');
 const adminTemplate = read('templates/admin.php');
 const adminScript = read('js/admin.js');
+const adminAccessScript = read('js/admin-access.js');
 
 if (!info.includes('<id>filzmann_data_protection</id>')) throw new Error('Eindeutige App-ID fehlt.');
 if (!info.includes('<namespace>FilzmannDataProtection</namespace>')) throw new Error('App-Namespace fehlt.');
@@ -32,11 +33,16 @@ if (!template.includes('id="data-protection-app"')) throw new Error('Semantische
 if (!template.includes('id="data-protection-retention"')) throw new Error('Operativer REVIEW-Bereich fehlt.');
 if (!info.includes('<admin>OCA\\FilzmannDataProtection\\Settings\\Admin</admin>')) throw new Error('Datenschutz-Administration fehlt.');
 if (!adminTemplate.includes('kein automatisches fachliches Leserecht')) throw new Error('Deny-by-default-Hinweis für native Admins fehlt.');
-if (!adminTemplate.includes('id="data-protection-full-access-form"')) throw new Error('App-lokale Adminfreigabe fehlt.');
-if (!adminTemplate.includes('value="1440"')) throw new Error('Die maximal kaufbare Dauer von 24 Stunden fehlt.');
+if (adminTemplate.includes('id="data-protection-full-access-form"')) throw new Error('Freigabesteuerung ist noch an die technische Administration gebunden.');
+if (!template.includes("$_['canManageAdminAccess']")) throw new Error('DPO-geschützte Freigabesteuerung fehlt.');
+if (!template.includes("$_['showMissingAdminGrant']")) throw new Error('Sichere Eintrittsmeldung für Admins ohne Freigabe fehlt.');
+if (!template.includes("$_['showAdminAccessLink']")) throw new Error('Rollenabhängiger Direktlink fehlt.');
+if (!template.includes('id="data-protection-full-access-form"')) throw new Error('App-lokale Adminfreigabe fehlt.');
+if (!template.includes('value="1440"')) throw new Error('Die maximale Dauer von 24 Stunden fehlt.');
 if (adminTemplate.includes('name="allow_nextcloud_admin_review"')) throw new Error('Der alte unbefristete Adminzugriff ist noch konfigurierbar.');
 if (!routes.includes("'url' => '/api/v1/admin/full-access'")) throw new Error('Adminfreigabe-API fehlt.');
-if (!adminScript.includes('data-protection-full-access-history')) throw new Error('Freigabehistorie wird nicht dargestellt.');
+if (!adminAccessScript.includes('data-protection-full-access-history')) throw new Error('Freigabehistorie wird nicht dargestellt.');
+if (!adminAccessScript.includes('requesttoken = OC.requestToken')) throw new Error('Freigabemutationen senden kein CSRF-Token.');
 if (!adminScript.includes('requesttoken: OC.requestToken')) throw new Error('Einstellungsspeicherung sendet kein CSRF-Token.');
 if (!reportView.includes('Noch sind keine Datenschutzprovider registriert.')) throw new Error('Fehlende Provider werden nicht transparent ausgewiesen.');
 if (!script.includes('/api/v1/self-service-report')) throw new Error('Self-Service-Bericht wird nicht geladen.');

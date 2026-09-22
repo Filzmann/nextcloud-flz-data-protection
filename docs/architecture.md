@@ -55,6 +55,20 @@ Bezeichnung `privacy-officer` ist keine Produktrolle. Native
 Nextcloud-Administration bleibt für technische App-Verwaltung zuständig,
 erteilt aber kein Recht zur fachlichen Datenschutzkonfiguration.
 
+Die app-lokale Freigabesteuerung folgt derselben harten Rollentrennung:
+Ausschließlich aktuell bestätigte Mitglieder von `Datenschutzbeauftragte`
+dürfen einem aktuellen nativen Nextcloud-Administrationskonto einen
+UID-genauen fachlichen Vollzugriff von höchstens 24 Stunden erteilen oder ihn
+widerrufen. Dafür ist kein eigener nativer Adminstatus erforderlich. Die
+Steuerung liegt im authentifizierten App-Einstieg und nicht im technischen
+Nextcloud-Adminbereich. Ein natives Administrationskonto ohne aktive Freigabe
+erhält dort eine zustandssichere Meldung; der Direktlink zur Steuerung
+erscheint nur bei zusätzlicher Mitgliedschaft in `Datenschutzbeauftragte`.
+Gewöhnliche und andere unberechtigte Konten erhalten weder diesen
+administrativen Zustand noch den Link. API und fachlicher REVIEW-Zugriff
+prüfen die jeweilige Rolle beziehungsweise Freigabe unabhängig von der UI
+serverseitig und deny by default.
+
 Änderungen einer Aufbewahrungsfrist gelten auch für bereits vorhandene Daten
 und werden aus deren ursprünglichem fachlichem Trigger neu berechnet. Die
 spätere Umsetzung muss jede Policyversion und ihren Wirksamkeitszeitpunkt
