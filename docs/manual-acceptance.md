@@ -26,6 +26,12 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Unbekannte Zielkonten, Laufzeiten über 24 Stunden und manipulierte
       Widerrufe bleiben ohne Freigabe- oder Historienmutation.
 - [ ] Retention-Preview verändert keine Daten.
+- [ ] Retention-Folgeseiten behalten den ursprünglichen Bewertungszeitpunkt,
+      ersetzen veraltete Leer-/Teilstatusanzeigen und enthalten keine UIDs
+      oder freien Fachtexte.
+- [ ] Installiert/aktiv, deaktiviert, fehlend, inkompatibel, Update,
+      Deinstallation/Neuinstallation und Rollback wurden für jeden migrierten
+      Consumer im freigegebenen Lifecycle-Harness geprüft.
 - [ ] Tastatur, Fokus, kleine Viewports und Scrollverhalten wurden geprüft.
 
 ## Ergebnis

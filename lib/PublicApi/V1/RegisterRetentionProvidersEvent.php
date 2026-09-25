@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OCA\FilzmannDataProtection\PublicApi\V1;
 
-use DomainException;
 use OCA\FilzmannDataProtection\Service\RetentionProviderRegistry;
 use OCP\EventDispatcher\Event;
 
@@ -18,10 +17,12 @@ final class RegisterRetentionProvidersEvent extends Event {
     }
 
     public function register(RetentionProvider $provider): void {
-        $appId = $provider->descriptor()->appId();
+        $appId = null;
         try {
+            $appId = $provider->descriptor()->appId();
             $this->registry->register($provider);
-        } catch (DomainException) {
+        } catch (\Throwable) {
+            $appId ??= 'unknown_provider_' . (count($this->registrationFailures) + 1);
             $this->registrationFailures[$appId] = 'Provider incompatible.';
         }
     }

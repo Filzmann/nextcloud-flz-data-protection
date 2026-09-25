@@ -39,7 +39,3 @@ than hidden compatibility claims.
    rollback and provider/consumer behavior are approved and tested. Execution
    is later automatic without manual release; the implemented V1 preview
    contract still has no execution method;
-5. Add or migrate consumers only through separately approved app-local work.
-   The physically missing, disabled and genuinely incompatible runtime states
-   are already covered by the Root compatibility check and local contract
-   tests; every new consumer still needs its own start and failure proof.

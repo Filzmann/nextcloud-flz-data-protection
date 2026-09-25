@@ -20,7 +20,7 @@ $assertSame = static function (mixed $expected, mixed $actual, string $message):
 };
 
 $policy = new RetentionPolicy(
-    'export-metadata-review',
+    'export_metadata_review',
     'Exportmetadaten',
     'Nachweis erzeugter Exporte',
     'CREATED_AT',
@@ -28,8 +28,20 @@ $policy = new RetentionPolicy(
     'REVIEW',
     '1.0',
 );
+$calendarPolicy = new RetentionPolicy(
+    'calendar_year_review',
+    'Kalenderdaten',
+    'Prüfung nach Kalenderfrist',
+    'COMPLETED_AT',
+    'P1Y',
+    'REVIEW',
+    '1.0',
+);
+if ($calendarPolicy->durationPeriod() !== 'P1Y' || isset($calendarPolicy->toArray()['durationDays']) || ($calendarPolicy->toArray()['durationPeriod'] ?? null) !== 'P1Y') {
+    throw new RuntimeException('Kalenderbasierte Retention-Dauer wird nicht verlustfrei projiziert.');
+}
 $candidate = new RetentionCandidate(
-    'export-metadata-review',
+    'export_metadata_review',
     'permission-matrix:export:17',
     '2026-01-01T10:00:00+00:00',
     'REVIEW',
@@ -37,14 +49,25 @@ $candidate = new RetentionCandidate(
     ['Datentyp' => 'Exportmetadaten'],
 );
 
-$provider = new class($policy, $candidate) implements RetentionProvider {
-    public function __construct(private RetentionPolicy $policy, private RetentionCandidate $candidate) {}
+$secondCandidate = new RetentionCandidate(
+    'export_metadata_review',
+    'permission-matrix:export:18',
+    '2026-01-02T10:00:00+00:00',
+    'REVIEW',
+    'Konfigurierte Prüffrist überschritten.',
+);
+$provider = new class($policy, $candidate, $secondCandidate) implements RetentionProvider {
+    public function __construct(private RetentionPolicy $policy, private RetentionCandidate $candidate, private RetentionCandidate $secondCandidate) {}
     public function descriptor(): RetentionProviderDescriptor {
         return new RetentionProviderDescriptor('filzmann_permission_matrix', 'Berechtigungsmatrix', '1.0', 200);
     }
     public function policies(): array { return [$this->policy]; }
     public function preview(RetentionPreviewRequest $request): RetentionPreviewPage {
-        return new RetentionPreviewPage('complete', [$this->candidate]);
+        if ($request->cursor() === null) {
+            return new RetentionPreviewPage('partial', [$this->candidate], [], 'provider-page-2');
+        }
+        if ($request->cursor() !== 'provider-page-2') throw new InvalidArgumentException('Unexpected cursor.');
+        return new RetentionPreviewPage('complete', [$this->secondCandidate]);
     }
 };
 
@@ -62,9 +85,31 @@ $events = new class($provider, $dispatches) implements IEventDispatcher {
 $report = (new RetentionPreviewAggregator($events))->collect('2026-08-23T12:00:00+00:00', 100);
 $assertSame(1, $dispatches, 'Retention-Provider müssen genau einmal je Vorschau entdeckt werden.');
 $assertSame('complete', $report['discoveryStatus'], 'Eine erfolgreiche Discovery wurde nicht als vollständig gemeldet.');
-$assertSame('complete', $report['providers']['filzmann_permission_matrix']['status'], 'Der kompatible Provider wurde nicht ausgeführt.');
+$assertSame(false, $report['coverageComplete'], 'Eine Registry ohne Sollprofil darf keine vollständige Coverage behaupten.');
+$assertSame('partial', $report['providers']['filzmann_permission_matrix']['status'], 'Die erste Providerseite wurde nicht als partiell ausgewiesen.');
 $assertSame('REVIEW', $report['providers']['filzmann_permission_matrix']['candidates'][0]['action'], 'Eine Vorschau darf keine destruktive Maßnahme behaupten.');
+$continuation = $report['providers']['filzmann_permission_matrix']['continuations']['export_metadata_review'] ?? null;
+if (!is_string($continuation) || $continuation === '' || str_contains($continuation, 'provider-page-2')) {
+    throw new RuntimeException('Der opake Fortsetzungsvertrag fehlt oder legt den Provider-Cursor offen.');
+}
+$continued = (new RetentionPreviewAggregator($events))->collect('2099-01-01T00:00:00+00:00', 100, $continuation);
+$assertSame('2026-08-23T12:00:00+00:00', $continued['evaluatedAt'], 'Eine Folgeseite hat den ursprünglichen Bewertungszeitpunkt verloren.');
+$assertSame('permission-matrix:export:18', $continued['providers']['filzmann_permission_matrix']['candidates'][0]['reference'], 'Die explizite Folgeseite fehlt.');
+$assertSame([], $continued['providers']['filzmann_permission_matrix']['continuations'], 'Eine vollständige Folgeseite bietet einen falschen Cursor an.');
 $assertSame(false, method_exists($provider, 'execute'), 'Der V1-Preview-Vertrag darf keinen Ausführungspfad anbieten.');
+
+$emptyEvents = new class implements IEventDispatcher {
+    public function dispatchTyped(Event $event): Event { return $event; }
+};
+$emptyReport = (new RetentionPreviewAggregator($emptyEvents))->collect('2026-08-23T12:00:00+00:00', 100);
+$assertSame([], $emptyReport['providers'], 'Eine fehlende Provider-App darf keine erfundene Coverage erzeugen.');
+$assertSame(false, $emptyReport['coverageComplete'], 'Eine leere Registry darf keine vollständige Coverage behaupten.');
+
+try {
+    (new RetentionPreviewAggregator($events))->collect('2026-08-23T12:00:00+00:00', 100, 'manipulated');
+    throw new RuntimeException('Ein manipulierter Fortsetzungs-Token wurde akzeptiert.');
+} catch (InvalidArgumentException) {
+}
 
 $badProvider = new class($policy) implements RetentionProvider {
     public function __construct(private RetentionPolicy $policy) {}
@@ -86,7 +131,7 @@ $failingEvents = new class($provider, $badProvider) implements IEventDispatcher 
     }
 };
 $partial = (new RetentionPreviewAggregator($failingEvents))->collect('2026-08-23T12:00:00+00:00', 100);
-$assertSame('complete', $partial['providers']['filzmann_permission_matrix']['status'], 'Ein Providerfehler hat einen intakten Provider verdeckt.');
+$assertSame('partial', $partial['providers']['filzmann_permission_matrix']['status'], 'Ein Providerfehler hat einen intakten Provider verdeckt.');
 $assertSame('failed', $partial['providers']['bad_provider']['status'], 'Ein Providerfehler wurde nicht isoliert sichtbar gemacht.');
 $assertSame(false, str_contains(json_encode($partial, JSON_THROW_ON_ERROR), 'synthetic private detail'), 'Interne Providerdetails sind ausgetreten.');
 
@@ -116,7 +161,7 @@ $policyFailureEvents = new class($provider, $unstablePolicyProvider) implements 
     }
 };
 $policyFailureReport = (new RetentionPreviewAggregator($policyFailureEvents))->collect('2026-08-23T12:00:00+00:00', 100);
-$assertSame('complete', $policyFailureReport['providers']['filzmann_permission_matrix']['status'], 'Ein Policy-Katalogfehler hat einen intakten Provider verdeckt.');
+$assertSame('partial', $policyFailureReport['providers']['filzmann_permission_matrix']['status'], 'Ein Policy-Katalogfehler hat einen intakten Provider verdeckt.');
 $assertSame('failed', $policyFailureReport['providers']['unstable_policy_provider']['status'], 'Ein Policy-Katalogfehler wurde nicht appweise isoliert.');
 $assertSame(false, str_contains(json_encode($policyFailureReport, JSON_THROW_ON_ERROR), 'synthetic policy detail'), 'Interne Policy-Fehlerdetails sind ausgetreten.');
 
@@ -126,11 +171,36 @@ $event->register($provider);
 $assertSame([], $event->providers(), 'Eine doppelte Provider-ID muss fail-closed aus der Registry entfernt werden.');
 $assertSame(['filzmann_permission_matrix' => 'Provider incompatible.'], $event->registrationFailures(), 'Der Registrierungsfehler ist nicht stabil sichtbar.');
 
+$incompatibleProvider = new class($policy) implements RetentionProvider {
+    public function __construct(private RetentionPolicy $policy) {}
+    public function descriptor(): RetentionProviderDescriptor {
+        return new RetentionProviderDescriptor('legacy_provider', 'Alter Provider', '2.0', 20);
+    }
+    public function policies(): array { return [$this->policy]; }
+    public function preview(RetentionPreviewRequest $request): RetentionPreviewPage {
+        throw new RuntimeException('Ein inkompatibler Provider darf nicht ausgeführt werden.');
+    }
+};
+$incompatibleEvent = new RegisterRetentionProvidersEvent();
+$incompatibleEvent->register($incompatibleProvider);
+$assertSame([], $incompatibleEvent->providers(), 'Ein inkompatibler Provider wurde ausführbar registriert.');
+$assertSame(['legacy_provider' => 'Provider incompatible.'], $incompatibleEvent->registrationFailures(), 'Die inkompatible Vertragsversion bleibt nicht sichtbar.');
+
+$brokenDescriptor = new class implements RetentionProvider {
+    public function descriptor(): RetentionProviderDescriptor { throw new RuntimeException('synthetic descriptor detail'); }
+    public function policies(): array { throw new RuntimeException('must not run'); }
+    public function preview(RetentionPreviewRequest $request): RetentionPreviewPage { throw new RuntimeException('must not run'); }
+};
+$descriptorEvent = new RegisterRetentionProvidersEvent();
+$descriptorEvent->register($brokenDescriptor);
+$assertSame([], $descriptorEvent->providers(), 'Ein Provider mit defektem Descriptor wurde registriert.');
+$assertSame(['unknown_provider_1' => 'Provider incompatible.'], $descriptorEvent->registrationFailures(), 'Ein Descriptorfehler ist nicht isoliert diagnostizierbar.');
+
 foreach ([
     static fn() => new RetentionPolicy('invalid id', 'Daten', 'Zweck', 'CREATED_AT', 180, 'REVIEW', '1.0'),
-    static fn() => new RetentionPolicy('valid-id', 'Daten', 'Zweck', 'CREATED_AT', 0, 'REVIEW', '1.0'),
-    static fn() => new RetentionCandidate('valid-id', 'ref', 'ungültig', 'DELETE', 'Grund'),
-    static fn() => new RetentionPreviewRequest('valid-id', 'ungültig', 20),
+    static fn() => new RetentionPolicy('valid_id', 'Daten', 'Zweck', 'CREATED_AT', 0, 'REVIEW', '1.0'),
+    static fn() => new RetentionCandidate('valid_id', 'ref', 'ungültig', 'DELETE', 'Grund'),
+    static fn() => new RetentionPreviewRequest('valid_id', 'ungültig', 20),
 ] as $invalidFactory) {
     try {
         $invalidFactory();

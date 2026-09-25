@@ -14,7 +14,7 @@ final class RetentionPreviewRequest {
         private int $limit,
         private ?string $cursor = null,
     ) {
-        if (!preg_match('/^[a-z][a-z0-9-]{1,63}$/', $policyId) || $limit < 1 || $limit > 1000) {
+        if (!preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $policyId) || $limit < 1 || $limit > 1000) {
             throw new InvalidArgumentException('Invalid retention preview request.');
         }
         try {

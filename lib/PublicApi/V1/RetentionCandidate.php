@@ -16,7 +16,7 @@ final class RetentionCandidate {
         private string $reviewReason,
         private array $attributes = [],
     ) {
-        if (!preg_match('/^[a-z][a-z0-9-]{1,63}$/', $policyId) || $reference === '' || strlen($reference) > 255) {
+        if (!preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $policyId) || $reference === '' || strlen($reference) > 255) {
             throw new InvalidArgumentException('Invalid retention candidate identity.');
         }
         try {

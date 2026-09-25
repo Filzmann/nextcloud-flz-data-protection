@@ -48,7 +48,9 @@ remain visible and are not replaced by heuristic fallback access.
 
 The provider APIs remain pre-release and are not yet approved for external
 releases. `adroom` is the first personal-data pilot consumer; the Permission
-Matrix is the first standalone retention-preview consumer. No report
+Matrix, AD Raumplaner and AD Urlaub use the standalone V1 retention-preview
+registry. Retention discovery is lazy, duplicate- and version-safe, and each
+provider keeps its own global paged read model. No report
 persistence, retention execution, data deletion or anonymization is part of
 version `0.1.1`; only the security-relevant temporary admin-access history is
 persisted app-locally.

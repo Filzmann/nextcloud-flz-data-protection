@@ -78,6 +78,8 @@ $response = $allowed->report();
 $assertSame(Http::STATUS_OK, $response->getStatus(), 'Die aktive Adminfreigabe wurde nicht erlaubt.');
 $assertSame(1, $dispatches, 'Der erlaubte REVIEW-Aufruf muss genau eine Discovery auslösen.');
 $assertSame('REVIEW', $response->getData()['providers']['review_app']['candidates'][0]['action'] ?? null, 'Die API liefert keinen REVIEW-Kandidaten.');
-$assertSame(0, (new ReflectionMethod($allowed, 'report'))->getNumberOfParameters(), 'Die REVIEW-API akzeptiert einen frei übermittelten Bewertungszeitpunkt.');
+$assertSame(1, (new ReflectionMethod($allowed, 'report'))->getNumberOfParameters(), 'Die REVIEW-API besitzt keinen ausschließlich opaken Fortsetzungsparameter.');
+$invalidContinuation = $allowed->report('manipulated');
+$assertSame(Http::STATUS_BAD_REQUEST, $invalidContinuation->getStatus(), 'Ein manipulierter Fortsetzungs-Token wurde nicht kontrolliert abgelehnt.');
 
 echo "Retention review controller tests passed.\n";

@@ -47,6 +47,14 @@ Adminvollzugriffsfreigaben. Retention bleibt ein read-only Preview-Vertrag;
 Ausführung, Löschung oder Anonymisierung benötigen einen getrennten,
 freigegebenen Lebenszyklusvertrag.
 
+Jede Vorschau entdeckt Provider lazy über den öffentlichen V1-Registry-Event
+und fixiert den Bewertungszeitpunkt über alle Folgeseiten. Provider behalten
+Datenzugriff und Cursorinterpretation; das Datenschutz-Center aggregiert nur
+datenminimierte DTOs und opake Fortsetzungen. Fehlende, deaktivierte,
+doppelte oder inkompatible Provider bleiben sichtbar beziehungsweise
+unvollständig und werden niemals durch direkten Tabellen-, Datei-, AppConfig-
+oder Reflection-Zugriff ersetzt.
+
 Fachliche Datenschutzkonfiguration einschließlich app-eigener
 Aufbewahrungsfristen ist ausschließlich Mitgliedern der dedizierten
 Nextcloud-Gruppe `Datenschutzbeauftragte` erlaubt. Diese bestehende Gruppen-ID

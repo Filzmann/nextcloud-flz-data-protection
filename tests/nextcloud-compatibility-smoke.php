@@ -19,6 +19,7 @@ return [
     'preGrantUiStatuses' => [200],
     'postGrantUiStatuses' => [200],
     'grantService' => TemporaryAdminAccessService::class,
+    'grantManagerGroups' => static fn(): array => [TemporaryAdminAccessService::GRANT_MANAGER_GROUP],
     'permissionProbe' => static fn(string $uid): bool => OCP\Server::get(RetentionAccessService::class)
         ->canReview(),
     'apiSmokes' => [

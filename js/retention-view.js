@@ -5,7 +5,39 @@
         if (text !== undefined) node.textContent = String(text);
         return node;
     };
-    const render = (container, report) => {
+    const providerArticle = (appId, provider, onContinue) => {
+        const article = element('article');
+        article.className = 'data-protection-provider';
+        article.dataset.providerAppId = appId;
+        article.append(element('h3', provider.displayName || appId));
+        const status = element('p', provider.status === 'complete' ? 'Vorschau vollständig' : 'Vorschau nicht vollständig');
+        status.className = 'data-protection-retention-status';
+        article.append(status);
+        const list = element('ul');
+        list.className = 'data-protection-retention-candidates';
+        (provider.candidates || []).forEach((candidate) => {
+            list.append(element('li', `${candidate.reference}: ${candidate.reviewReason} (${candidate.action})`));
+        });
+        if ((provider.candidates || []).length === 0) {
+            const empty = element('li', 'Keine fälligen REVIEW-Kandidaten.');
+            empty.className = 'data-protection-retention-empty';
+            list.append(empty);
+        }
+        article.append(list);
+        appendContinuations(article, provider.continuations, onContinue);
+        return article;
+    };
+    const appendContinuations = (article, continuations, onContinue) => {
+        Object.entries(continuations || {}).forEach(([policyId, continuation]) => {
+            const button = element('button', 'Weitere REVIEW-Kandidaten laden');
+            button.type = 'button';
+            button.dataset.policyId = policyId;
+            button.dataset.continuation = continuation;
+            button.addEventListener('click', () => onContinue(continuation, button));
+            article.append(button);
+        });
+    };
+    const render = (container, report, onContinue = () => {}) => {
         container.replaceChildren();
         const providers = Object.entries(report.providers || {});
         if (providers.length === 0) {
@@ -13,19 +45,30 @@
             return;
         }
         providers.forEach(([appId, provider]) => {
-            const article = element('article');
-            article.className = 'data-protection-provider';
-            article.append(element('h3', provider.displayName || appId));
-            article.append(element('p', provider.status === 'complete' ? 'Vorschau vollständig' : 'Vorschau nicht vollständig'));
-            const list = element('ul');
+            container.append(providerArticle(appId, provider, onContinue));
+        });
+    };
+    const append = (container, report, onContinue = () => {}) => {
+        Object.entries(report.providers || {}).forEach(([appId, provider]) => {
+            const article = Array.from(container.querySelectorAll('.data-protection-provider'))
+                .find((candidate) => candidate.dataset.providerAppId === appId);
+            if (!article) {
+                container.append(providerArticle(appId, provider, onContinue));
+                return;
+            }
+            const list = article.querySelector('.data-protection-retention-candidates');
+            const status = article.querySelector('.data-protection-retention-status');
+            if (status) status.textContent = provider.status === 'complete' ? 'Vorschau vollständig' : 'Vorschau nicht vollständig';
+            if ((provider.candidates || []).length > 0) {
+                article.querySelectorAll('.data-protection-retention-empty').forEach((empty) => empty.remove());
+            }
             (provider.candidates || []).forEach((candidate) => {
                 list.append(element('li', `${candidate.reference}: ${candidate.reviewReason} (${candidate.action})`));
             });
-            if ((provider.candidates || []).length === 0) list.append(element('li', 'Keine fälligen REVIEW-Kandidaten.'));
-            article.append(list);
-            container.append(article);
+            article.querySelectorAll('button[data-continuation]').forEach((button) => button.remove());
+            appendContinuations(article, provider.continuations, onContinue);
         });
     };
     window.FilzmannDataProtection = window.FilzmannDataProtection || {};
-    window.FilzmannDataProtection.retentionView = { render };
+    window.FilzmannDataProtection.retentionView = { render, append };
 })(window, document);
