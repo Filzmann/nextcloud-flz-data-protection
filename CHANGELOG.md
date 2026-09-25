@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Die kanonische Nextcloud-Gruppe `Datenschutzbeauftragte` wird bei
+  Installation beziehungsweise Upgrade idempotent über die native
+  Gruppenverwaltung angelegt, ohne bestehende Gruppen oder Mitglieder zu ändern.
 - Reale Nextcloud-34-Lifecycle-Matrix für AD Raumplaner und AD Urlaub ergänzt: alter LocalBase-Pilot, gemeinsames Update auf den Standalone-V1-Vertrag, deaktivierte und entfernte Privacy-App, Neuinstallation sowie vorwärtsversionierter Rollback sind grün; Provider-Discovery bleibt in jedem Zustand explizit.
 - Öffentlichen V1-Retention-Previewvertrag um feste Bewertungszeitpunkte,
   opake seitenweise Fortsetzungen, isolierte Providerfehler und robuste

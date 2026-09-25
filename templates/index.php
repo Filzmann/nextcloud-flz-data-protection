@@ -7,12 +7,12 @@ style('filzmann_data_protection', 'style');
     <header class="data-protection-header">
         <div>
             <p class="data-protection-kicker">IKT und Datenschutz</p>
-            <h1 id="data-protection-heading">Datenschutz-Center</h1>
+            <div class="data-protection-title-row"><h1 id="data-protection-heading">Datenschutz-Center</h1><?php if ($_['showMissingAdminGrant'] ?? false): ?><details class="data-protection-admin-grant-warning"><summary aria-label="Informationen zum fehlenden fachlichen Admin-Vollzugriff"><span aria-hidden="true">⚠</span></summary><div class="data-protection-admin-grant-warning__details"><p><strong>Kein fachlicher Admin-Vollzugriff.</strong></p><p>Native Nextcloud-Administration erteilt keinen fachlichen Vollzugriff. Es fehlt eine aktive app-lokale Freigabe.</p><p>Freigaben können ausschließlich Mitglieder von Datenschutzbeauftragte erteilen oder widerrufen, höchstens für 24 Stunden.</p><?php if ($_['showAdminAccessLink'] ?? false): ?><p><a href="#data-protection-full-access" target="_blank" rel="noopener">Freigabesteuerung in neuem Tab öffnen</a></p><?php endif; ?></div></details><?php endif; ?></div>
         </div>
     </header>
 
     <?php if ($_['showMissingAdminGrant'] ?? false): ?>
-        <section class="data-protection-report data-protection-warning" aria-labelledby="data-protection-admin-access-required-heading">
+        <section hidden class="data-protection-report data-protection-warning" aria-labelledby="data-protection-admin-access-required-heading">
             <h2 id="data-protection-admin-access-required-heading">Kein fachlicher Admin-Vollzugriff</h2>
             <p>Native Nextcloud-Administration erteilt keinen fachlichen Vollzugriff. Für den geschützten REVIEW-Bereich fehlt eine aktive app-lokale Freigabe.</p>
             <?php if ($_['showAdminAccessLink'] ?? false): ?>

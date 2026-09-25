@@ -57,9 +57,13 @@ oder Reflection-Zugriff ersetzt.
 
 Fachliche Datenschutzkonfiguration einschließlich app-eigener
 Aufbewahrungsfristen ist ausschließlich Mitgliedern der dedizierten
-Nextcloud-Gruppe `Datenschutzbeauftragte` erlaubt. Diese bestehende Gruppen-ID
-ist der kanonische Default; die nur für Entwicklungsumgebungen verwendete
-Bezeichnung `privacy-officer` ist keine Produktrolle. Native
+Nextcloud-Gruppe `Datenschutzbeauftragte` erlaubt. Fehlt sie, legt eine
+versionierte Migration sie bei frischer Installation beziehungsweise beim
+nächsten Upgrade einer bereits aktivierten App idempotent über die native
+Nextcloud-Gruppenverwaltung an. Vorhandene Gruppen und Mitgliedschaften
+bleiben unverändert. Diese Gruppen-ID ist der kanonische Default; die nur für
+Entwicklungsumgebungen verwendete Bezeichnung `privacy-officer` ist keine
+Produktrolle. Native
 Nextcloud-Administration bleibt für technische App-Verwaltung zuständig,
 erteilt aber kein Recht zur fachlichen Datenschutzkonfiguration.
 

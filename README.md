@@ -24,11 +24,12 @@ remain visible and are not replaced by heuristic fallback access.
 - public V1 retention-preview contract with lazy discovery, provider failure
   isolation and `REVIEW` as the only supported action;
 - a transient operational REVIEW dashboard for configured privacy-review
-  groups. Native Nextcloud administration alone grants no fachlich access;
-  only current members of the canonical `Datenschutzbeauftragte` group may
-  activate or revoke app-local per-admin access for at most 24 hours. The
-  controls remain outside the technical admin settings, and the actual
-  interval remains auditable;
+  groups. A versioned install/upgrade migration creates the canonical
+  `Datenschutzbeauftragte` group idempotently through native Nextcloud group
+  management without assigning members. Native Nextcloud administration alone
+  grants no fachlich access; only current group members may activate or revoke
+  app-local per-admin access for at most 24 hours. The controls remain outside
+  the technical admin settings, and the actual interval remains auditable;
 - a protected-path notice shown only to native administrators without an
   active grant. It links to the app-local grant controls only when the same
   account is also a member of `Datenschutzbeauftragte`; ordinary and otherwise
@@ -52,7 +53,7 @@ Matrix, AD Raumplaner and AD Urlaub use the standalone V1 retention-preview
 registry. Retention discovery is lazy, duplicate- and version-safe, and each
 provider keeps its own global paged read model. No report
 persistence, retention execution, data deletion or anonymization is part of
-version `0.1.1`; only the security-relevant temporary admin-access history is
+version `0.1.2`; only the security-relevant temporary admin-access history is
 persisted app-locally.
 
 The initial consumer sequence started with `adroom`. Provider coverage of an

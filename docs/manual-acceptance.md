@@ -15,6 +15,9 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Self-Service bindet ausschließlich das angemeldete Konto.
 - [ ] Fehlende, inkompatible und fehlerhafte Provider werden sichtbar ausgewiesen.
 - [ ] Teilberichte werden nicht als vollständig bezeichnet.
+- [ ] Fresh Install und Upgrade einer bereits aktivierten App legen eine fehlende
+      Gruppe `Datenschutzbeauftragte` an; eine vorhandene Gruppe und ihre
+      Mitgliedschaften bleiben unverändert.
 - [ ] Ein Mitglied von `Datenschutzbeauftragte` ohne nativen Adminstatus kann
       die app-lokale Freigabesteuerung öffnen, einem bestätigten Admin für
       höchstens 24 Stunden freigeben und widerrufen.

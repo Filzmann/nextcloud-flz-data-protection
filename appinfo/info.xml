@@ -8,7 +8,7 @@
     <summary lang="de">Providerbasierte Datenauskunft und Retention-Koordination für Nextcloud.</summary>
     <description>Aggregates transparent personal-data reports through public, versioned provider contracts without directly accessing data owned by other apps.</description>
     <description lang="de">Aggregiert verständliche Auskünfte über öffentliche, versionierte Providerverträge ohne direkten Zugriff auf Daten anderer Apps.</description>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <licence>agpl</licence>
     <author>Simon Filzmann</author>
     <namespace>FilzmannDataProtection</namespace>

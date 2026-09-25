@@ -37,6 +37,8 @@ if (adminTemplate.includes('id="data-protection-full-access-form"')) throw new E
 if (!template.includes("$_['canManageAdminAccess']")) throw new Error('DPO-geschützte Freigabesteuerung fehlt.');
 if (!template.includes("$_['showMissingAdminGrant']")) throw new Error('Sichere Eintrittsmeldung für Admins ohne Freigabe fehlt.');
 if (!template.includes("$_['showAdminAccessLink']")) throw new Error('Rollenabhängiger Direktlink fehlt.');
+for (const contract of ['data-protection-admin-grant-warning', '<details', 'Datenschutzbeauftragte', 'target="_blank"']) if (!template.includes(contract)) throw new Error(`Titelwarnung für fehlenden Admin-Vollzugriff fehlt: ${contract}`);
+if (!style.includes('.data-protection-admin-grant-warning')) throw new Error('Titelwarnung für fehlenden Admin-Vollzugriff ist nicht als kleines Floating-Icon gestaltet.');
 if (!template.includes('id="data-protection-full-access-form"')) throw new Error('App-lokale Adminfreigabe fehlt.');
 if (!template.includes('value="1440"')) throw new Error('Die maximale Dauer von 24 Stunden fehlt.');
 if (adminTemplate.includes('name="allow_nextcloud_admin_review"')) throw new Error('Der alte unbefristete Adminzugriff ist noch konfigurierbar.');
