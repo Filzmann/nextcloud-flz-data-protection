@@ -6,6 +6,8 @@ namespace OCA\FilzmannDataProtection\AppInfo;
 
 use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepository;
 use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepository;
+use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
 use OCA\FilzmannDataProtection\Permission\DataProtectionPermissionProviderListener;
 use OCA\FilzmannDataProtection\Privacy\DataProtectionPersonalDataProviderListener;
 use OCA\FilzmannDataProtection\Privacy\DataProtectionProcessingMetadataProviderListener;
@@ -35,6 +37,7 @@ final class Application extends App implements IBootstrap {
         $context->registerEventListener(RegisterPermissionProvidersEvent::class, DataProtectionPermissionProviderListener::class);
         $context->registerServiceAlias(TemporaryAdminAccessChecker::class, TemporaryAdminAccessService::class);
         $context->registerServiceAlias(TemporaryAdminAccessRepositoryInterface::class, TemporaryAdminAccessRepository::class);
+        $context->registerServiceAlias(RetentionExecutionProfileRepositoryInterface::class, RetentionExecutionProfileRepository::class);
     }
 
     public function boot(IBootContext $context): void {

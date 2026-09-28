@@ -43,12 +43,18 @@ than hidden compatibility claims.
    `docs/architecture.md` only in a separately authorized test-driven task.
    The first pilot is limited to `fdp_admin_access`; the implemented V1
    preview remains `REVIEW`-only and receives no `execute()` method. Before
-   any activation, implement and validate the closed German customer-profile
-   model without free legal-basis input. Keep every customer's profile
-   selection, agreement or balancing reference, scope, effective date, review
+   any activation, keep the implemented closed German customer-profile model
+   without free legal-basis input green. The additive, DPO-only and revisioned
+   instance configuration is implemented; its empty, invalid and stale states
+   remain `REVIEW` and it deliberately provides no execution path. Keep every
+   customer's profile selection, agreement or balancing reference, scope, effective date, review
    date and DPO confirmation exclusively in app-instance configuration; the
    distributable package must ship with no customer selection. Independently
-   prove each instance's configured real backup retention within at most 30
+   decide the legal basis, retention trigger and duration, holds, erasure and
+   backup treatment of the separate profile-revision audit before adding any
+   deletion path for those revisions; it does not inherit the six-month
+   admin-access-history policy. Also prove each instance's configured real
+   backup retention within at most 30
    regular days plus at most five technical buffer days and prove the
    fail-closed restore barrier. A policy selection or entered target duration
    is not operational evidence. The

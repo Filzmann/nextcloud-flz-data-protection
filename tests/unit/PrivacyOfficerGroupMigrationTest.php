@@ -77,7 +77,8 @@ $assertSame([], $unavailable->groups, 'Failed group creation must not leave an a
 $assertSame(['existing-user' => ['existing-group']], $unavailable->memberships, 'Failed group creation must not grant membership or broaden access.');
 
 $info = (string)file_get_contents(dirname(__DIR__, 2) . '/appinfo/info.xml');
-if (!str_contains($info, '<version>0.1.2</version>')) {
+if (preg_match('/<version>([^<]+)<\/version>/', $info, $versionMatch) !== 1
+    || version_compare($versionMatch[1], '0.1.2', '<')) {
     throw new RuntimeException('The app version must advance so already enabled installations execute the new migration on their next app upgrade.');
 }
 

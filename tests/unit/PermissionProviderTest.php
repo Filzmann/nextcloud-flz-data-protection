@@ -48,13 +48,19 @@ namespace {
     $byPermission = [];
     foreach ($rules as $rule) $byPermission[$rule->permission] = $rule;
 
-    if (array_keys($byPermission) !== ['personal-data.self', 'retention.review', 'retention.configure']) throw new \RuntimeException('Das Datenschutz-Rechteinventar ist unvollständig.');
+    if (array_keys($byPermission) !== ['personal-data.self', 'retention.review', 'retention.configure', 'retention.execution-profile.configure']) throw new \RuntimeException('Das Datenschutz-Rechteinventar ist unvollständig.');
     if (array_map(static fn($child): string => $child->operator, $byPermission['personal-data.self']->condition->children) !== ['authenticated', 'self']) throw new \RuntimeException('Selbstauskunft ist nicht strikt an Anmeldung und eigene Person gebunden.');
     $reviewChildren = $byPermission['retention.review']->condition->children;
     if ($reviewChildren[0]->operator !== 'group' || $reviewChildren[0]->groupId !== 'Datenschutzbeauftragte') throw new \RuntimeException('Konfigurierte Prüfgruppe fehlt.');
     $temporaryAdmin = $reviewChildren[1];
     if ($temporaryAdmin->operator !== 'all' || array_map(static fn($child): string => $child->operator, $temporaryAdmin->children) !== ['nextcloud-admin', 'app-admin-grant']) throw new \RuntimeException('Native Administration ist nicht an die aktive app-lokale Freigabe gekoppelt.');
     if ($byPermission['retention.configure']->condition->operator !== 'nextcloud-admin') throw new \RuntimeException('Technisches Konfigurationsrecht wurde mit fachlichem REVIEW vermischt.');
+    $profileConfiguration = $byPermission['retention.execution-profile.configure'];
+    if ($profileConfiguration->condition->operator !== 'group'
+        || $profileConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
+        || $profileConfiguration->source !== 'filzmann_data_protection:RetentionExecutionProfileService::canConfigure') {
+        throw new \RuntimeException('Die DPO-Profilkonfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
+    }
 
     $event = new RegisterPermissionProvidersEvent();
     (new DataProtectionPermissionProviderListener($provider))->handle($event);

@@ -184,10 +184,13 @@ $realProvider = new DataProtectionProcessingMetadataProvider();
 $realCatalog = ProcessingMetadataProviderContractTestKit::verify($realProvider);
 $assertSame('filzmann_data_protection', $realCatalog->appId(), 'Der eigene Katalog verwendet nicht die kanonische App-ID.');
 $assertSame(
-    ['article_15_aggregation', 'temporary_admin_full_access'],
+    ['article_15_aggregation', 'temporary_admin_full_access', 'retention_execution_profile_configuration'],
     $realCatalog->processingIds(),
     'Der eigene Katalog beschreibt nicht den freigegebenen Pilotumfang.',
 );
+$realProcessings = $realCatalog->toArray()['processings'];
+$profileProcessing = $realProcessings[2] ?? null;
+$assertSame('PRIVACY-DECISION-REQUIRED', $profileProcessing['retention']['status'] ?? null, 'Die Profilrevisionen wurden fälschlich unter die Löschfrist der Adminfreigabehistorie gestellt.');
 $realEvent = new RegisterProcessingMetadataProvidersEvent();
 (new DataProtectionProcessingMetadataProviderListener($realProvider))->handle($realEvent);
 $assertSame($realProvider, $realEvent->providers()['filzmann_data_protection'] ?? null, 'Der eigene Processing-Metadata-Provider wird nicht lazy registriert.');

@@ -37,15 +37,22 @@ remain visible and are not replaced by heuristic fallback access.
   link;
 - a public PermissionProvider that distinguishes self-service, REVIEW and
   technical configuration, plus a PersonalDataProvider for the subject's own
-  admin-access audit references without exposing other admin identifiers.
+  admin-access and DPO configuration audit references without exposing other
+  admin identifiers;
+- an additive, append-only instance configuration for the two closed German
+  legal profiles and the proven backup/restore boundary. Only current members
+  of `Datenschutzbeauftragte` may create a revision. Missing, invalid or stale
+  evidence remains fail-closed at `REVIEW`; the immutable prohibition of
+  performance and conduct monitoring cannot be configured away;
 - a public additive V1 `ProcessingMetadataProvider` contract with a
   duplicate- and version-safe lazy registry, strict app/catalog ownership,
   failure isolation and a reusable contract-test kit;
 - the app-owned processing catalog
   [`resources/privacy-processing.json`](resources/privacy-processing.json)
-  for Art.-15 aggregation and temporary admin full access. Open legal basis,
-  business ownership, retention and backup decisions remain explicitly
-  `PRIVACY-DECISION-REQUIRED` rather than receiving technical defaults.
+  for Art.-15 aggregation, temporary admin full access and the separate
+  profile-revision audit. Open legal basis, business ownership, retention and
+  backup decisions remain explicitly `PRIVACY-DECISION-REQUIRED` rather than
+  receiving technical defaults.
 
 The provider APIs remain pre-release and are not yet approved for external
 releases. `adroom` is the first personal-data pilot consumer; the Permission
@@ -53,9 +60,10 @@ Matrix, AD Raumplaner and AD Urlaub use the standalone V1 retention-preview
 registry. Retention discovery is lazy, duplicate- and version-safe, and each
 provider keeps its own global paged read model. No report
 persistence, retention execution, data deletion or anonymization is part of
-version `0.1.2`; only the security-relevant temporary admin-access history is
-persisted app-locally. Its six-month default is DPO-only, revisioned and
-re-evaluated from the original actual grant end in every read-only preview;
+version `0.1.3`; only the security-relevant temporary admin-access history and
+its DPO-confirmed configuration audit are persisted app-locally. Its six-month
+default is DPO-only, revisioned and re-evaluated from the original actual grant
+end in every read-only preview;
 the V1 contract intentionally exposes no execution method.
 
 The initial consumer sequence started with `adroom`. Provider coverage of an

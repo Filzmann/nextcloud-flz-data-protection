@@ -15,6 +15,7 @@ const reportView = read('js/report-view.js');
 const adminTemplate = read('templates/admin.php');
 const adminScript = read('js/admin.js');
 const adminAccessScript = read('js/admin-access.js');
+const executionProfileScript = read('js/retention-execution-profile.js');
 
 if (!info.includes('<id>filzmann_data_protection</id>')) throw new Error('Eindeutige App-ID fehlt.');
 if (!info.includes('<namespace>FilzmannDataProtection</namespace>')) throw new Error('App-Namespace fehlt.');
@@ -45,6 +46,12 @@ if (adminTemplate.includes('name="allow_nextcloud_admin_review"')) throw new Err
 if (!routes.includes("'url' => '/api/v1/admin/full-access'")) throw new Error('Adminfreigabe-API fehlt.');
 if (!adminAccessScript.includes('data-protection-full-access-history')) throw new Error('Freigabehistorie wird nicht dargestellt.');
 if (!adminAccessScript.includes('requesttoken = OC.requestToken')) throw new Error('Freigabemutationen senden kein CSRF-Token.');
+for (const contract of ['data-protection-retention-execution-profile-form', 'performanceMonitoringProhibited', 'configurationValid']) {
+    if (!template.includes(contract) && !executionProfileScript.includes(contract)) throw new Error(`Kundenprofil-UI-Vertrag fehlt: ${contract}`);
+}
+if (!executionProfileScript.includes('/api/v1/retention-execution-profile')) throw new Error('Die Kundenprofil-Konfiguration verwendet nicht den geschlossenen API-Pfad.');
+if (!executionProfileScript.includes('requesttoken: OC.requestToken')) throw new Error('Die Kundenprofil-Mutation sendet kein CSRF-Token.');
+if (/\/(execute|delete|run)\b|method\s*:\s*['"]DELETE['"]/i.test(executionProfileScript)) throw new Error('Die Kundenprofil-UI darf keinen Retention-Ausführungspfad enthalten.');
 if (!adminScript.includes('requesttoken: OC.requestToken')) throw new Error('Einstellungsspeicherung sendet kein CSRF-Token.');
 if (!reportView.includes('Noch sind keine Datenschutzprovider registriert.')) throw new Error('Fehlende Provider werden nicht transparent ausgewiesen.');
 if (!script.includes('/api/v1/self-service-report')) throw new Error('Self-Service-Bericht wird nicht geladen.');
@@ -57,4 +64,5 @@ console.log('Filzmann Data Protection JavaScript/app contract passed.');
 await import('./js/self-service-request-smoke.mjs');
 await import('./js/self-service-report-smoke.mjs');
 await import('./js/retention-review-smoke.mjs');
+await import('./js/retention-execution-profile-smoke.mjs');
 await import('./js/compact-report-layout-smoke.mjs');

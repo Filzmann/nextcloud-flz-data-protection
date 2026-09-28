@@ -138,10 +138,18 @@ Dateien oder fremden App-Speichern.
 ### Status, Scope und kanonische Quellen
 
 Dieser Vertrag ist das freigegebene Zielbild für den ersten ausführenden
-DP-07-Piloten. Er aktiviert keine Löschung und beschreibt weder ein
-vorhandenes Schema noch eine vorhandene Laufzeitfunktion. Bis zu einer
-gesondert freigegebenen, testgetriebenen Umsetzung bleibt der öffentliche
-V1-Vertrag unverändert `REVIEW`-only und ohne `execute()`-Methode.
+DP-07-Piloten. Die additive Tabelle `fdp_retention_profile` und der
+DPO-geschützte Konfigurationsweg setzen inzwischen ausschließlich das
+geschlossene deutsche Rechts-/Backup-Profil um. Ein leerer Installations- oder
+Upgradestand enthält keine Kundenauswahl und bleibt `REVIEW`; jede Änderung
+erzeugt eine neue, optimistisch revisionsgesicherte Auditzeile. Dieser Schritt
+aktiviert keine Löschung, keinen Hintergrundjob und keine `execute()`-Methode.
+Die Profilrevisionshistorie ist eine eigene Verarbeitung und erbt weder die
+Sechsmonatsfrist noch den späteren Löschpfad der Adminfreigabehistorie. Ihre
+Rechtsgrundlage, Aufbewahrung, Holds und Backupbehandlung bleiben im
+Processing-Katalog ausdrücklich `PRIVACY-DECISION-REQUIRED`; bis zu einer
+gesonderten Entscheidung existiert für sie kein Löschpfad.
+Alle nachfolgenden Ausführungsbestandteile bleiben gesondert freizugeben.
 
 Der Pilot ist ausschließlich für die app-eigene Tabelle
 `fdp_admin_access` und die Datenklasse der zeitlich begrenzten

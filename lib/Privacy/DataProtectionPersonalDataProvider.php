@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
 use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
@@ -22,6 +23,7 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
     public function __construct(
         private TemporaryAdminAccessRepositoryInterface $adminAccess,
         private AdminHistoryRetentionPolicyService $retentionPolicy,
+        private RetentionExecutionProfileRepositoryInterface $executionProfiles,
     ) {
     }
 
@@ -56,6 +58,14 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
                 $entries[] = $this->policyEntry($policyEntry);
             }
         }
+        foreach ($this->executionProfiles->historyForUid(
+            $subjectUid,
+            $offset + $limit + 1,
+            0,
+            new DateTimeImmutable($asOf),
+        ) as $profileEntry) {
+            $entries[] = $this->executionProfileEntry($profileEntry);
+        }
         $pageEntries = array_slice($entries, $offset, $limit + 1);
         $hasMore = count($pageEntries) > $limit;
         if ($hasMore) $pageEntries = array_slice($pageEntries, 0, $limit);
@@ -88,6 +98,30 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
                 'Aufbewahrungsfrist' => $entry['durationPeriod'],
                 'Wirksam seit' => $entry['effectiveAt'] ?? 'noch nicht wirksam gesetzt',
                 'Zuletzt geprüft' => $entry['reviewedAt'] ?? 'noch nicht geprüft',
+            ],
+        );
+    }
+
+    private function executionProfileEntry(array $entry): PersonalDataEntry {
+        return new PersonalDataEntry(
+            categoryId: 'retention-execution-profile',
+            categoryLabel: 'Rechts- und Backup-Profil',
+            reference: 'data-protection:retention-execution-profile:' . (string)$entry['revision'],
+            summary: 'Kundenprofilrevision gespeichert',
+            purpose: 'Nachweis der DPO-bestätigten Rechts-, Backup- und Restore-Konfiguration',
+            source: 'Eigene Eingabe in der geschützten Datenschutzkonfiguration',
+            recipientCategories: ['Betroffene Person und aktuelle Mitglieder von Datenschutzbeauftragte'],
+            retention: 'Die revisionsgeführte Profilhistorie besitzt noch keinen freigegebenen ausführenden Löschpfad.',
+            thirdCountryTransfer: 'Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.',
+            automatedDecision: 'Die Profilkonfiguration aktiviert keine Retention-Ausführung und bleibt REVIEW-only.',
+            thirdPartyContentNotice: 'Die Projektion enthält keine Kennungen anderer Datenschutzbeauftragter und keine externen Evidenzinhalte.',
+            attributes: [
+                'Profil' => $entry['profileId'],
+                'Profilrevision' => $entry['profileRevision'],
+                'Wirksam seit' => $entry['effectiveAt']->format(DATE_ATOM),
+                'Nächste Rechtsprüfung' => $entry['legalReviewDueAt']->format(DATE_ATOM),
+                'Backupgrenze' => $entry['backupRegularDays'] . '+' . $entry['backupBufferDays'] . ' Tage',
+                'Nächste Backupprüfung' => $entry['backupReviewDueAt']->format(DATE_ATOM),
             ],
         );
     }

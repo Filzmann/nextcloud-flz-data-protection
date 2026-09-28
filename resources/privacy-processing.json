@@ -156,7 +156,7 @@
         "status": "PRIVACY-DECISION-REQUIRED",
         "affected_data": "Personenbezogene Adminfreigabehistorie",
         "planned_processing": "Sicherheitsprüfung und Audit des fachlichen Vollzugriffs",
-        "missing_decision": "Die konkrete Kundeninstanz muss eines der geschlossenen deutschen Profile employment_collective_agreement_de oder legitimate_interest_it_security_de auswählen und dessen Pflichtangaben, Geltungsbereich, Revision, Wirksamkeitsdatum, Prüftermin und dokumentierte DPO-Bestätigung vollständig app-lokal führen.",
+        "missing_decision": "Der technische Konfigurationsweg ist implementiert; die konkrete Kundeninstanz muss weiterhin eines der geschlossenen deutschen Profile employment_collective_agreement_de oder legitimate_interest_it_security_de auswählen und dessen reale Nachweise, Geltungsbereich, Revision, Wirksamkeitsdatum, Prüftermin und dokumentierte DPO-Bestätigung vollständig führen.",
         "reason": "Das auslieferbare Paket darf keine kundenspezifische Vereinbarung, Interessenabwägung oder Rechtsgrundlagenauswahl enthalten. Eine Instanzauswahl ist weder rechtliche Validierung noch Nachweis fortbestehender Aktivierungsvoraussetzungen; freie Rechtsgrundlagen sind unzulässig.",
         "technical_impact": "Die Retention-Ausführung startet deaktiviert und bleibt fail-closed bei REVIEW, bis ein vollständiges, aktuelles und DPO-bestätigtes Profil in der konkreten Instanz vorliegt.",
         "privacy_preserving_alternative": "Nur minimale UIDs und Zeitpunkte speichern und Berichtsausgaben auf den eigenen Bezug begrenzen.",
@@ -188,7 +188,7 @@
           "status": "PRIVACY-DECISION-REQUIRED",
           "affected_data": "Persistierte Adminfreigabehistorie",
           "planned_processing": "Einbeziehung in Sicherung und Wiederherstellung der Nextcloud-Datenbank",
-          "missing_decision": "Die Produktgrenze ist auf höchstens 30 ganze Kalendertage reguläre Backupaufbewahrung plus höchstens fünf ganze Kalendertage technischen Puffer festgelegt; jede konkrete Instanz muss innerhalb dieser Grenzen ihre Kundenfrist sowie Evidenzreferenz, Nachweiszeitpunkt, Prüftermin, verantwortliche Betriebsstelle, DPO-Bestätigung und einen erfolgreichen Restore-Nachweis app-lokal führen.",
+          "missing_decision": "Die App validiert und versioniert höchstens 30 ganze Kalendertage reguläre Backupaufbewahrung plus höchstens fünf ganze Kalendertage technischen Puffer; jede konkrete Instanz muss weiterhin die tatsächliche Einhaltung, Evidenzreferenz, Nachweiszeitpunkt, Prüftermin, verantwortliche Betriebsstelle, DPO-Bestätigung und einen erfolgreichen Restore-Nachweis belegen.",
           "reason": "Eine konfigurierte Sollfrist belegt weder das tatsächliche Löschen abgelaufener Sicherungen noch Restore-Epoch, Quarantäne und erneute Löschvormerkung. Die App kann externe Sicherungsmedien nicht selbst prüfen.",
           "technical_impact": "Die Retention-Ausführung bleibt fail-closed bei REVIEW; die App darf keinen vollständigen Entfall aus Sicherungen behaupten.",
           "privacy_preserving_alternative": "Keine separate app-eigene Backupkopie anlegen.",
@@ -243,6 +243,119 @@
         "Nextcloud",
         "Data Protection Center",
         "App-eigene Datenbanktabelle fdp_admin_access"
+      ]
+    },
+    {
+      "processing_id": "retention_execution_profile_configuration",
+      "name": "Revisionsgeführte Rechts- und Backup-Profilkonfiguration",
+      "controller": {
+        "component": "Data Protection Center",
+        "business_owner": "Datenschutzbeauftragte"
+      },
+      "data_categories": [
+        "Nextcloud-UID des konfigurierenden Mitglieds von Datenschutzbeauftragte",
+        "Geschlossene Profil-ID, Revision, Geltungs-, Rechts- und Schutzmaßnahmenreferenzen",
+        "Backup- und Restore-Nachweisreferenzen, Fristen, Nachweis- und Prüftermine"
+      ],
+      "data_subjects": [
+        "Mitglieder von Datenschutzbeauftragte mit Bezug zu einer Profilrevision"
+      ],
+      "purposes": [
+        "Fail-closed Nachweis der kundeneigenen Rechts-, Backup- und Restore-Freigabegates",
+        "Revisionssichere Nachvollziehbarkeit der DPO-Bestätigung"
+      ],
+      "access_roles": [
+        "Erfassen und Lesen: aktuelle Mitglieder der kanonischen Nextcloud-Gruppe Datenschutzbeauftragte",
+        "Betroffene Person für die eigene Art.-15-Projektion"
+      ],
+      "recipients": [
+        {
+          "category": "Betroffene Person",
+          "allowed_disclosures": [
+            "Eigene Profilrevisionen ohne Kennungen anderer Datenschutzbeauftragter und ohne externe Evidenzinhalte"
+          ]
+        },
+        {
+          "category": "Aktuelle Mitglieder von Datenschutzbeauftragte",
+          "allowed_disclosures": [
+            "Für Prüfung und Revision erforderliche Profil- und Nachweisreferenzen"
+          ],
+          "conditions": [
+            "Serverseitige Prüfung der aktuellen Gruppenmitgliedschaft"
+          ]
+        }
+      ],
+      "data_sources": [
+        "DPO-geschützte Instanzkonfiguration",
+        "App-eigene Tabelle fdp_retention_profile"
+      ],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "UID und revisionsgeführte Konfigurationshandlungen von Datenschutzbeauftragten",
+        "planned_processing": "Audit der Rechts-, Backup- und Restore-Profilkonfiguration",
+        "missing_decision": "Eigenständige Rechtsgrundlage und verbindliche Dokumentation für die Speicherung der Profilrevisionshistorie",
+        "reason": "Das ausgewählte Rechtsprofil für die Adminfreigabehistorie bestimmt nicht automatisch die Rechtsgrundlage der Konfigurationshistorie selbst.",
+        "technical_impact": "Die Profilkonfiguration aktiviert keine Retention-Ausführung; ihre Historie bleibt auf Datenschutzbeauftragte und die subjectgebundene Auskunft begrenzt.",
+        "privacy_preserving_alternative": "Nur technische Referenzen statt Dokumentkopien oder Freitextsachverhalte speichern.",
+        "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
+        "blocking": true
+      },
+      "retention": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "Revisionshistorie der Rechts-, Backup- und Restore-Profilkonfiguration",
+        "planned_processing": "Aufbewahrung und spätere Löschung des DPO-Konfigurationsaudits",
+        "missing_decision": "Eigenständiger Trigger, Zeitraum, Holds sowie Lösch- und Nachweisgrenze der Profilrevisionen",
+        "reason": "Die sechsmonatige Frist der Adminfreigabehistorie gilt nicht für die getrennte Profilrevisionshistorie.",
+        "technical_impact": "Es existiert kein Lösch- oder Ausführungspfad für Profilrevisionen; sie werden nicht still unter einer fremden Policy gelöscht.",
+        "privacy_preserving_alternative": "Profilrevisionen weiterhin ausschließlich DPO-geschützt und in der Art.-15-Projektion minimiert ausgeben.",
+        "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
+        "blocking": true
+      },
+      "logging": {
+        "audit_requirements": [
+          "Revision, serverseitiger Erfassungszeitpunkt und handelnde DPO-UID bleiben in der app-eigenen Revisionszeile nachvollziehbar"
+        ],
+        "personal_data_policy": "Keine Evidenzdokumente, vollständigen Requests oder freien Fallschilderungen protokollieren."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Profilrevisionshistorie in der Nextcloud-Datenbank",
+          "planned_processing": "Einbeziehung in betriebliche Sicherung und Wiederherstellung",
+          "missing_decision": "Backup- und Restorebehandlung der Konfigurationshistorie selbst",
+          "reason": "Der in einer Profilrevision dokumentierte Backupnachweis ist nicht zugleich die Aufbewahrungsentscheidung für diese Revision.",
+          "technical_impact": "Kein vollständiger Entfall aus Sicherungen wird behauptet.",
+          "privacy_preserving_alternative": "Keine separate app-eigene Sicherungs- oder Exportkopie anlegen.",
+          "responsible_party": "Verantwortlicher Kunde, betriebliche IKT und Datenschutzbeauftragte",
+          "blocking": true
+        },
+        "restore_handling": "Nach Restore bleibt jede Profilrevision REVIEW-only; eine Retention-Ausführung wird dadurch nicht aktiviert."
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Eigene Profilrevisionen werden subjectgebunden und paginiert ohne Kennungen anderer DPO projiziert.",
+        "other_outputs": [
+          "DPO-geschützte Anzeige der Profilrevisionshistorie"
+        ],
+        "minimization": "In der Selbstauskunft keine externe Evidenzreferenz und keine Kennung anderer Datenschutzbeauftragter ausgeben."
+      },
+      "data_subject_rights": {
+        "article_15": "Subjectgebundene paginierte Projektion eigener Profilrevisionen ist implementiert.",
+        "rectification": "Korrekturen erfolgen als neue Revision; historische Auditzeilen werden nicht überschrieben.",
+        "restriction": "Bis zu einer gesonderten Entscheidung bleibt der Zugriff auf Datenschutzbeauftragte und die eigene Auskunft begrenzt.",
+        "erasure_or_anonymization": "PRIVACY-DECISION-REQUIRED: Es ist kein Lösch- oder Anonymisierungspfad freigegeben."
+      },
+      "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.",
+      "automated_decisions": "Die Konfiguration aktiviert keine automatische Retention-Ausführung und trifft keine Entscheidung über Beschäftigte.",
+      "special_safeguards": [
+        "Nur aktuelle Mitglieder von Datenschutzbeauftragte dürfen Revisionen speichern",
+        "Keine freie Rechtsgrundlage oder freie Profil-ID",
+        "Keine Leistungs- oder Verhaltenskontrolle",
+        "Keine Retention-Ausführung, kein Löschendpunkt und kein Hintergrundjob"
+      ],
+      "systems": [
+        "Nextcloud",
+        "Data Protection Center",
+        "App-eigene Datenbanktabelle fdp_retention_profile"
       ]
     }
   ]

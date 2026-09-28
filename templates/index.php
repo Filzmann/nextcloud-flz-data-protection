@@ -1,5 +1,5 @@
 <?php
-script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'main']);
+script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'main']);
 style('filzmann_data_protection', 'style');
 ?>
 
@@ -32,6 +32,52 @@ style('filzmann_data_protection', 'style');
                 <button type="button" data-retention-review>Jährliche Prüfung protokollieren</button>
             </form>
             <p id="data-protection-retention-policy-status" role="status" aria-live="polite"></p>
+        </section>
+    <?php endif; ?>
+
+    <?php if ($_['canConfigureRetentionExecutionProfile'] ?? false): ?>
+        <section id="data-protection-retention-execution-profile" class="data-protection-report" aria-labelledby="data-protection-retention-execution-profile-heading">
+            <h2 id="data-protection-retention-execution-profile-heading">Deutsches Rechts- und Backup-Profil</h2>
+            <p>Die Konfiguration dokumentiert ausschließlich die kundeneigenen Freigabegates. Retention bleibt technisch bei <strong>REVIEW</strong>; es wird weder ein Löschlauf noch ein Hintergrundjob aktiviert.</p>
+            <p><strong>Unveränderliche Produktgrenze:</strong> keine Leistungs- oder Verhaltenskontrolle.</p>
+            <form id="data-protection-retention-execution-profile-form">
+                <fieldset>
+                    <legend>Rechtsprofil</legend>
+                    <label>Geschlossenes Profil
+                        <select name="profileId" required>
+                            <option value="employment_collective_agreement_de">Deutsche Kollektivvereinbarung</option>
+                            <option value="legitimate_interest_it_security_de">Berechtigtes Interesse IT-Sicherheit</option>
+                        </select>
+                    </label>
+                    <label>Profilrevision <input name="profileRevision" required maxlength="64"></label>
+                    <label>Rechts-/Evidenzreferenz <input name="legalEvidenceReference" required maxlength="255"></label>
+                    <label>Geltungsbereich <input name="scopeReference" required maxlength="255"></label>
+                    <label>Kontenkategorien <input name="accountCategories" required maxlength="255"></label>
+                    <label>Zweckreferenz <input name="purposeReference" required maxlength="255"></label>
+                    <label>Erforderlichkeitsnachweis <input name="necessityAssessmentReference" maxlength="255"></label>
+                    <label>Auswirkungs-/Gegeninteressennachweis <input name="impactAssessmentReference" maxlength="255"></label>
+                    <label>Schutzmaßnahmen <input name="safeguardsReference" required maxlength="255"></label>
+                    <label><input type="checkbox" name="allAccountsEmployeesConfirmed"> Alle erfassten Konten sind Beschäftigtenkonten im Geltungsbereich</label>
+                    <label>Wirksam ab <input type="datetime-local" name="effectiveAt" required></label>
+                    <label>Nächste Rechtsprofilprüfung <input type="datetime-local" name="legalReviewDueAt" required></label>
+                </fieldset>
+                <fieldset>
+                    <legend>Backup- und Restore-Nachweis</legend>
+                    <label>Reguläre Aufbewahrungstage <input type="number" name="backupRegularDays" min="1" max="30" required></label>
+                    <label>Technischer Puffer in Tagen <input type="number" name="backupBufferDays" min="0" max="5" required></label>
+                    <label>Verantwortliche Betriebsstelle <input name="backupResponsibleParty" required maxlength="255"></label>
+                    <label>Backup-System/Scope <input name="backupScope" required maxlength="255"></label>
+                    <label>Backup-Evidenzreferenz <input name="backupEvidenceReference" required maxlength="255"></label>
+                    <label>Backup-Nachweiszeitpunkt <input type="datetime-local" name="backupEvidenceAt" required></label>
+                    <label>Nächste Backupprüfung <input type="datetime-local" name="backupReviewDueAt" required></label>
+                    <label>Restore-Testreferenz <input name="restoreTestReference" required maxlength="255"></label>
+                    <label>Restore-Testzeitpunkt <input type="datetime-local" name="restoreTestedAt" required></label>
+                    <label><input type="checkbox" name="dpoConfirmed" required> Vollständigkeit und Nachweise durch Datenschutzbeauftragte bestätigt</label>
+                </fieldset>
+                <input type="hidden" name="expectedRevision" value="0">
+                <button type="submit">Als neue Profilrevision speichern</button>
+            </form>
+            <p id="data-protection-retention-execution-profile-status" role="status" aria-live="polite"></p>
         </section>
     <?php endif; ?>
 

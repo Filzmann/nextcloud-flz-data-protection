@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Additive, revisionsgeführte Instanzkonfiguration für die geschlossenen
+  deutschen Rechtsprofile und die Backup-/Restore-Nachweise ergänzt. Nur
+  `Datenschutzbeauftragte` dürfen speichern; unvollständige, manipulierte oder
+  fällige Nachweise bleiben `REVIEW`, und es entsteht kein Job- oder Löschpfad.
+  Das Rechteinventar führt die DPO-Capability explizit; eigene Revisionen
+  werden subjectgebunden paginiert, und ihre separate Aufbewahrung bleibt als
+  Datenschutzentscheidung offen.
 - Die kanonische Nextcloud-Gruppe `Datenschutzbeauftragte` wird bei
   Installation beziehungsweise Upgrade idempotent über die native
   Gruppenverwaltung angelegt, ohne bestehende Gruppen oder Mitglieder zu ändern.

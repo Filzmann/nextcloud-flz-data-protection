@@ -72,6 +72,18 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'filzmann_data_protection:RetentionAccessService::canConfigure',
                 'high',
             ),
+            new PermissionRule(
+                'AppPermission',
+                'Rechts- und Backup-Profil konfigurieren',
+                'Ausschließlich aktuelle Mitglieder der kanonischen Gruppe Datenschutzbeauftragte',
+                'retention.execution-profile.configure',
+                'Rechts- und Backup-Profil konfigurieren',
+                'allow',
+                'app:filzmann_data_protection',
+                PermissionCondition::group('Datenschutzbeauftragte'),
+                'filzmann_data_protection:RetentionExecutionProfileService::canConfigure',
+                'high',
+            ),
         ]);
     }
 }
