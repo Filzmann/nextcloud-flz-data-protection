@@ -43,19 +43,9 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - Abweichungen und reproduzierbare Schritte:
 - Belege ohne Echtdaten:
 
-## Automatisierte lokale Vorprüfung
+## Vorbereitung
 
-Vor der manuellen Abnahme werden ausschließlich lokale, nicht mutierende
-Prüfungen ausgeführt und ihre Ergebnisse zusammen mit dem geprüften Commit im
-Ergebnisfeld dokumentiert:
-
-| Prüfung | Ergebnis | Aussagegrenze |
-|---|---|---|
-| `php tests/run.php` | einzutragen | Prüft die app-lokalen PHP-Verträge für Registrierung, Aggregation, Rechte, Privacy, Processing-Metadata, Self-Service, Retention und temporären Adminzugriff. |
-| `node tests/run-js.mjs` | einzutragen | Prüft die JavaScript-/App-Verträge sowie Security-, Report-, Retention- und Layout-Smokes. |
-| `git diff --check` | einzutragen | Prüft die ausstehenden Änderungen auf Whitespacefehler. |
-
-Diese Vorprüfung verändert weder DDEV-/`occ`-Zustand noch Installation,
-App-Aktivierung, Providerlaufzeitdaten oder Retention-Daten. Sie ersetzt weder
-die manuelle Bedien- und Integrationsprüfung noch die offene Entscheidung zur
-produktiven Retention-Ausführung.
+Vor der manuellen Abnahme die vorgesehenen lokalen Prüfungen ausführen und ihre
+Ergebnisse zusammen mit dem geprüften Commit im Ergebnisfeld dokumentieren.
+Die Vorprüfung ersetzt weder die manuelle Bedien- und Integrationsprüfung noch
+eine produktive Retention-Entscheidung.
