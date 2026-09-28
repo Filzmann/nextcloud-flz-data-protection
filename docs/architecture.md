@@ -141,8 +141,13 @@ Dieser Vertrag ist das freigegebene Zielbild für den ersten ausführenden
 DP-07-Piloten. Die additive Tabelle `fdp_retention_profile` und der
 DPO-geschützte Konfigurationsweg setzen inzwischen ausschließlich das
 geschlossene deutsche Rechts-/Backup-Profil um. Ein leerer Installations- oder
-Upgradestand enthält keine Kundenauswahl und bleibt `REVIEW`; jede Änderung
-erzeugt eine neue, optimistisch revisionsgesicherte Auditzeile. Dieser Schritt
+Upgradestand enthält keine Kundenauswahl und bleibt `REVIEW`. Beim ersten
+DPO-Zugriff weist die App deshalb die verpflichtende Ersteinrichtung aus; eine
+Nextcloud-Migration fragt keine Organisations- oder Betriebsdaten ab.
+Unvollständige Eingaben erzeugen keine Zeile. Jede vollständige Erst- oder
+Folgekonfiguration erzeugt eine neue, optimistisch revisionsgesicherte und
+anschließend appseitig unveränderliche Auditzeile; die App bietet für
+vorhandene Revisionen weder einen Aktualisierungs- noch einen Löschpfad. Dieser Schritt
 aktiviert keine Löschung, keinen Hintergrundjob und keine `execute()`-Methode.
 Die Profilrevisionshistorie ist eine eigene Verarbeitung und erbt weder die
 Sechsmonatsfrist noch den späteren Löschpfad der Adminfreigabehistorie. Ihre

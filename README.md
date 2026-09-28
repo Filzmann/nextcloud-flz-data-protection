@@ -41,8 +41,12 @@ remain visible and are not replaced by heuristic fallback access.
   admin identifiers;
 - an additive, append-only instance configuration for the two closed German
   legal profiles and the proven backup/restore boundary. Only current members
-  of `Datenschutzbeauftragte` may create a revision. Missing, invalid or stale
-  evidence remains fail-closed at `REVIEW`; the immutable prohibition of
+  of `Datenschutzbeauftragte` may complete the mandatory first-run setup and
+  create a revision. The app ships without customer values, exposes the open
+  setup explicitly to that group and rejects incomplete submissions without
+  creating a row. Every successful later change appends another revision;
+  the app exposes no update or delete path for existing revisions. Missing,
+  invalid or stale evidence remains fail-closed at `REVIEW`; the immutable prohibition of
   performance and conduct monitoring cannot be configured away;
 - a public additive V1 `ProcessingMetadataProvider` contract with a
   duplicate- and version-safe lazy registry, strict app/catalog ownership,

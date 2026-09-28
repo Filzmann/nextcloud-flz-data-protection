@@ -11,15 +11,22 @@ const fieldNames = [
     'effectiveAt', 'legalReviewDueAt', 'backupEvidenceAt', 'backupReviewDueAt', 'restoreTestedAt',
     'backupRegularDays', 'backupBufferDays', 'allAccountsEmployeesConfirmed', 'dpoConfirmed', 'expectedRevision',
 ];
-const elements = Object.fromEntries(fieldNames.map((name) => [name, { value: '', checked: false }]));
+const elements = Object.fromEntries(fieldNames.map((name) => [name, { value: '', checked: false, required: false }]));
 const listeners = {};
-const form = { elements, addEventListener: (name, callback) => { listeners[name] = callback; } };
+let valid = false;
+let validityReports = 0;
+const form = {
+    elements,
+    addEventListener: (name, callback) => { listeners[name] = callback; },
+    checkValidity: () => valid,
+    reportValidity: () => { validityReports += 1; },
+};
 const statusElement = { textContent: '', role: '', setAttribute: (_name, value) => { statusElement.role = value; } };
 const document = { getElementById: id => id.endsWith('-form') ? form : (id.endsWith('-status') ? statusElement : null) };
 const FormData = class { constructor(value) { this.form = value; } get(name) { const field = this.form.elements[name]; return field.checked ? 'on' : field.value; } };
 const calls = [];
-const state = {
-    action: 'REVIEW', configurationValid: true, executionAvailable: false, performanceMonitoringProhibited: true, blockers: [],
+const configuredState = {
+    action: 'REVIEW', setupRequired: false, configurationValid: true, executionAvailable: false, performanceMonitoringProhibited: true, blockers: [],
     configuration: {
         revision: 1, profileId: 'employment_collective_agreement_de', profileRevision: 'SYNTH-REV-1', legalEvidenceReference: 'SYNTH-EVIDENCE-1',
         scopeReference: 'Synthetic scope', accountCategories: 'Synthetic employees', purposeReference: 'Synthetic security purpose',
@@ -30,22 +37,41 @@ const state = {
         allAccountsEmployeesConfirmed: true, dpoConfirmed: true,
     },
 };
+const initialState = {
+    action: 'REVIEW', setupRequired: true, configurationValid: false, executionAvailable: false,
+    performanceMonitoringProhibited: true, blockers: ['configuration_missing'], configuration: null,
+};
 const fetch = async (url, options = {}) => {
     calls.push([url, options]);
-    return { ok: true, json: async () => options.method === 'PUT' ? { status: state } : { status: state, history: [] } };
+    return { ok: true, json: async () => options.method === 'PUT' ? { status: configuredState } : { status: initialState, history: [] } };
 };
 const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
 
 vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number });
 await new Promise(resolve => setTimeout(resolve, 0));
-if (calls[0]?.[1]?.headers?.requesttoken !== OC.requestToken || elements.expectedRevision.value !== '1') throw new Error('Profilstatus wird nicht sitzungsgebunden geladen und revisionsgetreu dargestellt.');
+if (calls[0]?.[1]?.headers?.requesttoken !== OC.requestToken || elements.expectedRevision.value !== '0') throw new Error('Leerer Profilstatus wird nicht sitzungsgebunden mit dem Erst-Revisionsanker geladen.');
+if (!statusElement.textContent.includes('Ersteinrichtung erforderlich')) throw new Error('Die verpflichtende DPO-Ersteinrichtung wird nicht explizit ausgewiesen.');
+
+await listeners.submit({ preventDefault() {} });
+if (calls.length !== 1 || validityReports !== 1) throw new Error('Unvollständige UI-Eingaben dürfen keine Profilrevision anfordern.');
+
+for (const field of ['profileId', 'profileRevision', 'legalEvidenceReference', 'scopeReference', 'accountCategories', 'purposeReference', 'safeguardsReference', 'backupResponsibleParty', 'backupScope', 'backupEvidenceReference', 'restoreTestReference']) {
+    elements[field].value = configuredState.configuration[field];
+}
+for (const field of ['effectiveAt', 'legalReviewDueAt', 'backupEvidenceAt', 'backupReviewDueAt', 'restoreTestedAt']) elements[field].value = configuredState.configuration[field];
+elements.backupRegularDays.value = '30';
+elements.backupBufferDays.value = '5';
+elements.allAccountsEmployeesConfirmed.checked = true;
+elements.dpoConfirmed.checked = true;
+elements.expectedRevision.value = '0';
+valid = true;
 
 await listeners.submit({ preventDefault() {} });
 const update = calls[1];
 const body = JSON.parse(update?.[1]?.body || '{}');
 if (update?.[1]?.method !== 'PUT' || update?.[1]?.headers?.requesttoken !== OC.requestToken) throw new Error('Profilmutation ist nicht CSRF-geschützt.');
 if (body.configuration?.profileId !== 'employment_collective_agreement_de'
-    || body.configuration?.expectedRevision !== 1
+    || body.configuration?.expectedRevision !== 0
     || body.configuration?.performanceMonitoringProhibited !== true) {
     throw new Error('Geschlossenes Profil, Revision oder unveränderliche Schutzgrenze gehen bei der Mutation verloren.');
 }

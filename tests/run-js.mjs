@@ -49,6 +49,12 @@ if (!adminAccessScript.includes('requesttoken = OC.requestToken')) throw new Err
 for (const contract of ['data-protection-retention-execution-profile-form', 'performanceMonitoringProhibited', 'configurationValid']) {
     if (!template.includes(contract) && !executionProfileScript.includes(contract)) throw new Error(`Kundenprofil-UI-Vertrag fehlt: ${contract}`);
 }
+if (!template.includes('Ersteinrichtung erforderlich')) throw new Error('Der serverseitige Hinweis auf die verpflichtende DPO-Ersteinrichtung fehlt.');
+if (!template.includes('appseitig unveränderliche Profilrevision')) throw new Error('Die append-only Wirkung der Profilrevision wird im Formular nicht transparent benannt.');
+const profileSectionStart = template.indexOf("<?php if ($_['canConfigureRetentionExecutionProfile'] ?? false): ?>");
+const setupNotice = template.indexOf('data-protection-retention-execution-profile-setup-required');
+const firstProfileSectionEnd = template.indexOf('<?php endif; ?>', profileSectionStart);
+if (profileSectionStart < 0 || setupNotice < profileSectionStart || setupNotice > firstProfileSectionEnd) throw new Error('Der Ersteinrichtungshinweis ist nicht auf DPO-Konfigurierende begrenzt.');
 if (!executionProfileScript.includes('/api/v1/retention-execution-profile')) throw new Error('Die Kundenprofil-Konfiguration verwendet nicht den geschlossenen API-Pfad.');
 if (!executionProfileScript.includes('requesttoken: OC.requestToken')) throw new Error('Die Kundenprofil-Mutation sendet kein CSRF-Token.');
 if (/\/(execute|delete|run)\b|method\s*:\s*['"]DELETE['"]/i.test(executionProfileScript)) throw new Error('Die Kundenprofil-UI darf keinen Retention-Ausführungspfad enthalten.');

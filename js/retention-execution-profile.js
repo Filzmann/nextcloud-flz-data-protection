@@ -31,6 +31,14 @@
         return local.toISOString().slice(0, 16);
     };
 
+    const applyProfileRequirements = () => {
+        const collectiveAgreement = form.elements.profileId.value === 'employment_collective_agreement_de';
+        const legitimateInterest = form.elements.profileId.value === 'legitimate_interest_it_security_de';
+        form.elements.allAccountsEmployeesConfirmed.required = collectiveAgreement;
+        form.elements.necessityAssessmentReference.required = legitimateInterest;
+        form.elements.impactAssessmentReference.required = legitimateInterest;
+    };
+
     const render = state => {
         const configuration = state.configuration;
         if (configuration) {
@@ -41,9 +49,14 @@
             form.elements.allAccountsEmployeesConfirmed.checked = configuration.allAccountsEmployeesConfirmed === true;
             form.elements.dpoConfirmed.checked = configuration.dpoConfirmed === true;
             form.elements.expectedRevision.value = String(configuration.revision);
+        } else {
+            form.elements.expectedRevision.value = '0';
         }
+        applyProfileRequirements();
         statusElement.setAttribute('role', 'status');
-        statusElement.textContent = state.configurationValid
+        statusElement.textContent = state.setupRequired === true
+            ? 'Ersteinrichtung erforderlich: Es wurde noch keine Profilrevision gespeichert. Retention bleibt REVIEW-only; eine Ausführung ist nicht verfügbar.'
+            : state.configurationValid
             ? 'Profilnachweise sind aktuell. Die Retention bleibt REVIEW-only; eine Ausführung ist nicht verfügbar.'
             : 'Profilstatus REVIEW: ' + state.blockers.join(', ') + '. Eine Ausführung ist nicht verfügbar.';
         if (state.performanceMonitoringProhibited !== true || state.executionAvailable !== false) {
@@ -51,8 +64,17 @@
         }
     };
 
+    form.addEventListener('change', applyProfileRequirements);
+
     form.addEventListener('submit', async event => {
         event.preventDefault();
+        applyProfileRequirements();
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            statusElement.setAttribute('role', 'alert');
+            statusElement.textContent = 'Die Ersteinrichtung ist unvollständig. Es wurde keine Profilrevision gespeichert.';
+            return;
+        }
         try {
             const fields = new FormData(form);
             const configuration = {};

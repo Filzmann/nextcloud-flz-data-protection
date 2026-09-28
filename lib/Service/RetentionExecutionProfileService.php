@@ -42,6 +42,7 @@ final class RetentionExecutionProfileService {
 
         return [
             'action' => 'REVIEW',
+            'setupRequired' => $configuration === null,
             'configurationValid' => $blockers === [],
             'executionAvailable' => false,
             'performanceMonitoringProhibited' => true,

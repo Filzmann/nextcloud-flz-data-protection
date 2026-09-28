@@ -40,6 +40,9 @@ style('filzmann_data_protection', 'style');
             <h2 id="data-protection-retention-execution-profile-heading">Deutsches Rechts- und Backup-Profil</h2>
             <p>Die Konfiguration dokumentiert ausschließlich die kundeneigenen Freigabegates. Retention bleibt technisch bei <strong>REVIEW</strong>; es wird weder ein Löschlauf noch ein Hintergrundjob aktiviert.</p>
             <p><strong>Unveränderliche Produktgrenze:</strong> keine Leistungs- oder Verhaltenskontrolle.</p>
+            <?php if ($_['retentionExecutionProfileSetupRequired'] ?? false): ?>
+                <p id="data-protection-retention-execution-profile-setup-required" class="data-protection-warning"><strong>Ersteinrichtung erforderlich:</strong> Erst eine vollständig gespeicherte DPO-Profilrevision dokumentiert Rechtsgrundlage, Backupgrenze und Restore-Test. Bis dahin bleibt ausschließlich REVIEW verfügbar.</p>
+            <?php endif; ?>
             <form id="data-protection-retention-execution-profile-form">
                 <fieldset>
                     <legend>Rechtsprofil</legend>
@@ -75,9 +78,9 @@ style('filzmann_data_protection', 'style');
                     <label><input type="checkbox" name="dpoConfirmed" required> Vollständigkeit und Nachweise durch Datenschutzbeauftragte bestätigt</label>
                 </fieldset>
                 <input type="hidden" name="expectedRevision" value="0">
-                <button type="submit">Als neue Profilrevision speichern</button>
+                <button type="submit">Als neue, appseitig unveränderliche Profilrevision speichern</button>
             </form>
-            <p id="data-protection-retention-execution-profile-status" role="status" aria-live="polite"></p>
+            <p id="data-protection-retention-execution-profile-status" role="status" aria-live="polite"><?php if ($_['retentionExecutionProfileSetupRequired'] ?? false): ?>Ersteinrichtung erforderlich; es wurde noch keine Profilrevision gespeichert.<?php endif; ?></p>
         </section>
     <?php endif; ?>
 

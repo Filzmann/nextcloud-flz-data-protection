@@ -4,7 +4,10 @@
 
 - Additive, revisionsgeführte Instanzkonfiguration für die geschlossenen
   deutschen Rechtsprofile und die Backup-/Restore-Nachweise ergänzt. Nur
-  `Datenschutzbeauftragte` dürfen speichern; unvollständige, manipulierte oder
+  `Datenschutzbeauftragte` sehen und vervollständigen die verpflichtende
+  Ersteinrichtung; unvollständige Eingaben erzeugen keine Revision, und jede
+  spätere Änderung wird ausschließlich als neue, appseitig unveränderliche Revision
+  angefügt. Unvollständige, manipulierte oder
   fällige Nachweise bleiben `REVIEW`, und es entsteht kein Job- oder Löschpfad.
   Das Rechteinventar führt die DPO-Capability explizit; eigene Revisionen
   werden subjectgebunden paginiert, und ihre separate Aufbewahrung bleibt als

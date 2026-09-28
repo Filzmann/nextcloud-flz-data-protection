@@ -47,6 +47,7 @@ $clock = new class implements ITimeFactory {
 $service = new RetentionExecutionProfileService($repository, $groups, $session, $clock);
 $empty = $service->status();
 $assertSame('REVIEW', $empty['action'], 'Eine leere Installation muss REVIEW-only starten.');
+$assertSame(true, $empty['setupRequired'], 'Eine leere Installation muss die verpflichtende DPO-Ersteinrichtung ausweisen.');
 $assertSame(false, $empty['configurationValid'], 'Eine leere Installation darf nicht als konfiguriert gelten.');
 $assertSame(false, $empty['executionAvailable'], 'Die Konfiguration darf keinen Ausführungspfad aktivieren.');
 $assertSame(true, $empty['performanceMonitoringProhibited'], 'Das Verbot der Leistungs- und Verhaltenskontrolle ist keine Kundenoption.');
@@ -77,14 +78,19 @@ $collective = [
     'expectedRevision' => 0,
 ];
 
+$controller = new RetentionExecutionProfileController(new class implements IRequest {}, $service);
+$rowsBeforeIncompleteSetup = $repository->rows;
+$assertSame(400, $controller->save(['expectedRevision' => 0])->getStatus(), 'Eine unvollständige Ersteinrichtung muss als ungültig abgewiesen werden.');
+$assertSame($rowsBeforeIncompleteSetup, $repository->rows, 'Eine unvollständige Ersteinrichtung darf keine Profilrevision erzeugen.');
+
 $saved = $service->save($collective);
 $assertSame(1, $saved['configuration']['revision'], 'Die erste gültige Konfiguration muss Revision 1 erhalten.');
+$assertSame(false, $saved['setupRequired'], 'Nach der ersten vollständigen Revision darf die Ersteinrichtung nicht weiter als offen gelten.');
 $assertSame('dpo', $saved['configuration']['changedBy'], 'Der serverseitige DPO-Akteur muss auditiert werden.');
 $assertSame(true, $saved['configurationValid'], 'Eine vollständige und aktuelle Konfiguration muss als gültig erkannt werden.');
 $assertSame('REVIEW', $saved['action'], 'Auch eine gültige Konfiguration darf keine Löschung aktivieren.');
 $assertSame(false, $saved['executionAvailable'], 'Im Konfigurationsschritt darf kein ausführender Pfad entstehen.');
 
-$controller = new RetentionExecutionProfileController(new class implements IRequest {}, $service);
 $assertSame(200, $controller->show()->getStatus(), 'Der DPO-geschützte Controller liefert den Profilstatus nicht aus.');
 $controllerRows = $repository->rows;
 $session->uid = 'native-admin';
@@ -138,8 +144,10 @@ $legitimateInterest = [
     'safeguardsReference' => 'LIA-SAFEGUARDS-1',
     'expectedRevision' => 1,
 ];
+$immutableFirstRevision = $repository->rows[0];
 $savedInterest = $service->save($legitimateInterest);
 $assertSame(2, $savedInterest['configuration']['revision'], 'Das zweite geschlossene Profil muss revisionsgesichert gespeichert werden.');
+$assertSame($immutableFirstRevision, $repository->rows[0], 'Eine Folgerevision darf die erste Profilrevision nicht verändern.');
 
 $validLatest = $repository->rows[1];
 $repository->rows[1]['legalEvidenceReference'] = '';
@@ -166,6 +174,10 @@ $assertSame(false, $stale['executionAvailable'], 'Ein fälliger Review darf kein
 
 if (method_exists($service, 'execute') || method_exists($service, 'delete')) {
     throw new RuntimeException('Der Konfigurationsservice darf keinen Retention-Ausführungspfad enthalten.');
+}
+if (method_exists(RetentionExecutionProfileRepositoryInterface::class, 'update')
+    || method_exists(RetentionExecutionProfileRepositoryInterface::class, 'delete')) {
+    throw new RuntimeException('Die Profilablage darf keinen appseitigen Änderungs- oder Löschpfad für bestehende Revisionen anbieten.');
 }
 
 echo "Retention execution profile tests passed.\n";

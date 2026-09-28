@@ -31,13 +31,16 @@ final class PageController extends Controller {
     public function index(): TemplateResponse {
         $canManageAdminAccess = $this->adminAccess->canManageGrants();
         $showMissingAdminGrant = $this->adminAccess->currentAdminNeedsGrant();
+        $canConfigureRetentionExecutionProfile = $this->retentionExecutionProfile->canConfigure();
         return new TemplateResponse(Application::APP_ID, 'index', [
             'canReviewRetention' => $this->retentionAccess->canReview(),
             'canManageAdminAccess' => $canManageAdminAccess,
             'showMissingAdminGrant' => $showMissingAdminGrant,
             'showAdminAccessLink' => $showMissingAdminGrant && $canManageAdminAccess,
             'canConfigureAdminHistoryRetention' => $this->adminHistoryRetention->canConfigure(),
-            'canConfigureRetentionExecutionProfile' => $this->retentionExecutionProfile->canConfigure(),
+            'canConfigureRetentionExecutionProfile' => $canConfigureRetentionExecutionProfile,
+            'retentionExecutionProfileSetupRequired' => $canConfigureRetentionExecutionProfile
+                && $this->retentionExecutionProfile->status()['setupRequired'] === true,
         ]);
     }
 }
