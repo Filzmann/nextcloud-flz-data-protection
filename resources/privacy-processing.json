@@ -156,12 +156,12 @@
         "status": "PRIVACY-DECISION-REQUIRED",
         "affected_data": "Personenbezogene Adminfreigabehistorie",
         "planned_processing": "Sicherheitsprüfung und Audit des fachlichen Vollzugriffs",
-        "missing_decision": "Anwendbare Rechtsgrundlage für Speicherung und Nutzung der Freigabehistorie",
-        "reason": "Die Rechtsgrundlage ist eine rechtliche beziehungsweise datenschutzrechtliche Entscheidung.",
-        "technical_impact": "Eine rechtlich freigegebene Angabe kann im Provider noch nicht ausgewiesen werden.",
+        "missing_decision": "Die konkrete Kundeninstanz muss eines der geschlossenen deutschen Profile employment_collective_agreement_de oder legitimate_interest_it_security_de auswählen und dessen Pflichtangaben, Geltungsbereich, Revision, Wirksamkeitsdatum, Prüftermin und dokumentierte DPO-Bestätigung vollständig app-lokal führen.",
+        "reason": "Das auslieferbare Paket darf keine kundenspezifische Vereinbarung, Interessenabwägung oder Rechtsgrundlagenauswahl enthalten. Eine Instanzauswahl ist weder rechtliche Validierung noch Nachweis fortbestehender Aktivierungsvoraussetzungen; freie Rechtsgrundlagen sind unzulässig.",
+        "technical_impact": "Die Retention-Ausführung startet deaktiviert und bleibt fail-closed bei REVIEW, bis ein vollständiges, aktuelles und DPO-bestätigtes Profil in der konkreten Instanz vorliegt.",
         "privacy_preserving_alternative": "Nur minimale UIDs und Zeitpunkte speichern und Berichtsausgaben auf den eigenen Bezug begrenzen.",
-        "responsible_party": "ungeklärt",
-        "blocking": false
+        "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
+        "blocking": true
       },
       "retention": {
         "policy_id": "temporary_admin_access_history_default_six_months",
@@ -188,12 +188,12 @@
           "status": "PRIVACY-DECISION-REQUIRED",
           "affected_data": "Persistierte Adminfreigabehistorie",
           "planned_processing": "Einbeziehung in Sicherung und Wiederherstellung der Nextcloud-Datenbank",
-          "missing_decision": "Betriebliche Backup-Relevanz und Aufbewahrungsdauer",
-          "reason": "Der App-Code kennt den betrieblichen Backupzyklus nicht.",
-          "technical_impact": "Die App kann keinen vollständigen Entfall aus Sicherungen behaupten.",
+          "missing_decision": "Die Produktgrenze ist auf höchstens 30 ganze Kalendertage reguläre Backupaufbewahrung plus höchstens fünf ganze Kalendertage technischen Puffer festgelegt; jede konkrete Instanz muss innerhalb dieser Grenzen ihre Kundenfrist sowie Evidenzreferenz, Nachweiszeitpunkt, Prüftermin, verantwortliche Betriebsstelle, DPO-Bestätigung und einen erfolgreichen Restore-Nachweis app-lokal führen.",
+          "reason": "Eine konfigurierte Sollfrist belegt weder das tatsächliche Löschen abgelaufener Sicherungen noch Restore-Epoch, Quarantäne und erneute Löschvormerkung. Die App kann externe Sicherungsmedien nicht selbst prüfen.",
+          "technical_impact": "Die Retention-Ausführung bleibt fail-closed bei REVIEW; die App darf keinen vollständigen Entfall aus Sicherungen behaupten.",
           "privacy_preserving_alternative": "Keine separate app-eigene Backupkopie anlegen.",
-          "responsible_party": "ungeklärt",
-          "blocking": false
+          "responsible_party": "Verantwortlicher Kunde, betriebliche IKT und Datenschutzbeauftragte",
+          "blocking": true
         },
         "restore_handling": "Nach Restore wird die Aufbewahrungsfrist aus dem ursprünglichen tatsächlichen Ende der Adminfreigabe neu bewertet. Bereits abgelaufene ungesperrte Historie wird erneut zur Löschung eingeplant; eine fachliche Adminfreigabe wird durch Restore niemals reaktiviert."
       },

@@ -43,15 +43,21 @@ than hidden compatibility claims.
    `docs/architecture.md` only in a separately authorized test-driven task.
    The first pilot is limited to `fdp_admin_access`; the implemented V1
    preview remains `REVIEW`-only and receives no `execute()` method. Before
-   any activation, resolve the processing catalog's legal-basis decision,
-   prove the real 30-day backup retention plus five-day maximum technical
-   buffer, and prove the fail-closed restore barrier. The implementation must
-   then cover the DPO-only policy/hold boundary, fixed policy/evaluation
-   snapshot, retroactive recalculation from the original grant end, stable
-   ordering, per-record atomicity, concurrency, idempotency, retry and
-   data-minimizing 30-day failure evidence with all positive and negative
-   tests listed in the architecture. Execution is automatic without manual
-   per-record release only after this gate is green;
+   any activation, implement and validate the closed German customer-profile
+   model without free legal-basis input. Keep every customer's profile
+   selection, agreement or balancing reference, scope, effective date, review
+   date and DPO confirmation exclusively in app-instance configuration; the
+   distributable package must ship with no customer selection. Independently
+   prove each instance's configured real backup retention within at most 30
+   regular days plus at most five technical buffer days and prove the
+   fail-closed restore barrier. A policy selection or entered target duration
+   is not operational evidence. The
+   implementation must then cover the DPO-only policy/hold boundary, fixed
+   policy/evaluation snapshot, retroactive recalculation from the original
+   grant end, stable ordering, per-record atomicity, concurrency, idempotency,
+   retry and data-minimizing 30-day failure evidence with all positive and
+   negative tests listed in the architecture. Execution is automatic without
+   manual per-record release only after this gate is green;
 6. Keep the DPO-managed lifecycle source separate from that execution pilot.
    A DPO retention case may later record a scoped, corrected lifecycle fact,
    but must never claim `EMPLOYMENT_ENDED`; the admin-history pilot continues

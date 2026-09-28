@@ -164,6 +164,47 @@ UI-Sichtbarkeit oder einem fremden App-Speicher abgeleitet werden. Der heutige
 Offset-Cursor der V1-Vorschau ist keine zulässige Ausführungsreihenfolge; die
 Ausführung benötigt eine stabile Keyset-Reihenfolge.
 
+### Deutsches Kunden- und Policyprofil
+
+Das auslieferbare Produkt ist zunächst ausschließlich für Verantwortliche in
+Deutschland vorgesehen. Rechtsgrundlage, Kollektivvereinbarung und
+Backupbetrieb bleiben kundeneigene Governance- und Betriebsentscheidungen;
+die App prüft weder deren rechtliche Wirksamkeit noch zertifiziert sie die
+Angemessenheit einer Interessenabwägung. Sie darf nur Vollständigkeit,
+Revision, Gültigkeit und Freigabestatus eines geschlossenen technischen
+Profils prüfen und bleibt bei jeder Lücke fail-closed bei `REVIEW`.
+
+Der erste Pilot kennt genau die folgenden Rechtsgrundlagenprofile:
+
+| Profil-ID | Zulässiger Einsatz und Pflichtnachweise |
+| --- | --- |
+| `employment_collective_agreement_de` | Beschäftigtenverarbeitung auf Grundlage von § 26 Abs. 4 BDSG in Verbindung mit Art. 88 DSGVO und einer beim Kunden geltenden Betriebs-, Dienst- oder Kollektivvereinbarung. Erforderlich sind die konkrete Vereinbarungsreferenz, deren Revision, Geltungsbereich, Wirksamkeitsdatum, nächster Prüftermin, die Bestätigung, dass alle vom Profil erfassten Administrationskonten Beschäftigtenkonten im Geltungsbereich sind, sowie die dokumentierte Bestätigung durch `Datenschutzbeauftragte`. |
+| `legitimate_interest_it_security_de` | Enger Auffangtatbestand für einen deutschen Verantwortlichen nur bei dokumentierter Interessenabwägung zu Art. 6 Abs. 1 lit. f DSGVO. Erforderlich sind konkreter IT-Sicherheitszweck, Erforderlichkeitsprüfung, benanntes berechtigtes Interesse, geprüfte Auswirkungen und Gegeninteressen, Schutzmaßnahmen, betroffene Kontenkategorien, Revision, Wirksamkeitsdatum, nächster Prüftermin sowie die dokumentierte Bestätigung durch `Datenschutzbeauftragte`. Das Profil darf eine fehlende oder nicht einschlägige Kollektivvereinbarung nicht lediglich durch eine Auswahl im UI ersetzen. |
+
+Freie Profil-IDs, freie Rechtsgrundlagen, pauschale Artikelangaben und bloße
+Freitextbegründungen sind unzulässig. Ein Profilwechsel ist eine neue,
+nicht rückdatierbare Policyrevision. Ein abgelaufener Prüftermin, eine
+geänderte Kontenkategorie, ein verlorener Geltungsbereich oder eine fehlende
+DPO-Bestätigung blockiert die Ausführung ohne Nebenwirkung. Erweiterungen auf
+andere Rechtsordnungen, weitere Rechtsgrundlagen oder gehostete Betriebsmodelle
+benötigen eine neue Produkt- und Datenschutzentscheidung; sie sind nicht Teil
+dieses deutschen ersten Modells.
+
+Die Auswahl eines Profils und sämtliche Vereinbarungs-, Abwägungs-,
+Geltungs-, Evidenz- und Verantwortlichenreferenzen sind Daten der konkreten
+Kundeninstanz. Sie dürfen weder als Kundenvorgabe im auslieferbaren
+App-Paket, im Processing-Katalog noch in Produktdokumentation festgeschrieben
+werden. Das Paket liefert nur Profildefinitionen, Validierungsgrenzen und
+den deaktivierten Default. Eine Instanz darf die Ausführung erst nach
+vollständiger app-lokaler Konfiguration und DPO-Bestätigung aktivieren.
+
+Unabhängig vom gewählten Profil erzwingt das Produkt dauerhaft folgende
+Grenzen: keine Leistungs- oder Verhaltenskontrolle, keine darauf gerichteten
+Exporte, Kennzahlen, Verknüpfungen oder Zweckwechsel; serverseitige
+Privacy-Autorisierung; Datensparsamkeit; Holds; atomare und idempotente
+Ausführung; Retry- und Auditgrenzen; Restore-Quarantäne sowie keine direkte
+Löschung in fremden Apps. Diese Grenzen sind nicht kundenseitig abschaltbar.
+
 ### DPO-Retentionfall und späteres Beschäftigungsereignis
 
 Bis eine autoritative Personalquelle angeschlossen ist, darf ausschließlich
@@ -358,6 +399,33 @@ Jeder Restore läuft vor Freigabe des Systems durch eine Fail-closed-Barriere:
 
 Kann der Betrieb Restore-Epoch, Quarantäne oder die 35-Tage-Grenze nicht
 garantieren, bleibt die Ausführung deaktiviert und die Vorschau bei `REVIEW`.
+
+Die Backupgrenze darf später app-lokal als geschlossenes deutsches
+Betriebsprofil konfiguriert werden. Bei einbezogenen Daten sind ausschließlich
+eine reguläre Aufbewahrung von 1 bis 30 ganzen Kalendertagen und ein
+technischer Puffer von 0 bis 5 ganzen Kalendertagen zulässig; die Summe darf
+35 Kalendertage nie überschreiten. Eine Verlängerung über diese Obergrenzen,
+eine freie Einheit oder ein unbefristeter Wert sind nicht konfigurierbar. Eine
+Verkürzung gilt erst mit einer neuen, nicht rückdatierten Policyrevision und
+einem positiven Betriebsnachweis.
+
+Zur Aktivierung gehören mindestens verantwortliche Betriebsstelle,
+Backup-System beziehungsweise Scope, Evidenzreferenz, Nachweiszeitpunkt,
+nächster Prüftermin und DPO-Bestätigung. Der Nachweis muss das tatsächliche
+Auslaufen beziehungsweise Löschen abgelaufener Sicherungen und einen
+erfolgreichen Restore-Test mit Restore-Epoch, Quarantäne und erneuter
+Löschvormerkung abdecken. Eine eingetragene Frist, ein Herstellerdatenblatt
+oder eine Selbstauskunft der App ist kein Betriebsnachweis. Fehlt oder
+verfällt ein Pflichtwert oder überschreitet eine Änderung die Produktgrenze,
+bleibt beziehungsweise wechselt die Ausführung fail-closed zu blockiert. Der
+Kunde verantwortet Policy, Sicherungsbetrieb, Nachweise und regelmäßige
+Prüfung; die App kann externe Sicherungsmedien weder löschen noch deren
+tatsächlichen Entfall selbst feststellen.
+
+Auch konkrete Backupwerte und Nachweise sind ausschließlich
+Instanzkonfiguration. Das auslieferbare Paket enthält keine vorausgewählte
+Kundenfrist, Evidenzreferenz oder Behauptung über einen bestehenden
+Sicherungsbetrieb.
 
 ### Provider-/Consumer-Grenze und Implementierungsfreigabe
 
