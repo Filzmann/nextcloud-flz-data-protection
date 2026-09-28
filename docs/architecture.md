@@ -127,7 +127,280 @@ Backupgrenze, Sperrdurchsetzung, Auditvollständigkeit, Fehlerrückbau sowie
 Provider-/Consumer-Verhalten müssen vor jeder destruktiven Maßnahme
 freigegeben und positiv wie negativ getestet werden. Insbesondere fehlen ein
 technisch durchgesetzter Hold-Datensatz samt Setzen/Aufheben/Audit und
-Prüftermin, die betriebliche Backupentscheidung sowie der nebenläufigkeits-
-und fehlerrückbaufeste Ausführungs- und Wiederholungsnachweis. Das Datenschutz-Center
-koordiniert nur öffentliche Provider; es liest oder löscht niemals direkt in
-Fremdtabellen, fremden Dateien oder fremden App-Speichern.
+Prüftermin, der betriebliche Nachweis der beschlossenen Backupgrenze sowie der
+nebenläufigkeits- und fehlerrückbaufeste Ausführungs- und
+Wiederholungsnachweis. Das Datenschutz-Center koordiniert nur öffentliche
+Provider; es liest oder löscht niemals direkt in Fremdtabellen, fremden
+Dateien oder fremden App-Speichern.
+
+## DP-07-Pilotvertrag für die eigene Adminfreigabehistorie
+
+### Status, Scope und kanonische Quellen
+
+Dieser Vertrag ist das freigegebene Zielbild für den ersten ausführenden
+DP-07-Piloten. Er aktiviert keine Löschung und beschreibt weder ein
+vorhandenes Schema noch eine vorhandene Laufzeitfunktion. Bis zu einer
+gesondert freigegebenen, testgetriebenen Umsetzung bleibt der öffentliche
+V1-Vertrag unverändert `REVIEW`-only und ohne `execute()`-Methode.
+
+Der Pilot ist ausschließlich für die app-eigene Tabelle
+`fdp_admin_access` und die Datenklasse der zeitlich begrenzten
+Adminfreigabehistorie zuständig. Er darf keine Berichte, Daten anderer Apps,
+Nextcloud-Konten, Gruppenmitgliedschaften, Dateien oder fremde Speicher
+löschen. Die kanonischen fachlichen Quellen sind:
+
+- die unveränderte Freigabehistorie für Beginn, geplantes Ende und wirksamen
+  Widerruf;
+- die revisionsgeführte app-eigene Retention-Policy für Dauer,
+  Wirksamkeitszeitpunkt und jährliche Prüfung;
+- ein noch zu implementierender app-eigener Hold-Speicher für Sperren;
+- ein noch zu implementierendes, datenminimiertes Ausführungsjournal für
+  Nebenläufigkeit, Idempotenz, Retry und Fehlerdiagnostik;
+- ein betrieblich gesetzter Restore-Zeitpunkt samt erfolgreich abgeschlossenem
+  Restore-Abgleich als Sicherheitsbarriere.
+
+Keine dieser Quellen darf aus dem Zustand eines Nextcloud-Kontos, einer
+UI-Sichtbarkeit oder einem fremden App-Speicher abgeleitet werden. Der heutige
+Offset-Cursor der V1-Vorschau ist keine zulässige Ausführungsreihenfolge; die
+Ausführung benötigt eine stabile Keyset-Reihenfolge.
+
+### DPO-Retentionfall und späteres Beschäftigungsereignis
+
+Bis eine autoritative Personalquelle angeschlossen ist, darf ausschließlich
+die Gruppe `Datenschutzbeauftragte` einen app-eigenen Retentionfall erfassen.
+Dieser Fall bestätigt nur, dass eine Datenschutzprüfung mit einem bestimmten
+Wirksamkeitszeitpunkt vorliegt. Er behauptet ausdrücklich weder
+`employment_ended` noch ein anderes Personalereignis und wird nicht aus
+Kontodeaktivierung, Kontolöschung oder Gruppenentzug abgeleitet.
+
+Ein solcher Fall beziehungsweise eine Korrektur enthält ausschließlich:
+
+| Feld | Vertrag |
+| --- | --- |
+| `case_id` | stabile, opake ID des Retentionfalls |
+| `event_id` und `revision` | unveränderliches Ereignis und streng steigende Revision innerhalb des Falls |
+| `subject` | typisierte Subject-Referenz; im ersten Modell ausschließlich `nextcloud-user` mit UID |
+| `event_kind` | ausschließlich `DPO_RETENTION_CASE_EFFECTIVE`, niemals `EMPLOYMENT_ENDED` |
+| `effective_at` | fachlich bestätigter Wirksamkeitszeitpunkt |
+| `recorded_at` und `recorded_by` | serverseitiger Erfassungszeitpunkt und aktuelle UID eines Mitglieds von `Datenschutzbeauftragte` |
+| `reason_code` | begrenzter fachlicher Grundcode ohne freie Personal- oder Falldetails |
+| `source_reference` | minimale externe Referenz; keine Dokumentkopie und kein Freitextsachverhalt |
+| `policy_scope` | ausdrücklich benannte app-eigene Policy-IDs; keine globale oder implizite Löschfreigabe |
+| `correction_of` | vorherige `event_id`, wenn ein Zeitpunkt oder Scope korrigiert wird |
+| `status` | `ACTIVE`, `CORRECTED` oder `WITHDRAWN`; Korrektur und Widerruf erfolgen append-only |
+
+Unbekannte, widersprüchliche, widerrufene oder außerhalb ihres Scopes liegende
+Fälle erlauben höchstens `REVIEW`. Eine Policy darf einen DPO-Retentionfall nur
+verwenden, wenn sie diesen Ereignistyp ausdrücklich als Trigger deklariert.
+Die Adminfreigabehistorie des ersten Piloten verwendet ihn nicht: Ihr Trigger
+bleibt ausschließlich das tatsächliche Ende der jeweiligen Freigabe.
+
+Eine spätere Personalabteilung oder Lohnbuchhaltung liefert
+`EMPLOYMENT_ENDED` und dessen Korrekturen über einen getrennten,
+versionsgeprüften und ausdrücklich autorisierten Provider. Dieses Ereignis
+ersetzt oder überschreibt keinen DPO-Retentionfall. Bevor der DPO-Retentionfall
+selbst persistiert wird, müssen seine eigene Aufbewahrung, Berichtigung,
+Auskunft, Sperre und Löschung als gesonderte Verarbeitung entschieden werden.
+
+### Autorisierung und Deny-by-default
+
+- Nur aktuelle Mitglieder von `Datenschutzbeauftragte` dürfen Policyrevisionen
+  erfassen oder prüfen sowie Retentionfälle und Holds setzen, korrigieren oder
+  aufheben. Jede Mutation ist CSRF-geschützt, serverseitig autorisiert und
+  revisionsgesichert.
+- Nextcloud-Adminstatus, temporärer app-lokaler Adminvollzugriff und
+  `retention.review` erteilen kein Recht, einen Löschlauf zu starten, zu
+  erzwingen, zu überspringen oder einen Hold aufzuheben.
+- Die Ausführung erfolgt ausschließlich durch einen app-eigenen Hintergrundjob
+  unter technischer Systemidentität. Es gibt im Pilot weder eine
+  benutzerbedienbare Einzellöschung noch einen Controller-Endpunkt für
+  `execute`.
+- Technische Administration darf den Job betreiben und den Restore-Abgleich
+  auslösen, wählt aber keine Personen, Datensätze oder fachlichen Ausnahmen
+  aus. Eine manuelle Einzelfreigabe vor jedem Lauf ist nicht vorgesehen.
+- Fehlende Rolle, fällige Jahresprüfung, beschädigte oder unbekannte Policy,
+  offene einschlägige Datenschutzentscheidung, unbestätigte Backupgrenze,
+  offener Restore-Abgleich, Hold, inkonsistenter Datensatz oder veraltete
+  Revision führen ohne Nebenwirkung zu `REVIEW` beziehungsweise blockierter
+  Ausführung.
+
+### Policy, Wirksamkeit, Eignung und Holds
+
+Die ausführende Policy erhält eine neue, ausdrücklich versionierte
+Vertragsidentität; die bestehende Policy
+`temporary_admin_access_history_review` wird nicht still von `REVIEW` auf
+`DELETE` umgedeutet. Der Standard bleibt `P6M`. Das tatsächliche Ende ist der
+frühere Zeitpunkt aus geplantem Ende und wirksamem Widerruf. Ein Datensatz ist
+genau dann grundsätzlich löschbar, wenn sein tatsächliches Ende kleiner oder
+gleich dem aus festem `evaluated_at` und Policydauer berechneten Stichtag ist.
+
+Ein Policywechsel erhält eine neue Revision mit serverseitigem,
+nicht rückdatierbarem `effective_at`. Ab diesem Zeitpunkt werden auch alle
+vorhandenen Datensätze anhand ihres ursprünglichen tatsächlichen Endes neu
+berechnet. Eine Verkürzung kann sie neu löschbar machen, eine Verlängerung
+entzieht ihnen die Löschbarkeit wieder. Jeder Lauf fixiert Policy-ID,
+Revision, `effective_at` und `evaluated_at`; jede dazwischenliegende
+Policyrevision verwirft den noch nicht ausgeführten Previewstand und stoppt
+weitere Löschungen dieses Laufs.
+
+Ein Hold gilt nur für den konkret benannten Datensatz und die Policy. Er
+enthält eine opake Hold-ID, Policy-ID, interne Datensatzreferenz, begrenzten
+Grundcode, minimale Quellenreferenz, setzende DPO-UID, Setzzeitpunkt,
+Prüftermin sowie bei Aufhebung DPO-UID, Zeitpunkt und Grundcode. Ein
+überschrittener Prüftermin hebt den Hold niemals automatisch auf. Setzen,
+Korrigieren und Aufheben bleiben auditierbar; nur eine ausdrücklich
+aufgehobene Sperre gibt den Datensatz bei der nächsten Neubewertung frei.
+Personenbeziehbare Hold- und Ausführungshilfsdaten werden bei erfolgreicher
+Löschung des Bezugsdatensatzes ebenfalls entfernt, soweit keine fortbestehende
+Sperre die Löschung ohnehin verhindert.
+
+### Ablauf, Atomarität und Nebenläufigkeit
+
+Ein automatischer Lauf folgt dieser Reihenfolge:
+
+1. Er verweigert den Start, solange Freigabegates offen sind, und erwirbt eine
+   eindeutige Lease für Policy und Revision.
+2. Er fixiert `evaluated_at`, Policyrevision und Restore-Epoch, erzeugt einen
+   vollständigen Dry Run und bindet ihn an einen kurzlebigen
+   Integritätsbezug. Dafür ist keine manuelle Bestätigung erforderlich.
+3. Er liest Kandidaten stabil nach tatsächlichem Ende und Primärschlüssel in
+   aufsteigender Keyset-Reihenfolge. Neue oder veränderte Datensätze dürfen
+   keine bereits gelesenen Kandidaten überspringen oder doppelt löschen.
+4. Für jeden Kandidaten prüft dieselbe Datenbanktransaktion Datensatz,
+   tatsächliches Ende, unveränderte Policyrevision, Restore-Epoch und das
+   Fehlen eines Holds erneut. Sie schreibt einen eindeutigen
+   Idempotenznachweis und löscht den Historieneintrag atomar. Abhängige
+   personenbeziehbare Hilfsdaten werden in derselben Transaktion entfernt.
+5. Ein Commit ist die Grenze der wirksamen Löschung im aktiven System. Vor
+   dem Commit bewirkt jeder Fehler einen vollständigen Rollback dieses
+   Kandidaten; nach dem Commit gibt es weder Soft Delete noch fachlichen Undo.
+6. Der Lauf wiederholt die Abfrage, bis für seinen fixierten Stand kein
+   löschbarer Kandidat mehr vorhanden ist, und gibt anschließend die Lease
+   frei.
+
+Hold-Mutation und Löschung müssen auf derselben Datensatzgrenze serialisiert
+werden. Gewinnt der Hold, wird nicht gelöscht. Commitet die Löschung zuerst,
+muss ein nachfolgendes Hold-Setzen mit „Datensatz nicht vorhanden“ enden und
+darf keinen Scheinschutz behaupten. Parallele Worker teilen einen eindeutigen
+Idempotenzschlüssel; höchstens einer darf löschen, alle weiteren enden als
+erfolgreicher No-op nur dann, wenn der atomare Erfolgsnachweis den früheren
+Commit belegt. Ein ohne diesen Nachweis fehlender Datensatz gilt als
+Widerspruch und nicht als erfolgreiche Löschung.
+
+Atomarität gilt pro Datensatz, nicht für den gesamten Batch. Ein fachlicher
+Konflikt isoliert nur den Kandidaten. Ein Datenbank-, Policy-, Lease- oder
+Restorefehler stoppt den übrigen Batch, damit kein Lauf mit unbekanntem
+Schutzstand fortgesetzt wird.
+
+### Wiederholung, Fehlerdiagnostik und Audit
+
+Transiente Fehler werden automatisch mit begrenztem exponentiellem Backoff
+erneut versucht. Nach fünf aufeinanderfolgenden Fehlversuchen oder spätestens
+24 Stunden nach dem ersten noch ungelösten Fehler bleibt der Datensatz
+unverändert löschbar beziehungsweise gesperrt, der Lauf erzwingt keine
+Maßnahme und
+`Datenschutzbeauftragte` erhält genau die datenminimierte Meldung aus App,
+Datenklasse, Zeitpunkt und opaker technischer Referenz. Nach technischer
+Behebung darf ausschließlich der automatische, erneut vollständig prüfende
+Pfad fortsetzen; es gibt keinen Force-Delete-Bypass.
+
+Fehler- und Idempotenznachweise enthalten keine UID, freien Inhalte,
+Fallbegründungen oder vollständigen Requests. Zulässig sind Policy-ID und
+Revision, Run-ID, technische Phase und Fehlerklasse, Versuchszahl,
+Zeitpunkte, nächster Retry sowie eine nicht rückauflösbare technische
+Referenz. Jeder einzelne technische Nachweis wird spätestens 30 Tage nach
+seinem letzten Auftreten gelöscht. Ein weiterhin bestehender Fehler erzeugt
+bei einem erneuten Versuch einen neuen, wiederum höchstens 30 Tage gültigen
+Nachweis; er verlängert keinen alten Inhalt stillschweigend.
+
+Erfolgreiche Ausführung darf innerhalb des 24-monatigen Policy-Auditfensters
+nur auf Laufebene mit Policy-ID, Revision, `evaluated_at`, Beginn, Ende und
+Ergebnis belegt werden. Sie speichert weder gelöschte IDs oder UIDs noch
+Kandidatenzahl, Personenhash, Integritätsbezug oder sonstige aus der
+gelöschten Historie abgeleitete Statistik. Policyänderungen und -prüfungen
+folgen demselben Auditvertrag. Der technische Rückbau endet am Commit: Eine
+selektive Wiederherstellung gelöschter Personenhistorie ist kein zulässiger
+Rollbackpfad.
+
+### Backup- und Restoregrenze
+
+Mit dem Commit ist die Löschung im aktiven Nextcloud-System wirksam. Die
+betriebliche Sicherung darf den zuvor enthaltenen Datensatz ab diesem
+Zeitpunkt höchstens 35 Kalendertage halten: 30 Tage reguläre
+Backupaufbewahrung plus höchstens fünf Tage technischer Puffer. Die App legt
+keine eigene Sicherung oder Exportkopie an. Vor Aktivierung des Piloten muss
+der konkrete Betrieb diese Obergrenze, das Löschen abgelaufener Medien und
+den Restore-Ablauf nachweisen; eine nur dokumentierte Sollfrist genügt nicht.
+Der heutige Processing-Katalog bleibt bis zu diesem Betriebsnachweis und der
+gesondert freigegebenen Umsetzung wahrheitsgemäß bei
+`PRIVACY-DECISION-REQUIRED`; der Zielwert allein ist keine Behauptung über den
+aktuellen Sicherungsbetrieb.
+
+Jeder Restore läuft vor Freigabe des Systems durch eine Fail-closed-Barriere:
+
+1. Nextcloud und die app-lokale Freigabeprüfung bleiben während des
+   Restore-Abgleichs gesperrt.
+2. Ein außerhalb des zurückgespielten Stands gesetzter Restore-Epoch macht
+   alle zurückgespielten Adminfreigaben unwirksam. Keine frühere Freigabe wird
+   durch den Restore reaktiviert; neue Freigaben sind erst nach erfolgreichem
+   Abgleich zulässig.
+3. Wiederhergestellte Policy- und Holdstände werden als prüfbedürftig
+   behandelt. Vor einer Löschung wird die aktuelle Policy durch
+   `Datenschutzbeauftragte` bestätigt; ein wiederhergestellter Hold bleibt
+   sicherheitshalber wirksam, bis er ausdrücklich aufgehoben wird.
+4. Alle wiederhergestellten Historieneinträge werden vom ursprünglichen
+   tatsächlichen Ende aus neu bewertet. Bereits abgelaufene und ungesperrte
+   Datensätze werden automatisch erneut zur Löschung vorgemerkt.
+5. Ein schon vor dem Restore gelöschter Datensatz darf weder in den normalen
+   Betrieb noch in eine neue Backupgeneration übernommen werden. Der erneute
+   Löschlauf wahrt die ursprüngliche 35-Tage-Grenze; ein Restore startet diese
+   Frist nicht neu.
+
+Kann der Betrieb Restore-Epoch, Quarantäne oder die 35-Tage-Grenze nicht
+garantieren, bleibt die Ausführung deaktiviert und die Vorschau bei `REVIEW`.
+
+### Provider-/Consumer-Grenze und Implementierungsfreigabe
+
+Der erste Pilot bleibt app-lokal: Der Hintergrundjob ruft keinen fremden
+Provider auf, und kein Consumer erhält einen Löschbefehl. V1 liefert weiterhin
+nur Policies und Vorschauen. Ein späterer öffentlicher Ausführungsvertrag ist
+eine neue Vertragsversion mit Aktivierungs- und Versionshandshake,
+Provider-/Consumer-Contract-Tests und eigener repositoryübergreifender
+Freigabe; er darf nicht als additive `execute()`-Methode in V1 erscheinen.
+
+Eine spätere Implementierung beginnt erst nach erneuter ausdrücklicher
+Freigabe für Schema/Migration, Hold- und Ausführungsdaten, Hintergrundjob und
+reale Löschung. Vor ihrer Aktivierung müssen außerdem die Rechtsgrundlage der
+Adminfreigabehistorie im Processing-Katalog entschieden, die reale
+Backup-/Restoregrenze belegt und alle folgenden Nachweise grün sein:
+
+- Policy: Standard und Grenzzeitpunkt, Verkürzung und Verlängerung für
+  Bestandsdaten, fällige Jahresprüfung, beschädigte Konfiguration und
+  Revisionwechsel während eines Laufs;
+- Berechtigung: DPO-Allow sowie Deny ohne Mitgliedschaft, für nativen Admin,
+  temporär freigegebenen Admin und manipulierte Revision jeweils ohne
+  Nebenwirkung;
+- Eignung: aktiver, noch nicht fälliger, widerrufener, exakt am Stichtag
+  fälliger, inkonsistenter und bereits fehlender Datensatz;
+- Holds: Setzen, Korrigieren, Prüftermin, Aufheben und Rennen gegen die
+  Löschung; ein überfälliger Hold bleibt wirksam;
+- Ausführung: Dry-Run-Bindung, stabile Keyset-Seiten, atomarer
+  Löschen-plus-Idempotenz-Commit, Rollback vor Commit, wiederholter Lauf,
+  parallele Worker und verlorene Antwort nach erfolgreichem Commit;
+- Fehler: Provider-, Datenbank-, Lease- und Benachrichtigungsfehler,
+  automatischer Backoff, Meldung nach fünf Fehlversuchen, keine verbotene
+  Nebenwirkung sowie Entfernung jedes technischen Nachweises nach 30 Tagen;
+- Datenschutz: PersonalData-Auskunft enthält nach Löschung keinen gelöschten
+  Bezug; Logs, Audit und Meldung enthalten weder UID noch Fachinhalt oder
+  rückauflösbare Reststatistik;
+- Restore: keine reaktivierte Freigabe, blockierter Zugriff vor Abschluss,
+  fortbestehender Hold, erneute Einplanung abgelaufener ungesperrter Daten und
+  Einhaltung der ursprünglichen 35-Tage-Grenze;
+- Plattform: frische Installation beziehungsweise der nach der geltenden
+  Entwicklungsphasenregel erforderliche Reinstall, PostgreSQL-Integration,
+  Job-Wiederanlauf und die unveränderte V1-Provider-/Consumer-Matrix.
+
+Die Tests werden bei der Umsetzung vor dem Produktivcode als beobachtbare
+Red-Nachweise angelegt. Ein rein statischer oder gemockter Test ersetzt weder
+die echte Datenbanktransaktion und Nebenläufigkeit noch den betrieblichen
+Backup-/Restore-Nachweis.

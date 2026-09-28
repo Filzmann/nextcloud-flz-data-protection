@@ -39,11 +39,23 @@ than hidden compatibility claims.
    no deletion occurs through this roadmap entry.
 4. Keep third-person content and security secrets inside each provider's
    domain projection;
-5. Keep retention execution blocked until the 24-month configuration audit
-   with annual review, versioned policy and effective time, safe retroactive
-   recalculation, ordering, atomicity, concurrency, idempotency, operational
-   backup boundary, hold enforcement, audit completeness, automatic retries,
-   data-minimizing DPO notification, 30-day technical failure evidence,
-   rollback and provider/consumer behavior are approved and tested. Execution
-   is later automatic without manual release; the implemented V1 preview
-   contract still has no execution method;
+5. Implement the approved app-local DP-07 pilot contract from
+   `docs/architecture.md` only in a separately authorized test-driven task.
+   The first pilot is limited to `fdp_admin_access`; the implemented V1
+   preview remains `REVIEW`-only and receives no `execute()` method. Before
+   any activation, resolve the processing catalog's legal-basis decision,
+   prove the real 30-day backup retention plus five-day maximum technical
+   buffer, and prove the fail-closed restore barrier. The implementation must
+   then cover the DPO-only policy/hold boundary, fixed policy/evaluation
+   snapshot, retroactive recalculation from the original grant end, stable
+   ordering, per-record atomicity, concurrency, idempotency, retry and
+   data-minimizing 30-day failure evidence with all positive and negative
+   tests listed in the architecture. Execution is automatic without manual
+   per-record release only after this gate is green;
+6. Keep the DPO-managed lifecycle source separate from that execution pilot.
+   A DPO retention case may later record a scoped, corrected lifecycle fact,
+   but must never claim `EMPLOYMENT_ENDED`; the admin-history pilot continues
+   to use the actual grant end. Before persisting such cases, decide their own
+   access, Art.-15, rectification, hold and retention treatment. A future HR
+   or payroll employment-end source needs a separate authorized, versioned
+   provider contract and may not overwrite DPO cases.
