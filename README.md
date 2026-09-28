@@ -54,7 +54,9 @@ registry. Retention discovery is lazy, duplicate- and version-safe, and each
 provider keeps its own global paged read model. No report
 persistence, retention execution, data deletion or anonymization is part of
 version `0.1.2`; only the security-relevant temporary admin-access history is
-persisted app-locally.
+persisted app-locally. Its six-month default is DPO-only, revisioned and
+re-evaluated from the original actual grant end in every read-only preview;
+the V1 contract intentionally exposes no execution method.
 
 The initial consumer sequence started with `adroom`. Provider coverage of an
 installed workspace is discovered at runtime and is never inferred from that

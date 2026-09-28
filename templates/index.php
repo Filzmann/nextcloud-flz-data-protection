@@ -1,5 +1,5 @@
 <?php
-script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'main']);
+script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'main']);
 style('filzmann_data_protection', 'style');
 ?>
 
@@ -18,6 +18,20 @@ style('filzmann_data_protection', 'style');
             <?php if ($_['showAdminAccessLink'] ?? false): ?>
                 <p><a href="#data-protection-full-access">Zur app-lokalen Freigabesteuerung</a></p>
             <?php endif; ?>
+        </section>
+    <?php endif; ?>
+
+    <?php if ($_['canConfigureAdminHistoryRetention'] ?? false): ?>
+        <section id="data-protection-admin-history-retention" class="data-protection-report" aria-labelledby="data-protection-admin-history-retention-heading">
+            <h2 id="data-protection-admin-history-retention-heading">Aufbewahrungsprüfung der Adminfreigabehistorie</h2>
+            <p>Standard sind sechs Monate ab tatsächlichem Ende. Diese Konfiguration erzeugt ausschließlich REVIEW-Kandidaten und löscht keine Daten.</p>
+            <form id="data-protection-retention-policy-form">
+                <label>Kalenderfrist <input name="durationPeriod" value="P6M" pattern="P[1-9][0-9]*[YMD]" required></label>
+                <input name="expectedRevision" type="hidden" value="0">
+                <button type="submit">Frist als neue Version speichern</button>
+                <button type="button" data-retention-review>Jährliche Prüfung protokollieren</button>
+            </form>
+            <p id="data-protection-retention-policy-status" role="status" aria-live="polite"></p>
         </section>
     <?php endif; ?>
 

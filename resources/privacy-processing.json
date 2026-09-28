@@ -7,17 +7,7 @@
       "name": "Aggregation einer Datenschutz-Auskunft",
       "controller": {
         "component": "Data Protection Center",
-        "business_owner": {
-          "status": "PRIVACY-DECISION-REQUIRED",
-          "affected_data": "Typisierte Subject-Referenz und flüchtig aggregierte Providerberichte",
-          "planned_processing": "Orchestrierung und Ausgabe einer app-übergreifenden Datenschutz-Auskunft",
-          "missing_decision": "Fachlich verantwortliche Stelle für den zentralen Auskunftsdienst",
-          "reason": "Die technische App-Eigentümerschaft legt keine fachliche Verantwortlichkeit fest.",
-          "technical_impact": "Die Verantwortlichkeit kann noch nicht verbindlich in Oberfläche und Verfahrensdokumentation ausgewiesen werden.",
-          "privacy_preserving_alternative": "Berichte weiterhin nur an die betroffene Person oder ausdrücklich berechtigte Prüfrollen ausgeben.",
-          "responsible_party": "ungeklärt",
-          "blocking": false
-        }
+        "business_owner": "Datenschutzbeauftragte"
       },
       "data_categories": [
         "Typisierte Subject-Referenz",
@@ -33,8 +23,7 @@
       ],
       "access_roles": [
         "Betroffene Person im sessiongebundenen Self-Service",
-        "Konfigurierte Datenschutz-Prüfgruppen",
-        "Nextcloud-Administration mit aktiver app-lokaler Freigabe von höchstens 24 Stunden"
+        "Kanonische Nextcloud-Gruppe Datenschutzbeauftragte für die zentrale administrative Auskunft"
       ],
       "recipients": [
         {
@@ -47,12 +36,12 @@
           ]
         },
         {
-          "category": "Ausdrücklich berechtigte Datenschutz-Prüfrolle",
+          "category": "Kanonische Nextcloud-Gruppe Datenschutzbeauftragte",
           "allowed_disclosures": [
             "Für die konkrete autorisierte Admin-Auskunft erforderlicher Bericht"
           ],
           "conditions": [
-            "Serverseitige fachliche Berechtigungsprüfung"
+            "Serverseitige Prüfung der aktuellen Mitgliedschaft in Datenschutzbeauftragte; nativer Adminstatus und temporäre Adminfreigabe reichen nicht aus"
           ]
         }
       ],
@@ -123,17 +112,7 @@
       "name": "Zeitlich begrenzte fachliche Adminfreigabe",
       "controller": {
         "component": "Data Protection Center",
-        "business_owner": {
-          "status": "PRIVACY-DECISION-REQUIRED",
-          "affected_data": "Freigabehistorie für fachlichen Admin-Vollzugriff",
-          "planned_processing": "Erteilen, Beenden, Widerrufen und Nachweisen zeitlich begrenzter fachlicher Freigaben",
-          "missing_decision": "Fachlich verantwortliche Stelle für Freigabeprozess und Nachweis",
-          "reason": "Technische Nextcloud-Administration und fachliche Datenschutzverantwortung sind getrennt.",
-          "technical_impact": "Die fachliche Ownerbezeichnung bleibt offen.",
-          "privacy_preserving_alternative": "Ohne aktive app-lokale Freigabe keinen fachlichen Admin-Vollzugriff erteilen.",
-          "responsible_party": "ungeklärt",
-          "blocking": false
-        }
+        "business_owner": "Datenschutzbeauftragte"
       },
       "data_categories": [
         "Nextcloud-UID des Zielkontos (aktives Nextcloud-Administrationskonto) sowie UIDs der freigebenden und widerrufenden Mitglieder von Datenschutzbeauftragte",

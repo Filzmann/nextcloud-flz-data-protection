@@ -7,6 +7,7 @@ namespace OCA\FilzmannDataProtection\Controller;
 use OCA\FilzmannDataProtection\AppInfo\Application;
 use OCA\FilzmannDataProtection\Service\RetentionAccessService;
 use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -18,6 +19,7 @@ final class PageController extends Controller {
         IRequest $request,
         private RetentionAccessService $retentionAccess,
         private TemporaryAdminAccessService $adminAccess,
+        private AdminHistoryRetentionPolicyService $adminHistoryRetention,
     ) {
         parent::__construct(Application::APP_ID, $request);
     }
@@ -32,6 +34,7 @@ final class PageController extends Controller {
             'canManageAdminAccess' => $canManageAdminAccess,
             'showMissingAdminGrant' => $showMissingAdminGrant,
             'showAdminAccessLink' => $showMissingAdminGrant && $canManageAdminAccess,
+            'canConfigureAdminHistoryRetention' => $this->adminHistoryRetention->canConfigure(),
         ]);
     }
 }

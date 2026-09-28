@@ -13,12 +13,16 @@ use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
 use OCA\FilzmannDataProtection\PublicApi\V1\ProviderDescriptor;
+use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
 
 final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
     private const MAX_PAGE_SIZE = 200;
     private const MAX_OFFSET = 1000000;
 
-    public function __construct(private TemporaryAdminAccessRepositoryInterface $adminAccess) {
+    public function __construct(
+        private TemporaryAdminAccessRepositoryInterface $adminAccess,
+        private AdminHistoryRetentionPolicyService $retentionPolicy,
+    ) {
     }
 
     public function descriptor(): ProviderDescriptor {
@@ -39,26 +43,52 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
 
         [$asOf, $offset] = $this->cursorState($request->cursor());
         $limit = min($request->pageLimit(), self::MAX_PAGE_SIZE);
+        $subjectUid = $request->subject()->subjectId();
         $rows = $this->adminAccess->historyForUid(
-            $request->subject()->subjectId(),
+            $subjectUid,
             $offset + $limit + 1,
             new DateTimeImmutable($asOf),
         );
-        $pageRows = array_slice($rows, $offset, $limit + 1);
-        $hasMore = count($pageRows) > $limit;
-        if ($hasMore) {
-            $pageRows = array_slice($pageRows, 0, $limit);
+        $entries = array_map(fn(array $row): PersonalDataEntry => $this->entry($row, $subjectUid), $rows);
+        foreach ($this->retentionPolicy->history() as $policyEntry) {
+            $eventAt = $policyEntry['reviewedAt'] ?? $policyEntry['effectiveAt'] ?? null;
+            if ($policyEntry['changedBy'] === $subjectUid && is_string($eventAt) && $eventAt <= $asOf) {
+                $entries[] = $this->policyEntry($policyEntry);
+            }
         }
-        if ($pageRows === [] && $offset === 0) {
+        $pageEntries = array_slice($entries, $offset, $limit + 1);
+        $hasMore = count($pageEntries) > $limit;
+        if ($hasMore) $pageEntries = array_slice($pageEntries, 0, $limit);
+        if ($pageEntries === [] && $offset === 0) {
             return new PersonalDataPage('not_applicable');
         }
 
-        $subjectUid = $request->subject()->subjectId();
         return new PersonalDataPage(
             $hasMore ? 'partial' : 'complete',
-            array_map(fn(array $row): PersonalDataEntry => $this->entry($row, $subjectUid), $pageRows),
+            $pageEntries,
             $hasMore ? ['Weitere eigene Adminfreigaben sind auf einer Folgeseite verfügbar.'] : [],
             $hasMore ? $this->encodeCursor($asOf, $offset + $limit) : null,
+        );
+    }
+
+    private function policyEntry(array $entry): PersonalDataEntry {
+        return new PersonalDataEntry(
+            categoryId: 'retention-policy',
+            categoryLabel: 'Aufbewahrungsregel',
+            reference: 'data-protection:retention-policy:' . (string)$entry['revision'],
+            summary: $entry['event'] === 'configured' ? 'Aufbewahrungsregel konfiguriert' : 'Aufbewahrungsregel geprüft',
+            purpose: 'Nachweis der Konfiguration und regelmäßigen Prüfung der Aufbewahrungsregel',
+            source: 'Eigene Eingabe in der Datenschutzkonfiguration des Datenschutz-Centers',
+            recipientCategories: ['Betroffene Person und ausdrücklich berechtigte Datenschutz-Prüfrolle'],
+            retention: 'Keine feste Löschfrist für die Policyhistorie festgelegt.',
+            thirdCountryTransfer: 'Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.',
+            automatedDecision: 'Die Regel erzeugt ausschließlich eine manuelle Prüfungsvorschau und keine automatische Löschung.',
+            thirdPartyContentNotice: 'Die Policyhistorie enthält in dieser Auskunft keine Kennungen anderer Personen.',
+            attributes: [
+                'Aufbewahrungsfrist' => $entry['durationPeriod'],
+                'Wirksam seit' => $entry['effectiveAt'] ?? 'noch nicht wirksam gesetzt',
+                'Zuletzt geprüft' => $entry['reviewedAt'] ?? 'noch nicht geprüft',
+            ],
         );
     }
 

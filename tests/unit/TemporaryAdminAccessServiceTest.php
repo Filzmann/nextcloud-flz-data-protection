@@ -61,6 +61,7 @@ $repository = new class implements TemporaryAdminAccessRepositoryInterface {
     }
     public function history(): array { return array_reverse($this->rows); }
     public function historyForUid(string $uid, int $limit, DateTimeImmutable $asOf): array { return []; }
+    public function endedBefore(DateTimeImmutable $cutoff, int $limit, int $offset): array { return []; }
 };
 $logger = new class implements LoggerInterface {
     public array $messages = [];

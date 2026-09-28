@@ -19,11 +19,12 @@ than hidden compatibility claims.
 
 ## Next implementation gates
 
-1. Implement the decided six-month default from the actual end of the
-   temporary app-local admin-access grant and `DELETE` without residual
-   statistics. Re-evaluate the original end after restore without reactivating
-   access; legal or privacy holds block deletion and only
-   `Datenschutzbeauftragte` may lift them with an audited reason.
+1. Keep the implemented, versioned six-month `REVIEW` projection from the
+   actual end of the temporary app-local admin-access grant aligned with the
+   processing catalog. Implement `DELETE` without residual statistics only
+   after the DP-07 execution gates below are complete; restore must re-evaluate
+   the original end without reactivating access, and legal or privacy holds
+   must block deletion until an audited DPO-only release.
 2. Keep the automatically provisioned Nextcloud group
    `Datenschutzbeauftragte` as the exclusive role for fachliche
    Datenschutzkonfiguration, remove any configuration path based only on native

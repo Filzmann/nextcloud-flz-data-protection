@@ -5,7 +5,10 @@
 Das Data Protection Center ist die eigenständige Laufzeit-App für den
 öffentlichen, versionierten Datenschutzprovidervertrag. Fachapps bleiben
 Eigentümerinnen ihrer Daten und liefern ausschließlich kontrollierte
-Projektionen.
+Projektionen. Datenschutzbeauftragte sind Business Owner des zentralen
+Auskunfts-, Policy- und Adminfreigabedienstes. Die IKT-Administration
+verantwortet nur Plattformbetrieb und Sicherung und erhält daraus keinen
+fachlichen Datenzugriff.
 
 ## Providergrenze
 
@@ -33,6 +36,12 @@ noch offene Rechtsgrundlagen, fachliche Verantwortlichkeiten sowie weitere
 noch nicht entschiedene Datenschutz- und Betriebsfragen sind strukturiert als
 `PRIVACY-DECISION-REQUIRED` ausgewiesen.
 
+Die zentrale administrative Auskunft ist ausschließlich der kanonischen
+Nextcloud-Gruppe `Datenschutzbeauftragte` zugänglich. Nativer Adminstatus und
+eine temporäre fachliche Adminfreigabe ersetzen diese Mitgliedschaft nicht.
+Der sessiongebundene Self-Service der betroffenen Person bleibt davon
+getrennt.
+
 Die öffentliche Registry liest Kataloge ausschließlich über registrierte
 Provider. Sie durchsucht weder andere App-Verzeichnisse noch fremde Tabellen,
 Dateien oder Konfigurationen. Root bleibt Eigentümer des gemeinsamen Schemas;
@@ -46,6 +55,12 @@ nur die sicherheitsrelevante Historie zeitlich begrenzter
 Adminvollzugriffsfreigaben. Retention bleibt ein read-only Preview-Vertrag;
 Ausführung, Löschung oder Anonymisierung benötigen einen getrennten,
 freigegebenen Lebenszyklusvertrag.
+
+Auch perspektivisch besitzt das Datenschutz-Center keine globale
+Beschäftigten-Lifecycle- oder Löschhoheit. Bis eine verlässliche
+Beschäftigtenquelle und vollständig getestete app-lokale Providerverträge
+vorliegen, führen ausschließlich die datenbesitzenden Fachapps ihre jeweiligen
+Policies aus; das Center registriert, prüft und koordiniert sie.
 
 Jede Vorschau entdeckt Provider lazy über den öffentlichen V1-Registry-Event
 und fixiert den Bewertungszeitpunkt über alle Folgeseiten. Provider behalten
@@ -83,9 +98,12 @@ serverseitig und deny by default.
 
 Änderungen einer Aufbewahrungsfrist gelten auch für bereits vorhandene Daten
 und werden aus deren ursprünglichem fachlichem Trigger neu berechnet. Die
-spätere Umsetzung muss jede Policyversion und ihren Wirksamkeitszeitpunkt
-24 Monate auditierbar halten; die Gruppe `Datenschutzbeauftragte` überprüft
-die Konfiguration mindestens jährlich.
+eigene Adminhistorien-Policy führt jede Konfiguration mit fortlaufender
+Revision, Wirksamkeitszeitpunkt und Akteur und verweigert unberechtigte,
+veraltete oder beschädigte Änderungen ohne Nebenwirkung. Sie bleibt mindestens
+24 Monate auditierbar; die Gruppe `Datenschutzbeauftragte` überprüft die
+Konfiguration mindestens jährlich. Bis zur ersten dokumentierten
+Konfiguration oder Prüfung gilt der Review als fällig.
 
 Die eigene Adminfreigabehistorie wird standardmäßig sechs Monate ab ihrem
 tatsächlichen Ende aufbewahrt und danach vollständig gelöscht, ohne
@@ -99,11 +117,17 @@ eine fachliche Freigabe reaktiviert.
 Die künftige Löschung läuft automatisch ohne manuelle Einzelfreigabe. Nach
 automatischen Wiederholungsversuchen wird `Datenschutzbeauftragte` nur mit
 App, Datenklasse, Zeitpunkt und technischer Referenz benachrichtigt. Der
-inhaltsarme technische Fehlernachweis wird nach 30 Tagen gelöscht. Dieser
-Ausführungsvertrag ist nicht implementiert: Policyversion und
+inhaltsarme technische Fehlernachweis wird nach 30 Tagen gelöscht. Der
+öffentliche V1-Provider projiziert die jeweils aktuelle Policyrevision,
+bewertet das ursprüngliche tatsächliche Freigabeende erneut und liefert nur
+datenminimierte `REVIEW`-Kandidaten. Er besitzt keine `execute()`-Methode.
+Der Ausführungsvertrag ist nicht implementiert: Policyversion und
 Wirksamkeitszeitpunkt, Reihenfolge, Atomarität, Nebenläufigkeit, Idempotenz,
 Backupgrenze, Sperrdurchsetzung, Auditvollständigkeit, Fehlerrückbau sowie
 Provider-/Consumer-Verhalten müssen vor jeder destruktiven Maßnahme
-freigegeben und positiv wie negativ getestet werden. Das Datenschutz-Center
+freigegeben und positiv wie negativ getestet werden. Insbesondere fehlen ein
+technisch durchgesetzter Hold-Datensatz samt Setzen/Aufheben/Audit und
+Prüftermin, die betriebliche Backupentscheidung sowie der nebenläufigkeits-
+und fehlerrückbaufeste Ausführungs- und Wiederholungsnachweis. Das Datenschutz-Center
 koordiniert nur öffentliche Provider; es liest oder löscht niemals direkt in
 Fremdtabellen, fremden Dateien oder fremden App-Speichern.

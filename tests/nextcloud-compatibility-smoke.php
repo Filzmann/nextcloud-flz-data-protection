@@ -10,6 +10,7 @@ return [
         'filzmann_data_protection' => [
             OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent::class,
             OCA\FilzmannDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent::class,
+            OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent::class,
         ],
         'filzmann_permission_matrix' => [
             OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent::class,

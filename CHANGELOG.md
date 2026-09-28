@@ -14,6 +14,10 @@
   gebunden, aus der technischen Administration in den geschützten App-Einstieg
   verschoben und um rollenabhängige Eintrittsmeldung, Direktlink sowie
   Allow-, Deny- und Manipulationsnachweise ergänzt.
+- Sechsmonats-Standard der eigenen Adminfreigabehistorie ausschließlich für
+  `Datenschutzbeauftragte` versioniert konfigurierbar gemacht und als
+  datenminimierte, rückwirkend vom tatsächlichen Ende berechnete
+  `REVIEW`-Vorschau registriert; V1 besitzt weiterhin keinen Ausführungspfad.
 - Dokumentations- und Steuerungsstruktur vereinheitlicht.
 - Additiven öffentlichen V1-Processing-Metadata-Providervertrag, lazy Registry,
   Fehlerisolation, Contract-Test-Kit und app-eigenen schema-konformen Katalog
