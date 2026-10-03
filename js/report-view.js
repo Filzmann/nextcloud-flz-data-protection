@@ -184,9 +184,52 @@
         const providers = Object.entries(report.providers || {});
         if (providers.length === 0) {
             container.append(element('p', 'Noch sind keine Datenschutzprovider registriert.'));
+            bindPersistentHorizontalScroll(container);
             return;
         }
         providers.forEach(([appId, provider]) => container.append(providerView(appId, provider)));
+        bindPersistentHorizontalScroll(container);
+    };
+
+    let horizontalScrollCleanup = () => {};
+    const bindPersistentHorizontalScroll = (container) => {
+        horizontalScrollCleanup();
+        const root = document.getElementById?.('data-protection-app');
+        const target = container.querySelector?.('.data-protection-table-wrapper');
+        if (!root || !target) return;
+        const proxy = document.createElement('div');
+        proxy.className = 'app-horizontal-scroll-proxy';
+        proxy.tabIndex = 0;
+        proxy.setAttribute('role', 'region');
+        proxy.setAttribute('aria-label', 'Horizontal durch den Datenschutzbericht scrollen');
+        const track = document.createElement('div');
+        track.className = 'app-horizontal-scroll-proxy__track';
+        track.setAttribute('aria-hidden', 'true');
+        proxy.append(track);
+        root.append(proxy);
+        const update = () => {
+            const visible = target.scrollWidth > target.clientWidth;
+            proxy.hidden = !visible;
+            track.style.width = `${target.scrollWidth}px`;
+            if (visible) proxy.scrollLeft = target.scrollLeft;
+        };
+        const fromProxy = () => { target.scrollLeft = proxy.scrollLeft; };
+        const fromTarget = () => { proxy.scrollLeft = target.scrollLeft; };
+        proxy.addEventListener('scroll', fromProxy);
+        target.addEventListener('scroll', fromTarget);
+        const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(update) : null;
+        observer?.observe(root);
+        observer?.observe(target);
+        window.addEventListener('resize', update);
+        update();
+        horizontalScrollCleanup = () => {
+            observer?.disconnect();
+            window.removeEventListener('resize', update);
+            proxy.removeEventListener('scroll', fromProxy);
+            target.removeEventListener('scroll', fromTarget);
+            proxy.remove();
+            horizontalScrollCleanup = () => {};
+        };
     };
 
     window.FilzmannDataProtection = window.FilzmannDataProtection || {};

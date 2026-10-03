@@ -22,4 +22,17 @@ if (!/\.data-protection-table-wrapper\s*\{[^}]*overflow-x:\s*auto/s.test(css)) {
     throw new Error('Die Verdichtung darf den horizontalen Tabellenscroll nicht entfernen.');
 }
 
+const reportView = readFileSync(`${root}/js/report-view.js`, 'utf8');
+for (const [pattern, message] of [
+    [/\.app-horizontal-scroll-proxy\s*\{[^}]*position:\s*sticky[^}]*bottom:\s*0[^}]*overflow-x:\s*auto/s, 'Der permanente Proxy liegt nicht am unteren sichtbaren App-Rand.'],
+    [/\.app-horizontal-scroll-proxy\[hidden\]/, 'Der Proxy wird ohne Überlauf nicht ausgeblendet.'],
+    [/className = 'app-horizontal-scroll-proxy'/, 'Der Proxy besitzt keinen eindeutigen Namen.'],
+    [/ResizeObserver/, 'Größenänderungen werden nicht beobachtet.'],
+    [/proxy\.addEventListener\('scroll'/, 'Proxy-Scroll wird nicht zum Ziel synchronisiert.'],
+    [/target\.addEventListener\('scroll'/, 'Ziel-Scroll wird nicht zum Proxy synchronisiert.'],
+    [/container\.querySelector\?\.\('\.data-protection-table-wrapper'\)/, 'Nur der dynamische Berichts-Tabellenscroller darf Ziel sein.'],
+]) {
+    if (!pattern.test(`${css}\n${reportView}`)) throw new Error(message);
+}
+
 console.log('Compact data protection report layout smoke passed.');
