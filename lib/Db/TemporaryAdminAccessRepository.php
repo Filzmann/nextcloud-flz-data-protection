@@ -11,7 +11,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use Throwable;
 
-final class TemporaryAdminAccessRepository implements TemporaryAdminAccessRepositoryInterface {
+final class TemporaryAdminAccessRepository implements ExecutableTemporaryAdminAccessRepositoryInterface {
     public function __construct(private IDBConnection $db) {
     }
 
@@ -130,6 +130,14 @@ final class TemporaryAdminAccessRepository implements TemporaryAdminAccessReposi
             ->orderBy('ends_at','ASC')->addOrderBy('id','ASC')
             ->setFirstResult($offset)->setMaxResults($limit)->executeQuery()->fetchAllAssociative();
         return array_map([$this,'mapRow'],$rows);
+    }
+
+    public function findForUpdate(int $id): ?array {
+        $qb=$this->db->getQueryBuilder();$query=$qb->select('id','target_uid','granted_by','starts_at','ends_at','revoked_at','revoked_by','created_at')->from('fdp_admin_access')->where($qb->expr()->eq('id',$qb->createNamedParameter($id,IQueryBuilder::PARAM_INT)));if(method_exists($query,'forUpdate'))$query->forUpdate();$row=$query->executeQuery()->fetchAssociative();return$row===false?null:$this->mapRow($row);
+    }
+
+    public function deleteIfActualEnd(int $id,DateTimeImmutable $actualEnd):bool {
+        $qb=$this->db->getQueryBuilder();return$qb->delete('fdp_admin_access')->where($qb->expr()->eq('id',$qb->createNamedParameter($id,IQueryBuilder::PARAM_INT)))->andWhere($qb->expr()->orX($qb->expr()->eq('revoked_at',$qb->createNamedParameter($actualEnd,IQueryBuilder::PARAM_DATETIME_IMMUTABLE)),$qb->expr()->andX($qb->expr()->isNull('revoked_at'),$qb->expr()->eq('ends_at',$qb->createNamedParameter($actualEnd,IQueryBuilder::PARAM_DATETIME_IMMUTABLE)))))->executeStatement()>0;
     }
 
     private function mapRow(array $row): array {

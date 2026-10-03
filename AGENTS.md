@@ -40,8 +40,14 @@ verboten.
 - Providerfehler werden appweise isoliert und datensparsam diagnostiziert.
   Ein Teilbericht darf nie als vollständige Instanzauskunft erscheinen.
 - Berichte werden ohne gesonderten Speicher- und Löschvertrag nicht zentral
-  persistiert. Retention beginnt ausschließlich mit Dry Run; unbekannte oder
-  widersprüchliche Zustände lösen keine destruktive Maßnahme aus.
+  persistiert. V1-Retention bleibt ein reiner Dry Run. Der getrennte
+  V2-Ausführungsvertrag ist standardmäßig deaktiviert und darf ausschließlich
+  nach technischer Aktivierung durch native Nextcloud-Administration laufen.
+  Kundenlokale Rechtsgrundlagen, Vereinbarungen, DPO-/BR-Bestätigungen und
+  Evidenzreferenzen sind weder Eingabe noch Ausführungsgate; ihre Prüfung
+  bleibt außerhalb des Produkts. Holds, Policy- und Versionsintegrität,
+  Wirksamkeitszeit, Nebenläufigkeit, Providerkompatibilität sowie aktuelle
+  Backup-/Restore-Prüfzeitpunkte bleiben technische Fail-closed-Gates.
 - Native Nextcloud-Admins erhalten kein automatisches fachliches REVIEW-Recht.
   Der technische Adminbereich bleibt Nextcloud-nativ administrierbar; ein
   fachlicher Vollzugriff wird je Admin app-lokal, serverseitig und für

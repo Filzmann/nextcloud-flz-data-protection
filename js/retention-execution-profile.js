@@ -55,10 +55,10 @@
         applyProfileRequirements();
         statusElement.setAttribute('role', 'status');
         statusElement.textContent = state.setupRequired === true
-            ? 'Ersteinrichtung erforderlich: Es wurde noch keine Profilrevision gespeichert. Retention bleibt REVIEW-only; eine Ausführung ist nicht verfügbar.'
+            ? 'Optionale lokale Dokumentation noch nicht eingerichtet. Die technische Löschaktivierung wird separat verwaltet.'
             : state.configurationValid
-            ? 'Profilnachweise sind aktuell. Die Retention bleibt REVIEW-only; eine Ausführung ist nicht verfügbar.'
-            : 'Profilstatus REVIEW: ' + state.blockers.join(', ') + '. Eine Ausführung ist nicht verfügbar.';
+            ? 'Lokale Profilrevision gespeichert. Sie aktiviert oder blockiert die technische Löschung nicht.'
+            : 'Lokale Profilrevision ist unvollständig: ' + state.blockers.join(', ') + '. Die technische Löschaktivierung bleibt davon getrennt.';
         if (state.performanceMonitoringProhibited !== true || state.executionAvailable !== false) {
             throw new Error('Unveränderliche Produktschutzgrenze wurde verletzt.');
         }
@@ -72,7 +72,7 @@
         if (!form.checkValidity()) {
             form.reportValidity();
             statusElement.setAttribute('role', 'alert');
-            statusElement.textContent = 'Die Ersteinrichtung ist unvollständig. Es wurde keine Profilrevision gespeichert.';
+            statusElement.textContent = 'Die optionale lokale Dokumentation ist unvollständig. Es wurde keine Profilrevision gespeichert.';
             return;
         }
         try {

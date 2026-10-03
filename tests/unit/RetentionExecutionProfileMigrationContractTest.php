@@ -21,7 +21,8 @@ if (preg_match('/drop(Table|Column|Index)|rename(Table|Column|Index)/i', $migrat
 }
 
 $info = (string)file_get_contents($root . '/appinfo/info.xml');
-if (!str_contains($info, '<version>0.1.3</version>')) {
+if (preg_match('/<version>([^<]+)<\/version>/', $info, $versionMatch) !== 1
+    || version_compare($versionMatch[1], '0.1.3', '<')) {
     throw new RuntimeException('Die App-Version muss für die additive DP-07-Konfigurationsmigration erhöht werden.');
 }
 

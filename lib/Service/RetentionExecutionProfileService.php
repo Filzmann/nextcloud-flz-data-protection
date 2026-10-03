@@ -81,8 +81,8 @@ final class RetentionExecutionProfileService {
 
         $regularDays = $this->integer($input, 'backupRegularDays');
         $bufferDays = $this->integer($input, 'backupBufferDays');
-        if ($regularDays < 1 || $regularDays > 30 || $bufferDays < 0 || $bufferDays > 5 || $regularDays + $bufferDays > 35) {
-            throw new InvalidArgumentException('Die Backupfrist liegt außerhalb der Produktgrenze von 30+5 Tagen.');
+        if ($regularDays < 1 || $regularDays > 365 || $bufferDays < 0 || $bufferDays > 5 || $regularDays + $bufferDays > 370) {
+            throw new InvalidArgumentException('Die Backupfrist liegt außerhalb der Produktgrenze von 365+5 Tagen.');
         }
         if (($input['dpoConfirmed'] ?? null) !== true) {
             throw new InvalidArgumentException('Die dokumentierte DPO-Bestätigung fehlt.');
@@ -159,7 +159,7 @@ final class RetentionExecutionProfileService {
             if ($configuration['createdAt'] > $now) $blockers[] = 'audit_timestamp_invalid';
             $regular = (int)($configuration['backupRegularDays'] ?? 0);
             $buffer = (int)($configuration['backupBufferDays'] ?? -1);
-            if ($regular < 1 || $regular > 30 || $buffer < 0 || $buffer > 5 || $regular + $buffer > 35) $blockers[] = 'backup_limit_invalid';
+            if ($regular < 1 || $regular > 365 || $buffer < 0 || $buffer > 5 || $regular + $buffer > 370) $blockers[] = 'backup_limit_invalid';
         } catch (Throwable) {
             return ['configuration_invalid'];
         }

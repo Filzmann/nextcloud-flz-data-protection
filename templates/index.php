@@ -1,5 +1,5 @@
 <?php
-script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'main']);
+script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'retention-execution-activation', 'risk-scope-authorization', 'main']);
 style('filzmann_data_protection', 'style');
 ?>
 
@@ -37,11 +37,11 @@ style('filzmann_data_protection', 'style');
 
     <?php if ($_['canConfigureRetentionExecutionProfile'] ?? false): ?>
         <section id="data-protection-retention-execution-profile" class="data-protection-report" aria-labelledby="data-protection-retention-execution-profile-heading">
-            <h2 id="data-protection-retention-execution-profile-heading">Deutsches Rechts- und Backup-Profil</h2>
-            <p>Die Konfiguration dokumentiert ausschließlich die kundeneigenen Freigabegates. Retention bleibt technisch bei <strong>REVIEW</strong>; es wird weder ein Löschlauf noch ein Hintergrundjob aktiviert.</p>
+            <h2 id="data-protection-retention-execution-profile-heading">Optionale lokale Rechts- und Betriebsdokumentation</h2>
+            <p>Diese optionale Dokumentation erfasst kundeneigene Rechts- und Betriebsangaben. Sie aktiviert oder blockiert keine automatische Löschung; die technische Aktivierung ist davon getrennt.</p>
             <p><strong>Unveränderliche Produktgrenze:</strong> keine Leistungs- oder Verhaltenskontrolle.</p>
             <?php if ($_['retentionExecutionProfileSetupRequired'] ?? false): ?>
-                <p id="data-protection-retention-execution-profile-setup-required" class="data-protection-warning"><strong>Ersteinrichtung erforderlich:</strong> Erst eine vollständig gespeicherte DPO-Profilrevision dokumentiert Rechtsgrundlage, Backupgrenze und Restore-Test. Bis dahin bleibt ausschließlich REVIEW verfügbar.</p>
+                <p id="data-protection-retention-execution-profile-setup-required" class="data-protection-warning"><strong>Noch nicht eingerichtet:</strong> Es ist keine optionale lokale Profilrevision gespeichert. Dies blockiert die getrennte technische Löschaktivierung nicht.</p>
             <?php endif; ?>
             <form id="data-protection-retention-execution-profile-form">
                 <fieldset>
@@ -66,7 +66,7 @@ style('filzmann_data_protection', 'style');
                 </fieldset>
                 <fieldset>
                     <legend>Backup- und Restore-Nachweis</legend>
-                    <label>Reguläre Aufbewahrungstage <input type="number" name="backupRegularDays" min="1" max="30" required></label>
+                    <label>Reguläre Aufbewahrungstage <input type="number" name="backupRegularDays" min="1" max="365" required></label>
                     <label>Technischer Puffer in Tagen <input type="number" name="backupBufferDays" min="0" max="5" required></label>
                     <label>Verantwortliche Betriebsstelle <input name="backupResponsibleParty" required maxlength="255"></label>
                     <label>Backup-System/Scope <input name="backupScope" required maxlength="255"></label>
@@ -80,7 +80,53 @@ style('filzmann_data_protection', 'style');
                 <input type="hidden" name="expectedRevision" value="0">
                 <button type="submit">Als neue, appseitig unveränderliche Profilrevision speichern</button>
             </form>
-            <p id="data-protection-retention-execution-profile-status" role="status" aria-live="polite"><?php if ($_['retentionExecutionProfileSetupRequired'] ?? false): ?>Ersteinrichtung erforderlich; es wurde noch keine Profilrevision gespeichert.<?php endif; ?></p>
+            <p id="data-protection-retention-execution-profile-status" role="status" aria-live="polite"><?php if ($_['retentionExecutionProfileSetupRequired'] ?? false): ?>Optionale lokale Dokumentation noch nicht eingerichtet.<?php endif; ?></p>
+        </section>
+    <?php endif; ?>
+
+    <?php if ($_['canConfigureRetentionExecutionActivation'] ?? false): ?>
+        <section id="data-protection-retention-execution-activation" class="data-protection-report" aria-labelledby="data-protection-retention-execution-activation-heading">
+            <h2 id="data-protection-retention-execution-activation-heading">Automatische Löschung technisch aktivieren</h2>
+            <p>Standardmäßig ist die Ausführung deaktiviert. Bei Aktivierung gelten die empfohlenen Policies: Raumbuchungen ein Jahr nach Buchungsende, Adminfreigabehistorien sechs Monate nach tatsächlichem Ende. Rechtsgrundlagen, Betriebsvereinbarungen und lokale Beteiligung werden außerhalb des Produkts verantwortet.</p>
+            <p>Technische Schutzgrenzen bleiben zwingend: Holds, unveränderte Policyversion, atomare Löschung sowie aktueller Backup- und Restore-Status.</p>
+            <form id="data-protection-retention-execution-activation-form">
+                <label><input type="checkbox" name="enabled"> Automatische Löschung aktivieren</label>
+                <fieldset data-retention-execution-technical-health>
+                    <legend>Technischer Backup- und Restore-Status</legend>
+                    <label>Backup-Aufbewahrung in Tagen <input type="number" name="backupRegularDays" min="1" max="365" value="365" required></label>
+                    <label>Technischer Puffer in Tagen <input type="number" name="backupBufferDays" min="0" max="5" value="5" required></label>
+                    <label>Backupstatus geprüft am <input type="datetime-local" name="backupVerifiedAt" required></label>
+                    <label>Restore geprüft am <input type="datetime-local" name="restoreVerifiedAt" required></label>
+                    <label>Nächste technische Prüfung spätestens <input type="datetime-local" name="verificationDueAt" required></label>
+                </fieldset>
+                <input type="hidden" name="expectedRevision" value="0">
+                <button type="submit">Technischen Status als neue Revision speichern</button>
+            </form>
+            <p id="data-protection-retention-execution-activation-status" role="status" aria-live="polite">Technischer Status wird geladen.</p>
+        </section>
+    <?php endif; ?>
+
+    <?php if ($_['canConfigureRiskScopeAuthorizations'] ?? false): ?>
+        <section id="data-protection-risk-scope-authorizations" class="data-protection-report" aria-labelledby="data-protection-risk-scope-authorizations-heading">
+            <h2 id="data-protection-risk-scope-authorizations-heading">Freigabe risikoreicher Funktionen</h2>
+            <p>Normale Fachfunktionen bleiben unabhängig davon verfügbar. Diese Konfiguration schaltet ausschließlich die hier aufgeführte Risikofunktion kundenlokal frei. Ohne gültige Freigabe bleibt sie gesperrt.</p>
+            <p><strong>Unveränderliche Produktgrenze:</strong> keine Leistungs- oder Verhaltenskontrolle.</p>
+            <form id="data-protection-risk-scope-authorization-form">
+                <label>Risikofunktion
+                    <select name="scopeId" required>
+                        <option value="adroom.secretariat.foreign-booking-intervention">Raumplaner: begründete Eingriffe des Sekretariats in fremde Buchungen</option>
+                    </select>
+                </label>
+                <label><input type="checkbox" name="enabled"> Freigabe aktivieren</label>
+                <label>Policy-Revision <input name="policyRevision" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9._:/-]*"></label>
+                <label>Rechts-/Evidenzreferenz <input name="authorizationReference" required maxlength="255" pattern="[A-Za-z0-9][A-Za-z0-9._:/-]*"></label>
+                <label>Wirksam ab <input type="datetime-local" name="effectiveAt" required></label>
+                <label>Gültig bis <input type="datetime-local" name="expiresAt" required></label>
+                <label><input type="checkbox" name="dpoConfirmed" required> Vollständigkeit und Freigabe durch Datenschutzbeauftragte bestätigt</label>
+                <input type="hidden" name="expectedRevision" value="0">
+                <button type="submit">Als neue, appseitig unveränderliche Freigaberevision speichern</button>
+            </form>
+            <p id="data-protection-risk-scope-authorization-status" role="status" aria-live="polite">Risikofunktionsstatus wird geladen.</p>
         </section>
     <?php endif; ?>
 

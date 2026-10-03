@@ -156,12 +156,12 @@
         "status": "PRIVACY-DECISION-REQUIRED",
         "affected_data": "Personenbezogene Adminfreigabehistorie",
         "planned_processing": "Sicherheitsprüfung und Audit des fachlichen Vollzugriffs",
-        "missing_decision": "Der technische Konfigurationsweg ist implementiert; die konkrete Kundeninstanz muss weiterhin eines der geschlossenen deutschen Profile employment_collective_agreement_de oder legitimate_interest_it_security_de auswählen und dessen reale Nachweise, Geltungsbereich, Revision, Wirksamkeitsdatum, Prüftermin und dokumentierte DPO-Bestätigung vollständig führen.",
-        "reason": "Das auslieferbare Paket darf keine kundenspezifische Vereinbarung, Interessenabwägung oder Rechtsgrundlagenauswahl enthalten. Eine Instanzauswahl ist weder rechtliche Validierung noch Nachweis fortbestehender Aktivierungsvoraussetzungen; freie Rechtsgrundlagen sind unzulässig.",
-        "technical_impact": "Die Retention-Ausführung startet deaktiviert und bleibt fail-closed bei REVIEW, bis ein vollständiges, aktuelles und DPO-bestätigtes Profil in der konkreten Instanz vorliegt.",
+        "missing_decision": "Kundenlokale Dokumentation der anwendbaren Rechtsgrundlage, Beteiligung und Verantwortlichkeit außerhalb des Produktpakets.",
+        "reason": "Das auslieferbare Paket darf keine kundenspezifische Vereinbarung, Interessenabwägung oder Rechtsgrundlagenauswahl enthalten.",
+        "technical_impact": "Die offene Rechtszuordnung aktiviert oder blockiert die automatische Löschung nicht; ausschließlich die getrennte technische Operatoraktivierung und ihre Sicherheitsgates steuern den Job.",
         "privacy_preserving_alternative": "Nur minimale UIDs und Zeitpunkte speichern und Berichtsausgaben auf den eigenen Bezug begrenzen.",
         "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
-        "blocking": true
+        "blocking": false
       },
       "retention": {
         "policy_id": "temporary_admin_access_history_default_six_months",
@@ -174,7 +174,7 @@
           "Nur Mitglieder der Nextcloud-Gruppe Datenschutzbeauftragte dürfen eine Sperre begründet und auditiert aufheben.",
           "Änderungen der Aufbewahrungsfrist werden anhand des ursprünglichen tatsächlichen Endes auch für vorhandene Historien neu berechnet.",
           "Nach Restore wird der ursprüngliche Trigger erneut ausgewertet; bereits abgelaufene ungesperrte Historie wird wieder zur Löschung eingeplant und eine fachliche Freigabe niemals reaktiviert.",
-          "Keine destruktive Retention-Ausführung vor freigegebenem und getestetem Versions-, Wirksamkeitszeitpunkt-, Reihenfolge-, Atomaritäts-, Nebenläufigkeits-, Idempotenz-, Backupgrenz-, Sperr-, Audit-, Retry-, Fehlerdiagnostik-, Fehlerrückbau- und Provider-/Consumer-Vertrag."
+          "Automatische Ausführung nur nach technischer Aktivierung durch native Nextcloud-Administration und bei gültiger Policyversion, Fälligkeit, Providerkompatibilität, Hold-, Integritäts-, Backup-/Restore- und Prüffristlage."
         ]
       },
       "logging": {
@@ -188,12 +188,12 @@
           "status": "PRIVACY-DECISION-REQUIRED",
           "affected_data": "Persistierte Adminfreigabehistorie",
           "planned_processing": "Einbeziehung in Sicherung und Wiederherstellung der Nextcloud-Datenbank",
-          "missing_decision": "Die App validiert und versioniert höchstens 30 ganze Kalendertage reguläre Backupaufbewahrung plus höchstens fünf ganze Kalendertage technischen Puffer; jede konkrete Instanz muss weiterhin die tatsächliche Einhaltung, Evidenzreferenz, Nachweiszeitpunkt, Prüftermin, verantwortliche Betriebsstelle, DPO-Bestätigung und einen erfolgreichen Restore-Nachweis belegen.",
-          "reason": "Eine konfigurierte Sollfrist belegt weder das tatsächliche Löschen abgelaufener Sicherungen noch Restore-Epoch, Quarantäne und erneute Löschvormerkung. Die App kann externe Sicherungsmedien nicht selbst prüfen.",
-          "technical_impact": "Die Retention-Ausführung bleibt fail-closed bei REVIEW; die App darf keinen vollständigen Entfall aus Sicherungen behaupten.",
+          "missing_decision": "Kundenlokale Dokumentation des Sicherungsbetriebs außerhalb des Produktpakets.",
+          "reason": "Die App kann externe Sicherungsmedien nicht selbst prüfen oder eine lokale Betriebsdokumentation rechtlich bewerten.",
+          "technical_impact": "Fehlende Kundenevidenz blockiert nicht. Für die technische Aktivierung müssen jedoch eine zulässige Grenze von höchstens 365+5 Tagen, vergangene Backup-/Restore-Prüfzeitpunkte und ein spätestens jährlicher nächster technischer Prüftermin vorliegen.",
           "privacy_preserving_alternative": "Keine separate app-eigene Backupkopie anlegen.",
           "responsible_party": "Verantwortlicher Kunde, betriebliche IKT und Datenschutzbeauftragte",
-          "blocking": true
+          "blocking": false
         },
         "restore_handling": "Nach Restore wird die Aufbewahrungsfrist aus dem ursprünglichen tatsächlichen Ende der Adminfreigabe neu bewertet. Bereits abgelaufene ungesperrte Historie wird erneut zur Löschung eingeplant; eine fachliche Adminfreigabe wird durch Restore niemals reaktiviert."
       },
@@ -228,7 +228,7 @@
           "responsible_party": "ungeklärt",
           "blocking": true
         },
-        "erasure_or_anonymization": "Die Adminfreigabehistorie wird standardmäßig sechs Monate nach ihrem tatsächlichen Ende vollständig gelöscht, ohne anonymisierten oder statistischen Restbestand. Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung; nur Datenschutzbeauftragte dürfen sie begründet und auditiert aufheben. Die technische automatische Ausführung bleibt bis zur Freigabe und Prüfung des Retention-Ausführungsvertrags deaktiviert."
+        "erasure_or_anonymization": "Die Adminfreigabehistorie wird bei technischer Operatoraktivierung standardmäßig sechs Monate nach ihrem tatsächlichen Ende vollständig gelöscht, ohne anonymisierten oder statistischen Restbestand. Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung; nur Datenschutzbeauftragte dürfen sie begründet und auditiert aufheben. Fehlende kundenlokale Rechts- oder Vereinbarungsreferenzen blockieren den technischen Löschlauf nicht."
       },
       "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen dieser Historie vorgesehen.",
       "automated_decisions": "Der fachliche Vollzugriff endet serverseitig spätestens nach 24 Stunden; dies ist eine Sicherheitsbegrenzung und keine fachliche Entscheidung über die betroffene Person.",
@@ -236,7 +236,7 @@
         "Nextcloud-Adminstatus allein erteilt keinen fachlichen Vollzugriff",
         "Freigabe ist app-lokal und pro Administrationskonto höchstens 24 Stunden gültig",
         "Self-Service-Ausgabe neutralisiert Kennungen anderer beteiligter Personen",
-        "Keine Retention-Ausführung ohne fachliche Entscheidung",
+        "Retention-Ausführung standardmäßig deaktiviert und nur über getrennte technische Operatoraktivierung verfügbar",
         "Die Laufzeitdurchsetzung der Ziel- und Gruppenbedingungen sowie Allow-, Deny- und Manipulationsprüfungen stehen aus; diese Metadaten aktivieren keine Rechte"
       ],
       "systems": [
@@ -247,22 +247,22 @@
     },
     {
       "processing_id": "retention_execution_profile_configuration",
-      "name": "Revisionsgeführte Rechts- und Backup-Profilkonfiguration",
+      "name": "Optionale revisionsgeführte Kundendokumentation",
       "controller": {
         "component": "Data Protection Center",
         "business_owner": "Datenschutzbeauftragte"
       },
       "data_categories": [
         "Nextcloud-UID des konfigurierenden Mitglieds von Datenschutzbeauftragte",
-        "Geschlossene Profil-ID, Revision, Geltungs-, Rechts- und Schutzmaßnahmenreferenzen",
-        "Backup- und Restore-Nachweisreferenzen, Fristen, Nachweis- und Prüftermine"
+        "Optionale Profil-ID, Revision, Geltungs-, Rechts- und Schutzmaßnahmenreferenzen",
+        "Optionale Backup- und Restore-Nachweisreferenzen, Fristen, Nachweis- und Prüftermine"
       ],
       "data_subjects": [
         "Mitglieder von Datenschutzbeauftragte mit Bezug zu einer Profilrevision"
       ],
       "purposes": [
-        "Fail-closed Nachweis der kundeneigenen Rechts-, Backup- und Restore-Freigabegates",
-        "Revisionssichere Nachvollziehbarkeit der DPO-Bestätigung"
+        "Optionale kundenlokale Dokumentation von Rechts-, Beteiligungs-, Backup- und Restoreentscheidungen",
+        "Revisionssichere Nachvollziehbarkeit einer kundenlokalen DPO-Dokumentation ohne Ausführungswirkung"
       ],
       "access_roles": [
         "Erfassen und Lesen: aktuelle Mitglieder der kanonischen Nextcloud-Gruppe Datenschutzbeauftragte",
@@ -295,10 +295,10 @@
         "planned_processing": "Audit der Rechts-, Backup- und Restore-Profilkonfiguration",
         "missing_decision": "Eigenständige Rechtsgrundlage und verbindliche Dokumentation für die Speicherung der Profilrevisionshistorie",
         "reason": "Das ausgewählte Rechtsprofil für die Adminfreigabehistorie bestimmt nicht automatisch die Rechtsgrundlage der Konfigurationshistorie selbst.",
-        "technical_impact": "Die Profilkonfiguration aktiviert keine Retention-Ausführung; ihre Historie bleibt auf Datenschutzbeauftragte und die subjectgebundene Auskunft begrenzt.",
+        "technical_impact": "Die Profilkonfiguration aktiviert oder blockiert keine Retention-Ausführung; ihre Historie bleibt auf Datenschutzbeauftragte und die subjectgebundene Auskunft begrenzt.",
         "privacy_preserving_alternative": "Nur technische Referenzen statt Dokumentkopien oder Freitextsachverhalte speichern.",
         "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
-        "blocking": true
+        "blocking": false
       },
       "retention": {
         "status": "PRIVACY-DECISION-REQUIRED",
@@ -306,7 +306,7 @@
         "planned_processing": "Aufbewahrung und spätere Löschung des DPO-Konfigurationsaudits",
         "missing_decision": "Eigenständiger Trigger, Zeitraum, Holds sowie Lösch- und Nachweisgrenze der Profilrevisionen",
         "reason": "Die sechsmonatige Frist der Adminfreigabehistorie gilt nicht für die getrennte Profilrevisionshistorie.",
-        "technical_impact": "Es existiert kein Lösch- oder Ausführungspfad für Profilrevisionen; sie werden nicht still unter einer fremden Policy gelöscht.",
+        "technical_impact": "Es existiert kein Löschpfad für diese optionale Dokumentationshistorie; das blockiert den getrennten V2-DELETE-Pfad für Fachdaten nicht.",
         "privacy_preserving_alternative": "Profilrevisionen weiterhin ausschließlich DPO-geschützt und in der Art.-15-Projektion minimiert ausgeben.",
         "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
         "blocking": true
@@ -329,7 +329,7 @@
           "responsible_party": "Verantwortlicher Kunde, betriebliche IKT und Datenschutzbeauftragte",
           "blocking": true
         },
-        "restore_handling": "Nach Restore bleibt jede Profilrevision REVIEW-only; eine Retention-Ausführung wird dadurch nicht aktiviert."
+        "restore_handling": "Nach Restore bleibt die optionale Dokumentation von der technischen Aktivierung getrennt; keine Profilrevision aktiviert oder blockiert V2."
       },
       "exports_and_reports": {
         "article_15_relevance": "Eigene Profilrevisionen werden subjectgebunden und paginiert ohne Kennungen anderer DPO projiziert.",
@@ -345,17 +345,132 @@
         "erasure_or_anonymization": "PRIVACY-DECISION-REQUIRED: Es ist kein Lösch- oder Anonymisierungspfad freigegeben."
       },
       "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.",
-      "automated_decisions": "Die Konfiguration aktiviert keine automatische Retention-Ausführung und trifft keine Entscheidung über Beschäftigte.",
+      "automated_decisions": "Die optionale Dokumentation aktiviert oder blockiert keine automatische Retention-Ausführung und trifft keine Entscheidung über Beschäftigte.",
       "special_safeguards": [
         "Nur aktuelle Mitglieder von Datenschutzbeauftragte dürfen Revisionen speichern",
-        "Keine freie Rechtsgrundlage oder freie Profil-ID",
+        "Keine Dokumentkopien oder freien Fallschilderungen",
         "Keine Leistungs- oder Verhaltenskontrolle",
-        "Keine Retention-Ausführung, kein Löschendpunkt und kein Hintergrundjob"
+        "Keine Wirkung auf technische Aktivierung, Löschendpunkt oder Hintergrundjob"
       ],
       "systems": [
         "Nextcloud",
         "Data Protection Center",
         "App-eigene Datenbanktabelle fdp_retention_profile"
+      ]
+    },
+    {
+      "processing_id": "retention_execution_technical_activation",
+      "name": "Revisionsgeführte technische Aktivierung automatischer Retention",
+      "controller": {
+        "component": "Data Protection Center",
+        "business_owner": "Nextcloud-Administration"
+      },
+      "data_categories": [
+        "Nextcloud-UID des technischen Operators",
+        "Aktivierungsstatus, Pilot-Policy-IDs und Revisionsnummer",
+        "Backupgrenze sowie Backup-, Restore- und nächster technischer Prüfzeitpunkt"
+      ],
+      "data_subjects": [
+        "Nextcloud-Administrationskonten mit Bezug zu einer technischen Aktivierungsrevision"
+      ],
+      "purposes": [
+        "Fail-closed Steuerung des automatischen Retention-Hintergrundjobs",
+        "Nachvollziehbarkeit technischer Aktivierung, Deaktivierung und Prüffälligkeit"
+      ],
+      "access_roles": [
+        "Erfassen und Lesen: native Nextcloud-Administration",
+        "Betroffene Person für die eigene Art.-15-Projektion"
+      ],
+      "recipients": [
+        {
+          "category": "Betroffene Person",
+          "allowed_disclosures": [
+            "Eigene Aktivierungsrevisionen ohne Kennungen anderer Operatoren"
+          ]
+        },
+        {
+          "category": "Native Nextcloud-Administration",
+          "allowed_disclosures": [
+            "Technischer Aktivierungs- und Prüfstatus"
+          ],
+          "conditions": [
+            "Serverseitige Prüfung des aktuellen nativen Adminstatus"
+          ]
+        }
+      ],
+      "data_sources": [
+        "Serverseitig gebundene Nextcloud-Session-UID",
+        "Geschützte technische Operator-Konfiguration",
+        "App-eigene Tabelle fdp_retention_exec"
+      ],
+      "legal_basis": {
+        "status": "PRIVACY-DECISION-REQUIRED",
+        "affected_data": "UID und technische Konfigurationshandlung des Operators",
+        "planned_processing": "Audit der technischen Retention-Aktivierung",
+        "missing_decision": "Kundenlokale Rechts- und Beteiligungsdokumentation außerhalb des Produktpakets",
+        "reason": "Das Produkt kann die organisationsspezifische Rechtsgrundlage oder Beteiligung nicht festlegen.",
+        "technical_impact": "Die offene Rechtszuordnung blockiert den Löschjob nicht und wird nicht als Aktivierungseingabe erhoben.",
+        "privacy_preserving_alternative": "Nur die aktuelle Operator-UID und technische Zustandswerte speichern; keine Vereinbarungs-, Rechts- oder Evidenzreferenzen erfassen.",
+        "responsible_party": "kundenlokal außerhalb des Produktpakets zu dokumentieren",
+        "blocking": false
+      },
+      "retention": {
+        "policy_id": "retention_execution_activation_revision_history",
+        "trigger": "Ablösung der technischen Aktivierungsrevision",
+        "duration_or_deadline": "P24M",
+        "action": "delete",
+        "conditions_or_holds": [
+          "Technische Aktivierungsrevisionen bleiben 24 Monate ab Ablösung auditierbar.",
+          "Der Löschpfad für diese getrennte Konfigurationshistorie ist noch nicht implementiert und wird nicht unter der P6M-Adminhistorienpolicy ausgeführt."
+        ]
+      },
+      "logging": {
+        "audit_requirements": [
+          "Revision, serverseitiger Zeitpunkt und Operator-UID bleiben in der app-eigenen Revisionszeile nachvollziehbar"
+        ],
+        "personal_data_policy": "Keine Rechts-, Vereinbarungs-, Evidenz- oder Freitextdaten protokollieren."
+      },
+      "backup": {
+        "relevance": {
+          "status": "PRIVACY-DECISION-REQUIRED",
+          "affected_data": "Technische Aktivierungsrevisionen in der Nextcloud-Datenbank",
+          "planned_processing": "Einbeziehung in betriebliche Sicherung und Wiederherstellung",
+          "missing_decision": "Kundenlokale Backupdokumentation außerhalb des Produktpakets",
+          "reason": "Die App prüft keine externen Sicherungsmedien.",
+          "technical_impact": "Ein Restore aktiviert den Job nicht verlässlich; der technische Status muss nach Restore erneut geprüft und erforderlichenfalls deaktiviert werden.",
+          "privacy_preserving_alternative": "Keine separate app-eigene Sicherungs- oder Exportkopie anlegen.",
+          "responsible_party": "kundenlokaler IT-Betrieb",
+          "blocking": false
+        },
+        "restore_handling": "Nach Restore technische Aktivierung, Prüffälligkeit, Holds und Providerkompatibilität erneut fail-closed bewerten."
+      },
+      "exports_and_reports": {
+        "article_15_relevance": "Eigene Aktivierungsrevisionen werden subjectgebunden ohne Kennungen anderer Operatoren ausgegeben.",
+        "other_outputs": [
+          "Native Adminansicht des technischen Aktivierungsstatus"
+        ],
+        "minimization": "Nur Status und technische Zeitpunkte ausgeben; keine Policy-, Rechts- oder Evidenzdokumente speichern oder projizieren."
+      },
+      "data_subject_rights": {
+        "article_15": "Subjectgebundene Projektion eigener technischer Aktivierungsrevisionen ist implementiert.",
+        "rectification": "Korrekturen erfolgen als neue Revision; bestehende Revisionen werden nicht überschrieben.",
+        "restriction": "Eine Deaktivierungsrevision stoppt weitere Läufe; Holds bleiben app-lokal maßgeblich.",
+        "erasure_or_anonymization": "Revisionen sollen 24 Monate nach Ablösung vollständig gelöscht werden; der separate Löschpfad ist noch umzusetzen."
+      },
+      "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.",
+      "automated_decisions": "Die technische Aktivierung steuert eine fristgebundene Löschung, trifft aber keine Bewertung oder Entscheidung über Personen.",
+      "special_safeguards": [
+        "Standardmäßig deaktiviert",
+        "Nur native Nextcloud-Administration darf Revisionen speichern",
+        "Keine Rechts-, Vereinbarungs-, DPO- oder Kundenevidenz als Aktivierungseingabe",
+        "Technische Backup-/Restore-Prüfung höchstens jährlich",
+        "Append-only Revisionen mit datenbankseitig eindeutigem Revisionsschlüssel",
+        "Keine Leistungs- oder Verhaltenskontrolle"
+      ],
+      "systems": [
+        "Nextcloud",
+        "Data Protection Center",
+        "App-eigene Datenbanktabelle fdp_retention_exec"
       ]
     }
   ]

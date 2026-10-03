@@ -16,6 +16,7 @@ const adminTemplate = read('templates/admin.php');
 const adminScript = read('js/admin.js');
 const adminAccessScript = read('js/admin-access.js');
 const executionProfileScript = read('js/retention-execution-profile.js');
+const riskScopeAuthorizationScript = read('js/risk-scope-authorization.js');
 
 if (!info.includes('<id>filzmann_data_protection</id>')) throw new Error('Eindeutige App-ID fehlt.');
 if (!info.includes('<namespace>FilzmannDataProtection</namespace>')) throw new Error('App-Namespace fehlt.');
@@ -49,7 +50,7 @@ if (!adminAccessScript.includes('requesttoken = OC.requestToken')) throw new Err
 for (const contract of ['data-protection-retention-execution-profile-form', 'performanceMonitoringProhibited', 'configurationValid']) {
     if (!template.includes(contract) && !executionProfileScript.includes(contract)) throw new Error(`Kundenprofil-UI-Vertrag fehlt: ${contract}`);
 }
-if (!template.includes('Ersteinrichtung erforderlich')) throw new Error('Der serverseitige Hinweis auf die verpflichtende DPO-Ersteinrichtung fehlt.');
+if (!template.includes('Noch nicht eingerichtet')) throw new Error('Der serverseitige Hinweis auf die optionale DPO-Dokumentation fehlt.');
 if (!template.includes('appseitig unveränderliche Profilrevision')) throw new Error('Die append-only Wirkung der Profilrevision wird im Formular nicht transparent benannt.');
 const profileSectionStart = template.indexOf("<?php if ($_['canConfigureRetentionExecutionProfile'] ?? false): ?>");
 const setupNotice = template.indexOf('data-protection-retention-execution-profile-setup-required');
@@ -58,6 +59,15 @@ if (profileSectionStart < 0 || setupNotice < profileSectionStart || setupNotice 
 if (!executionProfileScript.includes('/api/v1/retention-execution-profile')) throw new Error('Die Kundenprofil-Konfiguration verwendet nicht den geschlossenen API-Pfad.');
 if (!executionProfileScript.includes('requesttoken: OC.requestToken')) throw new Error('Die Kundenprofil-Mutation sendet kein CSRF-Token.');
 if (/\/(execute|delete|run)\b|method\s*:\s*['"]DELETE['"]/i.test(executionProfileScript)) throw new Error('Die Kundenprofil-UI darf keinen Retention-Ausführungspfad enthalten.');
+const executionActivationScript = read('js/retention-execution-activation.js');
+if (!template.includes("$_['canConfigureRetentionExecutionActivation']")) throw new Error('Die technische Retention-Aktivierung ist nicht serverseitig auf Operatoren begrenzt.');
+if (!executionActivationScript.includes('/api/v2/retention-execution-activation')) throw new Error('Die technische Aktivierung verwendet nicht den getrennten V2-Pfad.');
+if (!executionActivationScript.includes('requesttoken: OC.requestToken')) throw new Error('Die technische Aktivierung sendet kein CSRF-Token.');
+if (/(legalEvidence|authorizationReference|dpoConfirmed|agreement)/.test(executionActivationScript)) throw new Error('Rechts-/DPO-Evidenz ist weiterhin Eingabe der technischen Aktivierung.');
+if (!template.includes("$_['canConfigureRiskScopeAuthorizations']")) throw new Error('Die Risikoscope-Konfiguration ist nicht serverseitig auf DPOs begrenzt.');
+if (!template.includes('data-protection-risk-scope-authorization-form')) throw new Error('Das DPO-Formular für Risikoscopes fehlt.');
+if (!riskScopeAuthorizationScript.includes('/api/v1/risk-scope-authorizations')) throw new Error('Die Risikoscope-UI verwendet nicht den geschlossenen API-Pfad.');
+if (!riskScopeAuthorizationScript.includes('requesttoken: OC.requestToken')) throw new Error('Die Risikoscope-Mutation sendet kein CSRF-Token.');
 if (!adminScript.includes('requesttoken: OC.requestToken')) throw new Error('Einstellungsspeicherung sendet kein CSRF-Token.');
 if (!reportView.includes('Noch sind keine Datenschutzprovider registriert.')) throw new Error('Fehlende Provider werden nicht transparent ausgewiesen.');
 if (!script.includes('/api/v1/self-service-report')) throw new Error('Self-Service-Bericht wird nicht geladen.');
@@ -71,4 +81,6 @@ await import('./js/self-service-request-smoke.mjs');
 await import('./js/self-service-report-smoke.mjs');
 await import('./js/retention-review-smoke.mjs');
 await import('./js/retention-execution-profile-smoke.mjs');
+await import('./js/retention-execution-activation-smoke.mjs');
+await import('./js/risk-scope-authorization-smoke.mjs');
 await import('./js/compact-report-layout-smoke.mjs');

@@ -65,7 +65,7 @@ $collective = [
     'accountCategories' => 'Beschäftigte Administratorinnen und Administratoren',
     'effectiveAt' => '2026-10-01T10:00:00+00:00',
     'legalReviewDueAt' => '2027-09-30T00:00:00+00:00',
-    'backupRegularDays' => 30,
+    'backupRegularDays' => 365,
     'backupBufferDays' => 5,
     'backupResponsibleParty' => 'Betriebliche IKT',
     'backupScope' => 'Nextcloud-Datenbanksicherung',
@@ -88,8 +88,8 @@ $assertSame(1, $saved['configuration']['revision'], 'Die erste gültige Konfigur
 $assertSame(false, $saved['setupRequired'], 'Nach der ersten vollständigen Revision darf die Ersteinrichtung nicht weiter als offen gelten.');
 $assertSame('dpo', $saved['configuration']['changedBy'], 'Der serverseitige DPO-Akteur muss auditiert werden.');
 $assertSame(true, $saved['configurationValid'], 'Eine vollständige und aktuelle Konfiguration muss als gültig erkannt werden.');
-$assertSame('REVIEW', $saved['action'], 'Auch eine gültige Konfiguration darf keine Löschung aktivieren.');
-$assertSame(false, $saved['executionAvailable'], 'Im Konfigurationsschritt darf kein ausführender Pfad entstehen.');
+$assertSame('REVIEW', $saved['action'], 'Das optionale Rechtsprofil darf keine Löschung aktivieren.');
+$assertSame(false, $saved['executionAvailable'], 'Das optionale Rechtsprofil darf den technischen Ausführungspfad nicht steuern.');
 
 $assertSame(200, $controller->show()->getStatus(), 'Der DPO-geschützte Controller liefert den Profilstatus nicht aus.');
 $controllerRows = $repository->rows;
@@ -113,9 +113,9 @@ foreach (['ordinary', 'native-admin', 'temporary-admin'] as $uid) {
 $session->uid = 'dpo';
 $invalidCases = [
     [...$collective, 'profileId' => 'free_text_legal_basis', 'expectedRevision' => 1],
-    [...$collective, 'backupRegularDays' => 31, 'expectedRevision' => 1],
+    [...$collective, 'backupRegularDays' => 366, 'expectedRevision' => 1],
     [...$collective, 'backupBufferDays' => 6, 'expectedRevision' => 1],
-    [...$collective, 'backupRegularDays' => 30, 'backupBufferDays' => 6, 'expectedRevision' => 1],
+    [...$collective, 'backupRegularDays' => 365, 'backupBufferDays' => 6, 'expectedRevision' => 1],
     [...$collective, 'dpoConfirmed' => false, 'expectedRevision' => 1],
     [...$collective, 'performanceMonitoringProhibited' => false, 'expectedRevision' => 1],
     [...$collective, 'allAccountsEmployeesConfirmed' => false, 'expectedRevision' => 1],
@@ -153,6 +153,7 @@ $validLatest = $repository->rows[1];
 $repository->rows[1]['legalEvidenceReference'] = '';
 $assertSame(false, $service->status()['configurationValid'], 'Ein beschädigter persistierter Pflichtnachweis muss fail-closed werden.');
 $assertSame('REVIEW', $service->status()['action'], 'Ein beschädigter persistierter Stand darf nie mehr als REVIEW liefern.');
+$assertSame(false, $service->status()['executionAvailable'], 'Ein Rechtsprofil darf unabhängig von seinem Zustand keine Löschung ausführen.');
 $repository->rows[1] = $validLatest;
 foreach (['effectiveAt', 'backupEvidenceAt', 'restoreTestedAt'] as $missingDate) {
     unset($repository->rows[1][$missingDate]);

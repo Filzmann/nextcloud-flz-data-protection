@@ -9,6 +9,7 @@ use DateTimeZone;
 use InvalidArgumentException;
 use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
 use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
 use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
@@ -24,6 +25,7 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
         private TemporaryAdminAccessRepositoryInterface $adminAccess,
         private AdminHistoryRetentionPolicyService $retentionPolicy,
         private RetentionExecutionProfileRepositoryInterface $executionProfiles,
+        private RetentionExecutionActivationRepositoryInterface $executionActivations,
     ) {
     }
 
@@ -65,6 +67,14 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
             new DateTimeImmutable($asOf),
         ) as $profileEntry) {
             $entries[] = $this->executionProfileEntry($profileEntry);
+        }
+        foreach ($this->executionActivations->historyForUid(
+            $subjectUid,
+            $offset + $limit + 1,
+            0,
+            new DateTimeImmutable($asOf),
+        ) as $activationEntry) {
+            $entries[] = $this->executionActivationEntry($activationEntry);
         }
         $pageEntries = array_slice($entries, $offset, $limit + 1);
         $hasMore = count($pageEntries) > $limit;
@@ -122,6 +132,27 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
                 'Nächste Rechtsprüfung' => $entry['legalReviewDueAt']->format(DATE_ATOM),
                 'Backupgrenze' => $entry['backupRegularDays'] . '+' . $entry['backupBufferDays'] . ' Tage',
                 'Nächste Backupprüfung' => $entry['backupReviewDueAt']->format(DATE_ATOM),
+            ],
+        );
+    }
+
+    private function executionActivationEntry(array $entry): PersonalDataEntry {
+        return new PersonalDataEntry(
+            categoryId: 'retention-execution-activation',
+            categoryLabel: 'Technische Retention-Aktivierung',
+            reference: 'data-protection:retention-execution-activation:' . (string)$entry['revision'],
+            summary: ($entry['enabled'] ?? false) === true ? 'Automatische Löschung technisch aktiviert' : 'Automatische Löschung technisch deaktiviert',
+            purpose: 'Nachweis des technischen Betriebszustands der automatischen Retention',
+            source: 'Eigene Eingabe in der Nextcloud-Administration',
+            recipientCategories: ['Betroffene Person und Nextcloud-Administration'],
+            retention: 'Technische Aktivierungsrevisionen werden 24 Monate ab Ablösung aufbewahrt.',
+            thirdCountryTransfer: 'Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.',
+            automatedDecision: 'Die Revision steuert nur den technischen Hintergrundjob; sie bewertet keine Person.',
+            thirdPartyContentNotice: 'Die Projektion enthält keine Kennungen anderer Operatoren und keine Rechts- oder Evidenzdaten.',
+            attributes: [
+                'Status' => ($entry['enabled'] ?? false) === true ? 'aktiviert' : 'deaktiviert',
+                'Gespeichert am' => $entry['createdAt']->format(DATE_ATOM),
+                'Nächste technische Prüfung' => $entry['verificationDueAt']?->format(DATE_ATOM) ?? 'nicht anwendbar',
             ],
         );
     }

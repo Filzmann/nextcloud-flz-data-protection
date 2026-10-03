@@ -48,7 +48,7 @@ namespace {
     $byPermission = [];
     foreach ($rules as $rule) $byPermission[$rule->permission] = $rule;
 
-    if (array_keys($byPermission) !== ['personal-data.self', 'retention.review', 'retention.configure', 'retention.execution-profile.configure']) throw new \RuntimeException('Das Datenschutz-Rechteinventar ist unvollständig.');
+    if (array_keys($byPermission) !== ['personal-data.self', 'retention.review', 'retention.configure', 'retention.execution-profile.configure', 'retention.execution.configure', 'risk-scope.configure']) throw new \RuntimeException('Das Datenschutz-Rechteinventar ist unvollständig.');
     if (array_map(static fn($child): string => $child->operator, $byPermission['personal-data.self']->condition->children) !== ['authenticated', 'self']) throw new \RuntimeException('Selbstauskunft ist nicht strikt an Anmeldung und eigene Person gebunden.');
     $reviewChildren = $byPermission['retention.review']->condition->children;
     if ($reviewChildren[0]->operator !== 'group' || $reviewChildren[0]->groupId !== 'Datenschutzbeauftragte') throw new \RuntimeException('Konfigurierte Prüfgruppe fehlt.');
@@ -60,6 +60,17 @@ namespace {
         || $profileConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
         || $profileConfiguration->source !== 'filzmann_data_protection:RetentionExecutionProfileService::canConfigure') {
         throw new \RuntimeException('Die DPO-Profilkonfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
+    }
+    $executionConfiguration = $byPermission['retention.execution.configure'];
+    if ($executionConfiguration->condition->operator !== 'nextcloud-admin'
+        || $executionConfiguration->source !== 'filzmann_data_protection:RetentionExecutionActivationService::canConfigure') {
+        throw new \RuntimeException('Die technische Ausführungsaktivierung ist nicht exakt an native Administration gebunden.');
+    }
+    $scopeConfiguration = $byPermission['risk-scope.configure'];
+    if ($scopeConfiguration->condition->operator !== 'group'
+        || $scopeConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
+        || $scopeConfiguration->source !== 'filzmann_data_protection:RiskScopeAuthorizationService::canConfigure') {
+        throw new \RuntimeException('Die Risikoscope-Konfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
     }
 
     $event = new RegisterPermissionProvidersEvent();

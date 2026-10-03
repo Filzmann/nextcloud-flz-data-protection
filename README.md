@@ -39,18 +39,30 @@ remain visible and are not replaced by heuristic fallback access.
   technical configuration, plus a PersonalDataProvider for the subject's own
   admin-access and DPO configuration audit references without exposing other
   admin identifiers;
-- an additive, append-only instance configuration for the two closed German
-  legal profiles and the proven backup/restore boundary. Only current members
-  of `Datenschutzbeauftragte` may complete the mandatory first-run setup and
-  create a revision. The app ships without customer values, exposes the open
-  setup explicitly to that group and rejects incomplete submissions without
-  creating a row. Every successful later change appends another revision;
-  the app exposes no update or delete path for existing revisions. Missing,
-  invalid or stale evidence remains fail-closed at `REVIEW`; the immutable prohibition of
-  performance and conduct monitoring cannot be configured away;
+- an optional, append-only customer documentation area for closed German legal
+  profiles. It remains DPO-protected and deliberately has no influence on
+  retention execution. Legal-basis, agreement, DPO/BR confirmation and
+  customer evidence stay outside the technical activation contract;
+- a public V2 DELETE-provider contract and hourly coordinator. Execution is
+  disabled on fresh install and can be switched on or off only by native
+  Nextcloud administration. The activation is revisioned, admits exactly the
+  recommended booking (`P1Y`) and temporary-admin-history (`P6M`) policies,
+  and requires current technical backup and restore verification timestamps.
+  Holds, policy/version/time integrity, provider compatibility, atomic
+  provider execution and concurrency remain fail-closed. No customer legal
+  source, BV reference, DPO/BR confirmation or legal evidence is requested by
+  or blocks this activation;
 - a public additive V1 `ProcessingMetadataProvider` contract with a
   duplicate- and version-safe lazy registry, strict app/catalog ownership,
   failure isolation and a reusable contract-test kit;
+- a neutral public V1 risk-scope authorization query. Customer-local policy
+  revisions remain private in this app and only current members of
+  `Datenschutzbeauftragte` may configure them through the protected API. A
+  consumer receives only `authorized`, `denied`, `incompatible` or
+  `unanswered`; missing, disabled, future, expired, corrupted and incompatible
+  states fail closed. The first closed scope guards the future AD Raumplaner
+  secretariat workflow for foreign bookings without enabling that mutation
+  workflow itself;
 - the app-owned processing catalog
   [`resources/privacy-processing.json`](resources/privacy-processing.json)
   for Art.-15 aggregation, temporary admin full access and the separate
@@ -59,16 +71,17 @@ remain visible and are not replaced by heuristic fallback access.
   receiving technical defaults.
 
 The provider APIs remain pre-release and are not yet approved for external
-releases. `adroom` is the first personal-data pilot consumer; the Permission
-Matrix, AD Raumplaner and AD Urlaub use the standalone V1 retention-preview
-registry. Retention discovery is lazy, duplicate- and version-safe, and each
-provider keeps its own global paged read model. No report
-persistence, retention execution, data deletion or anonymization is part of
-version `0.1.3`; only the security-relevant temporary admin-access history and
-its DPO-confirmed configuration audit are persisted app-locally. Its six-month
-default is DPO-only, revisioned and re-evaluated from the original actual grant
-end in every read-only preview;
-the V1 contract intentionally exposes no execution method.
+releases. `adroom` is the first V2 DELETE-provider consumer; the Permission
+Matrix, AD Raumplaner and AD Urlaub continue to use the standalone V1
+retention-preview registry. V1 discovery remains lazy, duplicate- and
+version-safe, and V1 intentionally exposes no execution method. V2 providers
+keep deletion inside their own repositories and receive only their approved
+policy request. The center never reads or deletes foreign storage directly.
+The app persists its own security-relevant temporary-admin history, optional
+profile documentation, technical activation revisions and non-personal
+customer-local risk-scope revisions. The recommended six-month admin-history
+and one-year booking policies are recalculated from the original domain
+trigger; deletion leaves no residual person statistics.
 
 The initial consumer sequence started with `adroom`. Provider coverage of an
 installed workspace is discovered at runtime and is never inferred from that

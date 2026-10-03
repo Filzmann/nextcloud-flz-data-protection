@@ -184,13 +184,16 @@ $realProvider = new DataProtectionProcessingMetadataProvider();
 $realCatalog = ProcessingMetadataProviderContractTestKit::verify($realProvider);
 $assertSame('filzmann_data_protection', $realCatalog->appId(), 'Der eigene Katalog verwendet nicht die kanonische App-ID.');
 $assertSame(
-    ['article_15_aggregation', 'temporary_admin_full_access', 'retention_execution_profile_configuration'],
+    ['article_15_aggregation', 'temporary_admin_full_access', 'retention_execution_profile_configuration', 'retention_execution_technical_activation'],
     $realCatalog->processingIds(),
     'Der eigene Katalog beschreibt nicht den freigegebenen Pilotumfang.',
 );
 $realProcessings = $realCatalog->toArray()['processings'];
 $profileProcessing = $realProcessings[2] ?? null;
 $assertSame('PRIVACY-DECISION-REQUIRED', $profileProcessing['retention']['status'] ?? null, 'Die Profilrevisionen wurden fälschlich unter die Löschfrist der Adminfreigabehistorie gestellt.');
+$activationProcessing = $realProcessings[3] ?? null;
+$assertSame(false, $activationProcessing['legal_basis']['blocking'] ?? null, 'Offene kundenlokale Rechtsdokumentation blockiert die technische Aktivierung weiterhin.');
+$assertSame('P24M', $activationProcessing['retention']['duration_or_deadline'] ?? null, 'Die beschlossene 24-Monatsfrist der Aktivierungsrevisionen fehlt.');
 $realEvent = new RegisterProcessingMetadataProvidersEvent();
 (new DataProtectionProcessingMetadataProviderListener($realProvider))->handle($realEvent);
 $assertSame($realProvider, $realEvent->providers()['filzmann_data_protection'] ?? null, 'Der eigene Processing-Metadata-Provider wird nicht lazy registriert.');

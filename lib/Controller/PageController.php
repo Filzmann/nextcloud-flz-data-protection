@@ -9,6 +9,8 @@ use OCA\FilzmannDataProtection\Service\RetentionAccessService;
 use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
 use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
 use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileService;
+use OCA\FilzmannDataProtection\Service\RetentionExecutionActivationService;
+use OCA\FilzmannDataProtection\Service\RiskScopeAuthorizationService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -22,6 +24,8 @@ final class PageController extends Controller {
         private TemporaryAdminAccessService $adminAccess,
         private AdminHistoryRetentionPolicyService $adminHistoryRetention,
         private RetentionExecutionProfileService $retentionExecutionProfile,
+        private RetentionExecutionActivationService $retentionExecutionActivation,
+        private RiskScopeAuthorizationService $riskScopeAuthorization,
     ) {
         parent::__construct(Application::APP_ID, $request);
     }
@@ -39,6 +43,8 @@ final class PageController extends Controller {
             'showAdminAccessLink' => $showMissingAdminGrant && $canManageAdminAccess,
             'canConfigureAdminHistoryRetention' => $this->adminHistoryRetention->canConfigure(),
             'canConfigureRetentionExecutionProfile' => $canConfigureRetentionExecutionProfile,
+            'canConfigureRetentionExecutionActivation' => $this->retentionExecutionActivation->canConfigure(),
+            'canConfigureRiskScopeAuthorizations' => $this->riskScopeAuthorization->canConfigure(),
             'retentionExecutionProfileSetupRequired' => $canConfigureRetentionExecutionProfile
                 && $this->retentionExecutionProfile->status()['setupRequired'] === true,
         ]);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
 use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
 use OCA\FilzmannDataProtection\Privacy\DataProtectionPersonalDataProvider;
 use OCA\FilzmannDataProtection\Privacy\DataProtectionPersonalDataProviderListener;
 use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
@@ -85,10 +86,24 @@ $executionProfiles = new class implements RetentionExecutionProfileRepositoryInt
         ];
     }
 };
-$provider = new DataProtectionPersonalDataProvider($repository, $retentionPolicy, $executionProfiles);
+$executionActivations = new class implements RetentionExecutionActivationRepositoryInterface {
+    public function latest(): ?array { return null; }
+    public function history(): array { return []; }
+    public function appendIfCurrent(array $configuration, int $expectedRevision): array { return $configuration; }
+    public function historyForUid(string $uid, int $limit, int $offset, DateTimeImmutable $asOf): array {
+        return $uid === 'subject-17' ? [[
+            'revision'=>1,
+            'enabled'=>true,
+            'verificationDueAt'=>new DateTimeImmutable('2027-09-25T10:00:00+00:00'),
+            'changedBy'=>$uid,
+            'createdAt'=>new DateTimeImmutable('2026-09-25T10:00:00+00:00'),
+        ]] : [];
+    }
+};
+$provider = new DataProtectionPersonalDataProvider($repository, $retentionPolicy, $executionProfiles, $executionActivations);
 $subject = new DataSubjectRef('nextcloud-user', 'subject-17');
 $page = $provider->collect(new PersonalDataRequest($subject, 'de', 'access-report', 20, []));
-if ($page->status() !== 'complete' || count($page->entries()) !== 3) throw new RuntimeException('Eigene Adminfreigabe und Policybearbeitungen werden nicht vollständig ausgegeben.');
+if ($page->status() !== 'complete' || count($page->entries()) !== 4) throw new RuntimeException('Eigene Adminfreigabe und Policybearbeitungen werden nicht vollständig ausgegeben.');
 if (($repository->requests[0][0] ?? null) !== 'subject-17') throw new RuntimeException('Adminfreigaben werden nicht strikt subject-gebunden abgefragt.');
 $entry = $page->entries()[0];
 $payload = json_encode([
@@ -110,6 +125,12 @@ if ($profileEntry->reference() !== 'data-protection:retention-execution-profile:
     || ($profileEntry->attributes()['Profil'] ?? null) !== 'employment_collective_agreement_de'
     || str_contains(json_encode([$profileEntry->summary(), $profileEntry->attributes()], JSON_THROW_ON_ERROR), 'other-dpo')) {
     throw new RuntimeException('Subjectgebundene Kundenprofilbearbeitung fehlt oder legt fremde DPO-Kennungen offen.');
+}
+$activationEntry = $page->entries()[3];
+if ($activationEntry->reference() !== 'data-protection:retention-execution-activation:1'
+    || ($activationEntry->attributes()['Status'] ?? null) !== 'aktiviert'
+    || str_contains(json_encode([$activationEntry->summary(), $activationEntry->attributes()], JSON_THROW_ON_ERROR), 'other-admin')) {
+    throw new RuntimeException('Subjectgebundene technische Aktivierungsrevision fehlt oder legt fremde Kennungen offen.');
 }
 
 $foreign = $provider->collect(new PersonalDataRequest(new DataSubjectRef('external-applicant', 'subject-17'), 'de', 'access-report', 20, []));
@@ -152,6 +173,12 @@ $pagedProvider = new DataProtectionPersonalDataProvider(
     $emptyAdminHistory,
     new AdminHistoryRetentionPolicyService($blankConfig, $groups, $session, $clock),
     $manyProfiles,
+    new class implements RetentionExecutionActivationRepositoryInterface {
+        public function latest(): ?array { return null; }
+        public function history(): array { return []; }
+        public function appendIfCurrent(array $configuration, int $expectedRevision): array { return $configuration; }
+        public function historyForUid(string $uid, int $limit, int $offset, DateTimeImmutable $asOf): array { return []; }
+    },
 );
 $firstProfilePage = $pagedProvider->collect(new PersonalDataRequest($subject, 'de', 'access-report', 200, []));
 if ($firstProfilePage->status() !== 'partial' || count($firstProfilePage->entries()) !== 200 || $firstProfilePage->nextCursor() === null) {

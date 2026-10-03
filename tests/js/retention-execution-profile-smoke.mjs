@@ -50,7 +50,7 @@ const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
 vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number });
 await new Promise(resolve => setTimeout(resolve, 0));
 if (calls[0]?.[1]?.headers?.requesttoken !== OC.requestToken || elements.expectedRevision.value !== '0') throw new Error('Leerer Profilstatus wird nicht sitzungsgebunden mit dem Erst-Revisionsanker geladen.');
-if (!statusElement.textContent.includes('Ersteinrichtung erforderlich')) throw new Error('Die verpflichtende DPO-Ersteinrichtung wird nicht explizit ausgewiesen.');
+if (!statusElement.textContent.includes('Optionale lokale Dokumentation')) throw new Error('Die optionale lokale DPO-Dokumentation wird nicht verständlich ausgewiesen.');
 
 await listeners.submit({ preventDefault() {} });
 if (calls.length !== 1 || validityReports !== 1) throw new Error('Unvollständige UI-Eingaben dürfen keine Profilrevision anfordern.');
@@ -75,6 +75,6 @@ if (body.configuration?.profileId !== 'employment_collective_agreement_de'
     || body.configuration?.performanceMonitoringProhibited !== true) {
     throw new Error('Geschlossenes Profil, Revision oder unveränderliche Schutzgrenze gehen bei der Mutation verloren.');
 }
-if (statusElement.role !== 'status' || !statusElement.textContent.includes('REVIEW-only')) throw new Error('Der erfolgreiche Status behauptet nicht wahrheitsgemäß REVIEW-only.');
+if (statusElement.role !== 'status' || !statusElement.textContent.includes('aktiviert oder blockiert')) throw new Error('Die UI trennt lokale Dokumentation und technische Aktivierung nicht wahrheitsgemäß.');
 
 console.log('Retention execution profile UI smoke passed.');

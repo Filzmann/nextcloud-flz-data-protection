@@ -84,6 +84,30 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'filzmann_data_protection:RetentionExecutionProfileService::canConfigure',
                 'high',
             ),
+            new PermissionRule(
+                'AppPermission',
+                'Automatische Retention technisch aktivieren',
+                'Ausschließlich Nextcloud-native Administration; erteilt keinen fachlichen Datenzugriff',
+                'retention.execution.configure',
+                'Automatische Retention technisch aktivieren',
+                'allow',
+                'app:filzmann_data_protection',
+                PermissionCondition::nextcloudAdmin(),
+                'filzmann_data_protection:RetentionExecutionActivationService::canConfigure',
+                'high',
+            ),
+            new PermissionRule(
+                'AppPermission',
+                'Risikoscope konfigurieren',
+                'Ausschließlich aktuelle Mitglieder der kanonischen Gruppe Datenschutzbeauftragte',
+                'risk-scope.configure',
+                'Risikoscope konfigurieren',
+                'allow',
+                'app:filzmann_data_protection',
+                PermissionCondition::group('Datenschutzbeauftragte'),
+                'filzmann_data_protection:RiskScopeAuthorizationService::canConfigure',
+                'high',
+            ),
         ]);
     }
 }
