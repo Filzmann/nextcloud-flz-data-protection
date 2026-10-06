@@ -7,15 +7,20 @@ erledigte Änderungen in `CHANGELOG.md` und geltende Architektur in
 
 ## Nextcloud compatibility gate
 
-### FDP-NC-COMPAT – prove the declared 29–35 range and future majors
+### FDP-NC-COMPAT – RC-Kompatibilität und Zukunftsobergrenze nachweisen
 
-`info.xml` already includes Nextcloud 33. Before the next release, every
-declared major must pass a contiguous matrix covering fresh install/upgrade,
-DI, provider discovery and version negotiation, self-service, retention
-preview, temporary-admin audit, assets, and the visible UI. Raise the upper
-bound only from app-local `verify-nextcloud-future-compatibility` evidence;
-missing, disabled, and incompatible providers remain explicit states rather
-than hidden compatibility claims.
+Die `min-version` muss beim Release Candidate die aktuelle, autoritativ
+ermittelte openDesk-Nextcloud-Hauptversion abdecken. Erst beim Erstellen eines
+veröffentlichungsfähigen RC wird jeder deklarierte Major lückenlos geprüft:
+Fresh Install/Upgrade, DI, Provider-Discovery und Versionsverhandlung,
+Self-Service, Retention-Vorschau, temporäres Admin-Audit, Assets und sichtbare
+Oberfläche. `max-version` folgt ausschließlich der höchsten lückenlos
+nachgewiesenen Major aus offiziellen, gepinnten Nextcloud-Git-Quellen; eine
+offiziell benannte und testbare künftige Major (z. B. NC36) wird dabei geprüft.
+Der regelmäßige Check der neuesten veröffentlichten Entwicklungsruntime ist
+davon getrennt und ersetzt keinen RC-Nachweis. Fehlende, deaktivierte und
+inkompatible Provider bleiben explizite Zustände statt verborgener
+Kompatibilitätsbehauptungen.
 
 ## Next implementation gates
 
@@ -50,3 +55,10 @@ than hidden compatibility claims.
    activation. Before deleting that documentation history, decide its own
    retention, Art.-15, hold and backup treatment; it never blocks or enables
    V2 execution.
+7. Separate the session-bound Art. 15 self-service from fachliche DPO
+   controls in the UI. Personal Art. 15 information is exposed only through
+   the Nextcloud personal `Datenschutz` settings entry. DPO report, policy,
+   admin-grant and retention functions remain in the app menu and are split
+   into coherent, accessible sections. This navigation change must preserve
+   the existing server-side role separation and needs route, direct-access,
+   keyboard, focus and responsive-layout checks.

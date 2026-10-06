@@ -39,7 +39,8 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 
 ## Ergebnis
 
-- Ergebnis:
+- Ergebnis: Offene UI-Trennung aus dieser Abnahme ist als Punkt 7 in
+  `ROADMAP.md` erfasst.
 - Abweichungen und reproduzierbare Schritte:
 - Belege ohne Echtdaten:
 
