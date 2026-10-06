@@ -33,6 +33,7 @@ $logger = new class implements LoggerInterface {
 $provider = new class implements RetentionExecutionProvider {
     public int $plans = 0;
     public int $executions = 0;
+    public bool $failExecution = false;
     public function descriptor(): RetentionExecutionProviderDescriptor { return new RetentionExecutionProviderDescriptor('adroom', 'AD Raumplaner', '2.0', 100); }
     public function policies(): array { return [new RetentionExecutionPolicy('room_booking_delete', 'Raumbuchungen', 'Löschung', 'COMPLETED_AT', 'P1Y', 'DELETE', '2.1')]; }
     public function plan(RetentionExecutionRequest $request): RetentionExecutionPage {
@@ -41,6 +42,9 @@ $provider = new class implements RetentionExecutionProvider {
     }
     public function execute(RetentionExecutionBatch $batch): RetentionExecutionResult {
         $this->executions++;
+        if ($this->failExecution) {
+            return new RetentionExecutionResult([], [], [], ['booking:17']);
+        }
         return new RetentionExecutionResult(['booking:17'], [], [], []);
     }
 };
@@ -64,8 +68,20 @@ if ($disabled['status'] !== 'blocked' || $provider->plans !== 0 || $provider->ex
 
 $profile->status = [
     'executionAvailable'=>true,
-    'configuration'=>['approvedPolicyIds'=>['adroom:room_booking_delete']],
+    'configuration'=>['approvedPolicyIds'=>[
+        'adroom:room_booking_delete',
+        'missing_app:missing_policy',
+    ]],
 ];
+$missingCoverage = $coordinator->run('2026-09-29T10:00:00+00:00');
+if (($missingCoverage['status'] ?? null) !== 'blocked'
+    || ($missingCoverage['diagnosticCode'] ?? null) !== 'provider_coverage_incomplete'
+    || $provider->plans !== 0
+    || $provider->executions !== 0) {
+    throw new RuntimeException('Fehlende genehmigte Provider-Coverage muss vor jeder Ausführung global blockieren.');
+}
+
+$profile->status['configuration']['approvedPolicyIds'] = ['adroom:room_booking_delete'];
 $report = $coordinator->run('2026-09-29T10:00:00+00:00');
 if (($report['providers']['adroom']['policies']['room_booking_delete']['deleted'] ?? null) !== 1 || $provider->plans !== 1 || $provider->executions !== 1) {
     throw new RuntimeException('Freigegebene V2-Policy wird nicht mit Dry Run und unverändertem Batch ausgeführt.');
@@ -73,8 +89,49 @@ if (($report['providers']['adroom']['policies']['room_booking_delete']['deleted'
 
 $profile->status['configuration']['approvedPolicyIds'] = ['adroom:foreign_policy'];
 $notApproved = $coordinator->run('2026-09-29T10:00:00+00:00');
-if (($notApproved['providers']['adroom']['policies'] ?? null) !== [] || $provider->plans !== 1 || $provider->executions !== 1) {
-    throw new RuntimeException('Nicht freigegebene Policy hatte Ausführungsnebenwirkungen.');
+if (($notApproved['status'] ?? null) !== 'blocked'
+    || ($notApproved['diagnosticCode'] ?? null) !== 'provider_coverage_incomplete'
+    || $provider->plans !== 1
+    || $provider->executions !== 1) {
+    throw new RuntimeException('Unbekannte genehmigte Policy muss ohne Ausführungsnebenwirkung blockieren.');
+}
+
+$provider->failExecution = true;
+$profile->status['configuration']['approvedPolicyIds'] = ['adroom:room_booking_delete'];
+$failedCandidate = $coordinator->run('2026-09-29T10:00:00+00:00');
+if (($failedCandidate['status'] ?? null) !== 'failed'
+    || ($failedCandidate['diagnosticCode'] ?? null) !== 'provider_execution_failed'
+    || ($failedCandidate['providers']['adroom']['status'] ?? null) !== 'failed'
+    || ($failedCandidate['providers']['adroom']['policies']['room_booking_delete']['failed'] ?? null) !== 1
+    || ($failedCandidate['providers']['adroom']['policies']['room_booking_delete']['deleted'] ?? null) !== 0) {
+    throw new RuntimeException('Providerseitig fehlgeschlagene Kandidaten dürfen nicht als erfolgreicher Lauf erscheinen.');
+}
+$provider->failExecution = false;
+
+$registrationFailureEvents = new class($provider) implements IEventDispatcher {
+    public function __construct(private RetentionExecutionProvider $provider) {}
+    public function dispatchTyped(Event $event): Event {
+        if (!$event instanceof RegisterRetentionExecutionProvidersEvent) throw new RuntimeException('Unexpected event.');
+        $event->register($this->provider);
+        $event->register(new class implements RetentionExecutionProvider {
+            public function descriptor(): RetentionExecutionProviderDescriptor { return new RetentionExecutionProviderDescriptor('broken_app', 'Defekter Provider', '2.0', 100); }
+            public function policies(): array { throw new RuntimeException('sensitive registration detail'); }
+            public function plan(RetentionExecutionRequest $request): RetentionExecutionPage { throw new RuntimeException('must not plan'); }
+            public function execute(RetentionExecutionBatch $batch): RetentionExecutionResult { throw new RuntimeException('must not execute'); }
+        });
+        return $event;
+    }
+};
+$plansBeforeRegistrationFailure = $provider->plans;
+$executionsBeforeRegistrationFailure = $provider->executions;
+$registrationFailed = (new RetentionExecutionCoordinator($registrationFailureEvents, $profile, $logger))->run('2026-09-29T10:00:00+00:00');
+if (($registrationFailed['status'] ?? null) !== 'failed'
+    || ($registrationFailed['diagnosticCode'] ?? null) !== 'provider_execution_failed'
+    || ($registrationFailed['providers']['broken_app']['status'] ?? null) !== 'failed'
+    || $provider->plans !== $plansBeforeRegistrationFailure
+    || $provider->executions !== $executionsBeforeRegistrationFailure
+    || str_contains(json_encode($logger->records, JSON_THROW_ON_ERROR), 'sensitive registration detail')) {
+    throw new RuntimeException('Registrierungsfehler müssen global vor Ausführung und datensparsam fehlschlagen.');
 }
 
 $failingEvents = new class implements IEventDispatcher {

@@ -16,6 +16,9 @@
     <dependencies>
         <nextcloud min-version="29" max-version="35"/>
     </dependencies>
+    <background-jobs>
+        <job>OCA\FilzmannDataProtection\BackgroundJob\RetentionExecutionJob</job>
+    </background-jobs>
     <settings>
         <admin>OCA\FilzmannDataProtection\Settings\Admin</admin>
         <admin-section>OCA\FilzmannDataProtection\Settings\AdminSection</admin-section>

@@ -45,13 +45,65 @@ final class RetentionExecutionCoordinator {
             ];
         }
         $reports = [];
+        $providers = [];
+        $covered = [];
         $failed = false;
         foreach ($event->providers() as $appId => $provider) {
             $reports[$appId] = ['status'=>'complete','policies'=>[]];
             try {
                 $descriptor = $provider->descriptor();
-                foreach ($provider->policies() as $policy) {
+                $policies = $provider->policies();
+                $providers[$appId] = compact('provider', 'descriptor', 'policies');
+                foreach ($policies as $policy) {
+                    $approvedPolicyId = $appId . ':' . $policy->policyId();
+                    if (in_array($approvedPolicyId, $approved, true)) {
+                        $covered[$approvedPolicyId] = true;
+                    }
+                }
+            } catch (Throwable $error) {
+                $failed = true;
+                $reports[$appId] = ['status'=>'failed','policies'=>[]];
+                $this->logger->error('Retention execution provider failed.', [
+                    'stage' => 'provider_execution',
+                    'provider_app_id' => $appId,
+                    'error_type' => get_debug_type($error),
+                ]);
+            }
+        }
+        foreach ($event->registrationFailures() as $appId => $_failure) {
+            $failed = true;
+            $reports[$appId] = ['status'=>'failed','policies'=>[]];
+            $this->logger->error('Retention execution provider registration failed.', [
+                'stage' => 'provider_registration',
+                'provider_app_id' => $appId,
+            ]);
+        }
+        if ($failed) {
+            ksort($reports);
+            return [
+                'status' => 'failed',
+                'diagnosticCode' => 'provider_execution_failed',
+                'providers' => $reports,
+            ];
+        }
+        $missing = array_values(array_diff($approved, array_keys($covered)));
+        if ($missing !== []) {
+            $this->logger->error('Retention execution provider coverage is incomplete.', [
+                'stage' => 'provider_coverage',
+                'missing_count' => count($missing),
+            ]);
+            return [
+                'status' => 'blocked',
+                'diagnosticCode' => 'provider_coverage_incomplete',
+                'providers' => $reports,
+            ];
+        }
+        foreach ($providers as $appId => $snapshot) {
+            try {
+                foreach ($snapshot['policies'] as $policy) {
                     if (!in_array($appId . ':' . $policy->policyId(), $approved, true)) continue;
+                    $provider = $snapshot['provider'];
+                    $descriptor = $snapshot['descriptor'];
                     $request = new RetentionExecutionRequest($policy->policyId(), $policy->version(), $at, min(100, $descriptor->maxBatchSize()));
                     $page = $provider->plan($request);
                     $result = $provider->execute(new RetentionExecutionBatch($request, $page->candidates()));
@@ -83,14 +135,6 @@ final class RetentionExecutionCoordinator {
                     'error_type' => get_debug_type($error),
                 ]);
             }
-        }
-        foreach ($event->registrationFailures() as $appId => $_failure) {
-            $failed = true;
-            $reports[$appId] = ['status'=>'failed','policies'=>[]];
-            $this->logger->error('Retention execution provider registration failed.', [
-                'stage' => 'provider_registration',
-                'provider_app_id' => $appId,
-            ]);
         }
         ksort($reports);
         if ($failed) {
