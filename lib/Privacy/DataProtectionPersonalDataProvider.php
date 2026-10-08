@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Privacy;
+namespace OCA\FlzDataProtection\Privacy;
 
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProviderDescriptor;
-use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
+use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataEntry;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataPage;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataProvider;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
+use OCA\FlzDataProtection\PublicApi\V1\ProviderDescriptor;
+use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
 
 final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
     private const MAX_PAGE_SIZE = 200;
@@ -31,7 +31,7 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
 
     public function descriptor(): ProviderDescriptor {
         return new ProviderDescriptor(
-            'filzmann_data_protection',
+            'flz_data_protection',
             'Datenschutz-Center',
             '1.0',
             ['nextcloud-user'],

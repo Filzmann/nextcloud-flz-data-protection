@@ -5,12 +5,12 @@ declare(strict_types=1);
 $root = dirname(__DIR__, 2);
 $migration = (string)file_get_contents($root . '/lib/Migration/Version000004Date202609280001.php');
 foreach ([
-    'fdp_retention_profile', 'revision', 'profile_id', 'profile_revision',
+    'flz_dp_retention_profile', 'revision', 'profile_id', 'profile_revision',
     'legal_evidence_ref', 'scope_reference', 'effective_at', 'legal_review_due_at',
     'backup_regular_days', 'backup_buffer_days', 'backup_evidence_ref',
     'backup_evidence_at', 'backup_review_due_at', 'restore_test_ref',
     'restore_tested_at', 'dpo_confirmed', 'changed_by', 'created_at',
-    'fdp_ret_prof_revision',
+    'flz_dp_ret_prof_revision',
 ] as $contract) {
     if (!str_contains($migration, $contract)) {
         throw new RuntimeException('Additiver DP-07-Profilmigrationsvertrag fehlt: ' . $contract);

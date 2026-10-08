@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Privacy;
+namespace OCA\FlzDataProtection\Privacy;
 
 use DomainException;
 use JsonException;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataCatalog;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataCatalog;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProvider;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
 
 final class DataProtectionProcessingMetadataProvider implements ProcessingMetadataProvider {
     public function descriptor(): ProcessingMetadataProviderDescriptor {
         return new ProcessingMetadataProviderDescriptor(
-            'filzmann_data_protection',
+            'flz_data_protection',
             'Datenschutz-Center',
             '1.0',
         );

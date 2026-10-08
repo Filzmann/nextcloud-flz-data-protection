@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Permission;
+namespace OCA\FlzDataProtection\Permission;
 
-use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\PermissionCondition;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\PermissionProvider;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\PermissionProviderDescriptor;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\PermissionProviderResult;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\PermissionRule;
+use OCA\FlzDataProtection\Service\RetentionSettingsService;
+use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionCondition;
+use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionProvider;
+use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionProviderDescriptor;
+use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionProviderResult;
+use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionRule;
 
 final class DataProtectionPermissionProvider implements PermissionProvider {
     public function __construct(private RetentionSettingsService $settings) {
@@ -17,7 +17,7 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
 
     public function descriptor(): PermissionProviderDescriptor {
         return new PermissionProviderDescriptor(
-            'filzmann_data_protection',
+            'flz_data_protection',
             'Datenschutz-Center',
             '1.0',
             ['permissions'],
@@ -43,9 +43,9 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'personal-data.self',
                 'Eigene Auskunft lesen',
                 'allow',
-                'app:filzmann_data_protection',
+                'app:flz_data_protection',
                 PermissionCondition::all([PermissionCondition::authenticated(), PermissionCondition::self()]),
-                'filzmann_data_protection:SelfServiceController::report',
+                'flz_data_protection:SelfServiceController::report',
                 'high',
             ),
             new PermissionRule(
@@ -55,9 +55,9 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'retention.review',
                 'Retention prüfen',
                 'allow',
-                'app:filzmann_data_protection',
+                'app:flz_data_protection',
                 PermissionCondition::any($reviewConditions),
-                'filzmann_data_protection:RetentionAccessService::canReview',
+                'flz_data_protection:RetentionAccessService::canReview',
                 'high',
             ),
             new PermissionRule(
@@ -67,9 +67,9 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'retention.configure',
                 'Technische Konfiguration verwalten',
                 'allow',
-                'app:filzmann_data_protection',
+                'app:flz_data_protection',
                 PermissionCondition::nextcloudAdmin(),
-                'filzmann_data_protection:RetentionAccessService::canConfigure',
+                'flz_data_protection:RetentionAccessService::canConfigure',
                 'high',
             ),
             new PermissionRule(
@@ -79,9 +79,9 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'retention.execution-profile.configure',
                 'Rechts- und Backup-Profil konfigurieren',
                 'allow',
-                'app:filzmann_data_protection',
+                'app:flz_data_protection',
                 PermissionCondition::group('Datenschutzbeauftragte'),
-                'filzmann_data_protection:RetentionExecutionProfileService::canConfigure',
+                'flz_data_protection:RetentionExecutionProfileService::canConfigure',
                 'high',
             ),
             new PermissionRule(
@@ -91,9 +91,9 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'retention.execution.configure',
                 'Automatische Retention technisch aktivieren',
                 'allow',
-                'app:filzmann_data_protection',
+                'app:flz_data_protection',
                 PermissionCondition::nextcloudAdmin(),
-                'filzmann_data_protection:RetentionExecutionActivationService::canConfigure',
+                'flz_data_protection:RetentionExecutionActivationService::canConfigure',
                 'high',
             ),
             new PermissionRule(
@@ -103,9 +103,9 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
                 'risk-scope.configure',
                 'Risikoscope konfigurieren',
                 'allow',
-                'app:filzmann_data_protection',
+                'app:flz_data_protection',
                 PermissionCondition::group('Datenschutzbeauftragte'),
-                'filzmann_data_protection:RiskScopeAuthorizationService::canConfigure',
+                'flz_data_protection:RiskScopeAuthorizationService::canConfigure',
                 'high',
             ),
         ]);

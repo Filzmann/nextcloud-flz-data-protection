@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DateInterval;
 use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\AppInfo\Application;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IAppConfig;
 use OCP\IGroupManager;

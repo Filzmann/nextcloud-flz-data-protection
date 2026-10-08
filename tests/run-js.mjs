@@ -18,10 +18,10 @@ const adminAccessScript = read('js/admin-access.js');
 const executionProfileScript = read('js/retention-execution-profile.js');
 const riskScopeAuthorizationScript = read('js/risk-scope-authorization.js');
 
-if (!info.includes('<id>filzmann_data_protection</id>')) throw new Error('Eindeutige App-ID fehlt.');
-if (!info.includes('<namespace>FilzmannDataProtection</namespace>')) throw new Error('App-Namespace fehlt.');
+if (!info.includes('<id>flz_data_protection</id>')) throw new Error('Eindeutige FLZ-App-ID fehlt.');
+if (!info.includes('<namespace>FlzDataProtection</namespace>')) throw new Error('FLZ-App-Namespace fehlt.');
 if (info.includes('<app>')) throw new Error('Die Standalone-App besitzt eine fremde Laufzeitabhängigkeit.');
-if (!info.includes('<route>filzmann_data_protection.page.index</route>')) throw new Error('Standalone-Navigation fehlt.');
+if (!info.includes('<route>flz_data_protection.page.index</route>')) throw new Error('Standalone-Navigation fehlt.');
 if (!routes.includes("'name' => 'page#index'")) throw new Error('App-Route fehlt.');
 if (!routes.includes("'name' => 'self_service#report'")) throw new Error('Self-Service-API-Route fehlt.');
 if (!routes.includes("'url' => '/api/v1/self-service-report'")) throw new Error('Self-Service-API besitzt keinen stabilen Pfad.');
@@ -33,7 +33,7 @@ if (selfServiceController.includes('PublicPage')) throw new Error('Die Self-Serv
 if (!/function report\(\): JSONResponse/.test(selfServiceController)) throw new Error('Die Self-Service-API akzeptiert eine frei übermittelte Zielperson.');
 if (!template.includes('id="data-protection-app"')) throw new Error('Semantischer App-Root fehlt.');
 if (!template.includes('id="data-protection-retention"')) throw new Error('Operativer REVIEW-Bereich fehlt.');
-if (!info.includes('<admin>OCA\\FilzmannDataProtection\\Settings\\Admin</admin>')) throw new Error('Datenschutz-Administration fehlt.');
+if (!info.includes('<admin>OCA\\FlzDataProtection\\Settings\\Admin</admin>')) throw new Error('Datenschutz-Administration fehlt.');
 if (!adminTemplate.includes('kein automatisches fachliches Leserecht')) throw new Error('Deny-by-default-Hinweis für native Admins fehlt.');
 if (adminTemplate.includes('id="data-protection-full-access-form"')) throw new Error('Freigabesteuerung ist noch an die technische Administration gebunden.');
 if (!template.includes("$_['canManageAdminAccess']")) throw new Error('DPO-geschützte Freigabesteuerung fehlt.');
@@ -66,6 +66,7 @@ if (!executionActivationScript.includes('requesttoken: OC.requestToken')) throw 
 if (/(legalEvidence|authorizationReference|dpoConfirmed|agreement)/.test(executionActivationScript)) throw new Error('Rechts-/DPO-Evidenz ist weiterhin Eingabe der technischen Aktivierung.');
 if (!template.includes("$_['canConfigureRiskScopeAuthorizations']")) throw new Error('Die Risikoscope-Konfiguration ist nicht serverseitig auf DPOs begrenzt.');
 if (!template.includes('data-protection-risk-scope-authorization-form')) throw new Error('Das DPO-Formular für Risikoscopes fehlt.');
+if (!template.includes('value="flzroom.secretariat_foreign_booking_intervention"')) throw new Error('Das DPO-Formular verwendet nicht die kanonische FLZ-Raumplaner-Scope-ID.');
 if (!riskScopeAuthorizationScript.includes('/api/v1/risk-scope-authorizations')) throw new Error('Die Risikoscope-UI verwendet nicht den geschlossenen API-Pfad.');
 if (!riskScopeAuthorizationScript.includes('requesttoken: OC.requestToken')) throw new Error('Die Risikoscope-Mutation sendet kein CSRF-Token.');
 if (!adminScript.includes('requesttoken: OC.requestToken')) throw new Error('Einstellungsspeicherung sendet kein CSRF-Token.');

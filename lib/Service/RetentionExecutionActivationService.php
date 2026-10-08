@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DateInterval;
 use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUserSession;
@@ -17,9 +17,9 @@ use Throwable;
 /** Technical operator gate; customer-local legal and participation decisions stay outside the product. */
 final class RetentionExecutionActivationService implements RetentionExecutionProfileStatus {
     private const RECOMMENDED_POLICY_IDS = [
-        'adroom:room_booking_delete',
-        'adroom:temporary_admin_access_history_delete',
-        'filzmann_data_protection:temporary_admin_access_history_delete',
+        'flzroom:room_booking_delete',
+        'flzroom:temporary_admin_access_history_delete',
+        'flz_data_protection:temporary_admin_access_history_delete',
     ];
 
     public function __construct(

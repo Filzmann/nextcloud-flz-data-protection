@@ -9,9 +9,9 @@ if (!is_file($migrationPath)) {
 }
 $migration = (string)file_get_contents($migrationPath);
 foreach ([
-    'fdp_risk_scope_auth', 'scope_id', 'revision', 'schema_version', 'enabled',
+    'flz_dp_risk_scope_auth', 'scope_id', 'revision', 'schema_version', 'enabled',
     'policy_revision', 'authorization_ref', 'effective_at', 'expires_at',
-    'dpo_confirmed', 'created_at', 'fdp_risk_scope_rev',
+    'dpo_confirmed', 'created_at', 'flz_dp_risk_scope_rev',
 ] as $contract) {
     if (!str_contains($migration, $contract)) {
         throw new RuntimeException('Risikoscope-Migrationsvertrag fehlt: ' . $contract);

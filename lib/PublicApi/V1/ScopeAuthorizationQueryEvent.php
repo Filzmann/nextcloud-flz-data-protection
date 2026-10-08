@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\PublicApi\V1;
+namespace OCA\FlzDataProtection\PublicApi\V1;
 
 use InvalidArgumentException;
 use OCP\EventDispatcher\Event;
@@ -14,7 +14,7 @@ use OCP\EventDispatcher\Event;
  */
 final class ScopeAuthorizationQueryEvent extends Event {
     public const CONTRACT_VERSION = '1.0';
-    public const ADROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION = 'adroom.secretariat_foreign_booking_intervention';
+    public const FLZROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION = 'flzroom.secretariat_foreign_booking_intervention';
 
     private string $status = 'unanswered';
 

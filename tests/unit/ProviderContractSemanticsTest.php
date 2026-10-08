@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProviderDescriptor;
-use OCA\FilzmannDataProtection\PublicApi\V1\Testing\PersonalDataProviderContractTestKit;
+use OCA\FlzDataProtection\PublicApi\V1\DataSubjectRef;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataEntry;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataPage;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataProvider;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
+use OCA\FlzDataProtection\PublicApi\V1\ProviderDescriptor;
+use OCA\FlzDataProtection\PublicApi\V1\Testing\PersonalDataProviderContractTestKit;
 
 $assertSame = static function (mixed $expected, mixed $actual, string $message): void {
     if ($expected !== $actual) {
@@ -18,7 +18,7 @@ $assertSame = static function (mixed $expected, mixed $actual, string $message):
 
 $entryConstructorParameters = array_map(
     static fn (ReflectionParameter $parameter): string => $parameter->getName(),
-    (new ReflectionMethod(OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry::class, '__construct'))->getParameters(),
+    (new ReflectionMethod(OCA\FlzDataProtection\PublicApi\V1\PersonalDataEntry::class, '__construct'))->getParameters(),
 );
 $assertSame(true, in_array('reference', $entryConstructorParameters, true), 'Der öffentliche Datensatzvertrag besitzt keine stabile technische Referenz.');
 

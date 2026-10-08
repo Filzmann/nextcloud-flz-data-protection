@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Controller;
+namespace OCA\FlzDataProtection\Controller;
 
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Exception\AuthenticationRequiredException;
-use OCA\FilzmannDataProtection\Service\SelfServiceReportService;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Exception\AuthenticationRequiredException;
+use OCA\FlzDataProtection\Service\SelfServiceReportService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;

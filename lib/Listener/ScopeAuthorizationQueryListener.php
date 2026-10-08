@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Listener;
+namespace OCA\FlzDataProtection\Listener;
 
-use OCA\FilzmannDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
-use OCA\FilzmannDataProtection\Service\RiskScopeAuthorizationService;
+use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
+use OCA\FlzDataProtection\Service\RiskScopeAuthorizationService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

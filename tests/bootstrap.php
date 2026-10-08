@@ -21,7 +21,7 @@ spl_autoload_register(static function (string $class): void {
         return;
     }
 
-    $prefix = 'OCA\\FilzmannDataProtection\\';
+    $prefix = 'OCA\\FlzDataProtection\\';
     if (!str_starts_with($class, $prefix)) {
         return;
     }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Migration;
+namespace OCA\FlzDataProtection\Migration;
 
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessService;
 use Closure;
 use OCP\IGroupManager;
 use OCP\Migration\IOutput;

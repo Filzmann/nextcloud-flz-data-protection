@@ -3,7 +3,7 @@
 ## Zweck und Grenze
 
 Dieses Repository enthält ausschließlich die eigenständig versionierte
-Nextcloud-App `filzmann_data_protection`. Sie stellt den öffentlichen,
+Nextcloud-App `flz_data_protection`. Sie stellt den öffentlichen,
 versionierten Datenschutz-Providervertrag, Registry, Aggregation, Coverage
 und später Self-Service, Admin-Auskunft, Audit sowie Retention-Koordination
 bereit. Fachapps bleiben Eigentümerinnen ihrer Daten.

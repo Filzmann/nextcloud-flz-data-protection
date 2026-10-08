@@ -6,7 +6,7 @@ const root = fileURLToPath(new URL('../..', import.meta.url));
 const source = readFileSync(`${root}/js/risk-scope-authorization.js`, 'utf8');
 const fields = ['scopeId', 'enabled', 'policyRevision', 'authorizationReference', 'effectiveAt', 'expiresAt', 'dpoConfirmed', 'expectedRevision'];
 const elements = Object.fromEntries(fields.map(name => [name, { value: '', checked: false, disabled: false }]));
-elements.scopeId.value = 'adroom.secretariat.foreign-booking-intervention';
+elements.scopeId.value = 'flzroom.secretariat_foreign_booking_intervention';
 const listeners = {};
 let valid = false;
 let validityReports = 0;
@@ -27,18 +27,18 @@ const FormData = class {
 const calls = [];
 const missing = {
     contractVersion: '1.0', performanceMonitoringProhibited: true,
-    scopes: { 'adroom.secretariat.foreign-booking-intervention': { consumerAppId: 'adroom', authorized: false, status: 'configuration_missing', configuration: null } },
+    scopes: { 'flzroom.secretariat_foreign_booking_intervention': { consumerAppId: 'flzroom', authorized: false, status: 'configuration_missing', configuration: null } },
 };
 const authorized = {
     contractVersion: '1.0', performanceMonitoringProhibited: true,
-    scopes: { 'adroom.secretariat.foreign-booking-intervention': {
-        consumerAppId: 'adroom', authorized: true, status: 'authorized',
-        configuration: { revision: 1, scopeId: 'adroom.secretariat.foreign-booking-intervention', enabled: true, policyRevision: 'SYNTH-REV-1', authorizationReference: 'SYNTH-EVIDENCE-1', effectiveAt: '2026-09-29T10:00:00+00:00', expiresAt: '2026-10-29T10:00:00+00:00', dpoConfirmed: true },
+    scopes: { 'flzroom.secretariat_foreign_booking_intervention': {
+        consumerAppId: 'flzroom', authorized: true, status: 'authorized',
+        configuration: { revision: 1, scopeId: 'flzroom.secretariat_foreign_booking_intervention', enabled: true, policyRevision: 'SYNTH-REV-1', authorizationReference: 'SYNTH-EVIDENCE-1', effectiveAt: '2026-09-29T10:00:00+00:00', expiresAt: '2026-10-29T10:00:00+00:00', dpoConfirmed: true },
     } },
 };
 const expired = {
     contractVersion: '1.0', performanceMonitoringProhibited: true,
-    scopes: { 'adroom.secretariat.foreign-booking-intervention': { consumerAppId: 'adroom', authorized: false, status: 'expired', configuration: authorized.scopes['adroom.secretariat.foreign-booking-intervention'].configuration } },
+    scopes: { 'flzroom.secretariat_foreign_booking_intervention': { consumerAppId: 'flzroom', authorized: false, status: 'expired', configuration: authorized.scopes['flzroom.secretariat_foreign_booking_intervention'].configuration } },
 };
 let responseState = missing;
 const fetch = async (url, options = {}) => {
@@ -60,7 +60,7 @@ if (!status.textContent.includes('abgelaufen') || status.role !== 'status') thro
 await listeners.submit({ preventDefault() {} });
 if (calls.length !== 2 || validityReports !== 1 || status.role !== 'alert') throw new Error('Unvollständige Scope-Eingaben dürfen nicht gespeichert werden.');
 
-elements.scopeId.value = 'adroom.secretariat.foreign-booking-intervention';
+elements.scopeId.value = 'flzroom.secretariat_foreign_booking_intervention';
 elements.enabled.checked = true;
 elements.policyRevision.value = 'SYNTH-REV-1';
 elements.authorizationReference.value = 'SYNTH-EVIDENCE-1';

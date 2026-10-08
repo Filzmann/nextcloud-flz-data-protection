@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
 use OCP\EventDispatcher\IEventDispatcher;
 
 final class RetentionPreviewAggregator {

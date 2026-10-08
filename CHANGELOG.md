@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Technische App-Identität auf `flz_data_protection` und
+  `OCA\\FlzDataProtection` umgestellt. App-eigene Tabellen und Indizes
+  verwenden für den vereinbarten Fresh-Install-Neustart das Präfix `flz_dp`;
+  die sichtbare Filzmann-Produktbezeichnung bleibt erhalten.
 - Retention-Runtime repariert: der ausführbare Adminhistorien-Provider ist
   nun explizit an sein Repository gebunden, fehlgeschlagene Discovery-,
   Registrierungs- oder Ausführungsläufe werden datensparsam diagnostiziert
@@ -42,10 +46,10 @@
 - Die kanonische Nextcloud-Gruppe `Datenschutzbeauftragte` wird bei
   Installation beziehungsweise Upgrade idempotent über die native
   Gruppenverwaltung angelegt, ohne bestehende Gruppen oder Mitglieder zu ändern.
-- Reale Nextcloud-34-Lifecycle-Matrix für AD Raumplaner und AD Urlaub ergänzt: alter LocalBase-Pilot, gemeinsames Update auf den Standalone-V1-Vertrag, deaktivierte und entfernte Privacy-App, Neuinstallation sowie vorwärtsversionierter Rollback sind grün; Provider-Discovery bleibt in jedem Zustand explizit.
+- Reale Nextcloud-34-Lifecycle-Matrix für Filzmann Raumplaner und Filzmann Urlaubsplanung ergänzt: alter LocalBase-Pilot, gemeinsames Update auf den Standalone-V1-Vertrag, deaktivierte und entfernte Privacy-App, Neuinstallation sowie vorwärtsversionierter Rollback sind grün; Provider-Discovery bleibt in jedem Zustand explizit.
 - Öffentlichen V1-Retention-Previewvertrag um feste Bewertungszeitpunkte,
   opake seitenweise Fortsetzungen, isolierte Providerfehler und robuste
-  Nachladezustände ergänzt; AD Raumplaner und AD Urlaub vom LocalBase-Pilot
+  Nachladezustände ergänzt; Filzmann Raumplaner und Filzmann Urlaubsplanung vom LocalBase-Pilot
   als eigenständige Consumer migriert.
 - App-lokale Adminfreigabe an die feste Gruppe `Datenschutzbeauftragte`
   gebunden, aus der technischen Administration in den geschützten App-Einstieg

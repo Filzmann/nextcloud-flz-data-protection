@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Migration;
+namespace OCA\FlzDataProtection\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -12,11 +12,11 @@ use OCP\Migration\SimpleMigrationStep;
 final class Version000002Date202608250001 extends SimpleMigrationStep {
     public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
         $schema = $schemaClosure();
-        if ($schema->hasTable('fdp_admin_access')) {
+        if ($schema->hasTable('flz_dp_admin_access')) {
             return null;
         }
 
-        $table = $schema->createTable('fdp_admin_access');
+        $table = $schema->createTable('flz_dp_admin_access');
         $table->addColumn('id', 'bigint', ['autoincrement' => true, 'notnull' => true]);
         $table->addColumn('target_uid', 'string', ['length' => 64, 'notnull' => true]);
         $table->addColumn('granted_by', 'string', ['length' => 64, 'notnull' => true]);
@@ -26,8 +26,8 @@ final class Version000002Date202608250001 extends SimpleMigrationStep {
         $table->addColumn('revoked_by', 'string', ['length' => 64, 'notnull' => false]);
         $table->addColumn('created_at', 'datetime_immutable', ['notnull' => true]);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(['target_uid', 'starts_at', 'ends_at'], 'fdp_admin_target_time');
-        $table->addIndex(['granted_by', 'starts_at'], 'fdp_admin_grantor_time');
+        $table->addIndex(['target_uid', 'starts_at', 'ends_at'], 'flz_dp_admin_target_time');
+        $table->addIndex(['granted_by', 'starts_at'], 'flz_dp_admin_grantor_time');
 
         return $schema;
     }

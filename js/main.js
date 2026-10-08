@@ -1,7 +1,7 @@
 const loadSelfServiceReport = async (root) => {
     const results = document.getElementById('data-protection-results');
     try {
-        const response = await fetch(OC.generateUrl('/apps/filzmann_data_protection/api/v1/self-service-report'), {
+        const response = await fetch(OC.generateUrl('/apps/flz_data_protection/api/v1/self-service-report'), {
             credentials: 'same-origin',
             headers: {
                 Accept: 'application/json',
@@ -12,7 +12,7 @@ const loadSelfServiceReport = async (root) => {
         if (!response.ok) {
             throw new Error('Self-service report unavailable.');
         }
-        window.FilzmannDataProtection.reportView.render(results, report);
+        window.FlzDataProtection.reportView.render(results, report);
     } catch (error) {
         const message = document.createElement('p');
         message.setAttribute('role', 'alert');
@@ -29,8 +29,8 @@ const loadRetentionReview = async (continuation = null, button = null) => {
     if (button) button.disabled = true;
     try {
         const path = continuation === null
-            ? '/apps/filzmann_data_protection/api/v1/retention-review'
-            : `/apps/filzmann_data_protection/api/v1/retention-review?continuation=${encodeURIComponent(continuation)}`;
+            ? '/apps/flz_data_protection/api/v1/retention-review'
+            : `/apps/flz_data_protection/api/v1/retention-review?continuation=${encodeURIComponent(continuation)}`;
         const response = await fetch(OC.generateUrl(path), {
             credentials: 'same-origin',
             headers: { Accept: 'application/json', requesttoken: OC.requestToken },
@@ -39,9 +39,9 @@ const loadRetentionReview = async (continuation = null, button = null) => {
         if (!response.ok) throw new Error('Retention review unavailable.');
         const continueReview = (token, sourceButton) => loadRetentionReview(token, sourceButton);
         if (continuation === null) {
-            window.FilzmannDataProtection.retentionView.render(results, report, continueReview);
+            window.FlzDataProtection.retentionView.render(results, report, continueReview);
         } else {
-            window.FilzmannDataProtection.retentionView.append(results, report, continueReview);
+            window.FlzDataProtection.retentionView.append(results, report, continueReview);
         }
     } catch (error) {
         const message = document.createElement('p');

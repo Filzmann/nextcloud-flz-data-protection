@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
-use OCA\FilzmannDataProtection\Privacy\DataProtectionPersonalDataProvider;
-use OCA\FilzmannDataProtection\Privacy\DataProtectionPersonalDataProviderListener;
-use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
+use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
+use OCA\FlzDataProtection\Privacy\DataProtectionPersonalDataProvider;
+use OCA\FlzDataProtection\Privacy\DataProtectionPersonalDataProviderListener;
+use OCA\FlzDataProtection\PublicApi\V1\DataSubjectRef;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
 
 $repository = new class implements TemporaryAdminAccessRepositoryInterface {
     public array $requests = [];
@@ -189,8 +189,8 @@ $secondRequest = (new PersonalDataRequest(
     'de',
     'access-report',
     200,
-    ['filzmann_data_protection' => $firstProfilePage->nextCursor()],
-))->forProvider('filzmann_data_protection', 200);
+    ['flz_data_protection' => $firstProfilePage->nextCursor()],
+))->forProvider('flz_data_protection', 200);
 $secondProfilePage = $pagedProvider->collect($secondRequest);
 if ($secondProfilePage->status() !== 'complete' || count($secondProfilePage->entries()) !== 1) {
     throw new RuntimeException('Eigene Profilrevisionen jenseits der ersten 200 werden still ausgelassen.');
@@ -198,6 +198,6 @@ if ($secondProfilePage->status() !== 'complete' || count($secondProfilePage->ent
 
 $event = new RegisterPersonalDataProvidersEvent();
 (new DataProtectionPersonalDataProviderListener($provider))->handle($event);
-if (($event->providers()['filzmann_data_protection'] ?? null) !== $provider) throw new RuntimeException('Eigener PersonalDataProvider wird nicht lazy registriert.');
+if (($event->providers()['flz_data_protection'] ?? null) !== $provider) throw new RuntimeException('Eigener PersonalDataProvider wird nicht lazy registriert.');
 
 echo "Data Protection personal data provider tests passed.\n";

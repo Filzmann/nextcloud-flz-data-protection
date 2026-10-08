@@ -20,11 +20,11 @@ class FakeElement {
     }
 }
 const document = { createElement: (tag) => new FakeElement(tag) };
-const window = { FilzmannDataProtection: {} };
+const window = { FlzDataProtection: {} };
 vm.runInNewContext(viewSource, { window, document });
 
 const container = new FakeElement('div');
-window.FilzmannDataProtection.retentionView.render(container, {
+window.FlzDataProtection.retentionView.render(container, {
     providers: { matrix: { displayName: 'Berechtigungsmatrix', status: 'partial', candidates: [{ reference: '<script>review</script>', reviewReason: 'Frist überschritten.', action: 'REVIEW' }], continuations: { export_review: 'opaque-token' } } },
 });
 const walk = (node) => [node, ...node.children.flatMap(walk)];
@@ -35,12 +35,12 @@ if (nodes.some((node) => node.tagName === 'SCRIPT')) throw new Error('Providerin
 const loadMore = nodes.find((node) => node.tagName === 'BUTTON');
 if (!loadMore || loadMore.dataset.continuation !== 'opaque-token') throw new Error('Explizite Fortsetzung fehlt.');
 let requestedContinuation = null;
-window.FilzmannDataProtection.retentionView.render(container, {
+window.FlzDataProtection.retentionView.render(container, {
     providers: { matrix: { displayName: 'Berechtigungsmatrix', status: 'partial', candidates: [], continuations: { export_review: 'opaque-token' } } },
 }, (continuation) => { requestedContinuation = continuation; });
 container.querySelector('button[data-continuation]').listeners.click();
 if (requestedContinuation !== 'opaque-token') throw new Error('Fortsetzungsbutton löst keinen expliziten Request aus.');
-window.FilzmannDataProtection.retentionView.append(container, {
+window.FlzDataProtection.retentionView.append(container, {
     providers: { matrix: { displayName: 'Berechtigungsmatrix', status: 'complete', candidates: [{ reference: 'matrix:2', reviewReason: 'Zweite Seite.', action: 'REVIEW' }], continuations: {} } },
 });
 const appendedText = walk(container).map((node) => node.textContent).join('\n');

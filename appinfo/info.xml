@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-    <id>filzmann_data_protection</id>
+    <id>flz_data_protection</id>
     <name>Data Protection Center</name>
     <name lang="de">Datenschutz-Center</name>
     <summary>Provider-based personal data access and retention coordination for Nextcloud.</summary>
@@ -11,22 +11,23 @@
     <version>0.1.5</version>
     <licence>agpl</licence>
     <author>Simon Filzmann</author>
-    <namespace>FilzmannDataProtection</namespace>
+    <bugs>https://github.com/Filzmann/nextcloud-flz-data-protection/issues</bugs>
+    <namespace>FlzDataProtection</namespace>
     <category>tools</category>
     <dependencies>
         <nextcloud min-version="29" max-version="35"/>
     </dependencies>
     <background-jobs>
-        <job>OCA\FilzmannDataProtection\BackgroundJob\RetentionExecutionJob</job>
+        <job>OCA\FlzDataProtection\BackgroundJob\RetentionExecutionJob</job>
     </background-jobs>
     <settings>
-        <admin>OCA\FilzmannDataProtection\Settings\Admin</admin>
-        <admin-section>OCA\FilzmannDataProtection\Settings\AdminSection</admin-section>
+        <admin>OCA\FlzDataProtection\Settings\Admin</admin>
+        <admin-section>OCA\FlzDataProtection\Settings\AdminSection</admin-section>
     </settings>
     <navigations>
         <navigation>
             <name>Data Protection</name>
-            <route>filzmann_data_protection.page.index</route>
+            <route>flz_data_protection.page.index</route>
             <order>85</order>
         </navigation>
     </navigations>

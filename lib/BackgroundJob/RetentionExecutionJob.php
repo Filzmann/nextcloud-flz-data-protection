@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\BackgroundJob;
+namespace OCA\FlzDataProtection\BackgroundJob;
 
-use OCA\FilzmannDataProtection\Service\RetentionExecutionCoordinator;
+use OCA\FlzDataProtection\Service\RetentionExecutionCoordinator;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\TimedJob;
 use RuntimeException;

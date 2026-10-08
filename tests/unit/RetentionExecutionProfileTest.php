@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
-use OCA\FilzmannDataProtection\Controller\RetentionExecutionProfileController;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileService;
+use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FlzDataProtection\Controller\RetentionExecutionProfileController;
+use OCA\FlzDataProtection\Service\RetentionExecutionProfileService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionBatch;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionCandidate;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionPage;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionProvider;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionProviderDescriptor;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionRequest;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionResult;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionCoordinator;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileStatus;
+use OCA\FlzDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionBatch;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionCandidate;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionPage;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionPolicy;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionProvider;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionProviderDescriptor;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionRequest;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionResult;
+use OCA\FlzDataProtection\Service\RetentionExecutionCoordinator;
+use OCA\FlzDataProtection\Service\RetentionExecutionProfileStatus;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;
 use Psr\Log\LoggerInterface;
@@ -34,7 +34,7 @@ $provider = new class implements RetentionExecutionProvider {
     public int $plans = 0;
     public int $executions = 0;
     public bool $failExecution = false;
-    public function descriptor(): RetentionExecutionProviderDescriptor { return new RetentionExecutionProviderDescriptor('adroom', 'AD Raumplaner', '2.0', 100); }
+    public function descriptor(): RetentionExecutionProviderDescriptor { return new RetentionExecutionProviderDescriptor('flzroom', 'Filzmann Raumplaner', '2.0', 100); }
     public function policies(): array { return [new RetentionExecutionPolicy('room_booking_delete', 'Raumbuchungen', 'Löschung', 'COMPLETED_AT', 'P1Y', 'DELETE', '2.1')]; }
     public function plan(RetentionExecutionRequest $request): RetentionExecutionPage {
         $this->plans++;
@@ -69,7 +69,7 @@ if ($disabled['status'] !== 'blocked' || $provider->plans !== 0 || $provider->ex
 $profile->status = [
     'executionAvailable'=>true,
     'configuration'=>['approvedPolicyIds'=>[
-        'adroom:room_booking_delete',
+        'flzroom:room_booking_delete',
         'missing_app:missing_policy',
     ]],
 ];
@@ -81,13 +81,13 @@ if (($missingCoverage['status'] ?? null) !== 'blocked'
     throw new RuntimeException('Fehlende genehmigte Provider-Coverage muss vor jeder Ausführung global blockieren.');
 }
 
-$profile->status['configuration']['approvedPolicyIds'] = ['adroom:room_booking_delete'];
+$profile->status['configuration']['approvedPolicyIds'] = ['flzroom:room_booking_delete'];
 $report = $coordinator->run('2026-09-29T10:00:00+00:00');
-if (($report['providers']['adroom']['policies']['room_booking_delete']['deleted'] ?? null) !== 1 || $provider->plans !== 1 || $provider->executions !== 1) {
+if (($report['providers']['flzroom']['policies']['room_booking_delete']['deleted'] ?? null) !== 1 || $provider->plans !== 1 || $provider->executions !== 1) {
     throw new RuntimeException('Freigegebene V2-Policy wird nicht mit Dry Run und unverändertem Batch ausgeführt.');
 }
 
-$profile->status['configuration']['approvedPolicyIds'] = ['adroom:foreign_policy'];
+$profile->status['configuration']['approvedPolicyIds'] = ['flzroom:foreign_policy'];
 $notApproved = $coordinator->run('2026-09-29T10:00:00+00:00');
 if (($notApproved['status'] ?? null) !== 'blocked'
     || ($notApproved['diagnosticCode'] ?? null) !== 'provider_coverage_incomplete'
@@ -97,13 +97,13 @@ if (($notApproved['status'] ?? null) !== 'blocked'
 }
 
 $provider->failExecution = true;
-$profile->status['configuration']['approvedPolicyIds'] = ['adroom:room_booking_delete'];
+$profile->status['configuration']['approvedPolicyIds'] = ['flzroom:room_booking_delete'];
 $failedCandidate = $coordinator->run('2026-09-29T10:00:00+00:00');
 if (($failedCandidate['status'] ?? null) !== 'failed'
     || ($failedCandidate['diagnosticCode'] ?? null) !== 'provider_execution_failed'
-    || ($failedCandidate['providers']['adroom']['status'] ?? null) !== 'failed'
-    || ($failedCandidate['providers']['adroom']['policies']['room_booking_delete']['failed'] ?? null) !== 1
-    || ($failedCandidate['providers']['adroom']['policies']['room_booking_delete']['deleted'] ?? null) !== 0) {
+    || ($failedCandidate['providers']['flzroom']['status'] ?? null) !== 'failed'
+    || ($failedCandidate['providers']['flzroom']['policies']['room_booking_delete']['failed'] ?? null) !== 1
+    || ($failedCandidate['providers']['flzroom']['policies']['room_booking_delete']['deleted'] ?? null) !== 0) {
     throw new RuntimeException('Providerseitig fehlgeschlagene Kandidaten dürfen nicht als erfolgreicher Lauf erscheinen.');
 }
 $provider->failExecution = false;

@@ -22,7 +22,7 @@ const fetch = async (_url, options) => {
     return { ok: true, json: async () => report };
 };
 const window = {
-    FilzmannDataProtection: {
+    FlzDataProtection: {
         reportView: {
             render: (_container, value) => { renderedReport = value; },
         },

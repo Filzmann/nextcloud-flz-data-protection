@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Migration;
+namespace OCA\FlzDataProtection\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;
@@ -12,11 +12,11 @@ use OCP\Migration\SimpleMigrationStep;
 final class Version000005Date202609290001 extends SimpleMigrationStep {
     public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
         $schema = $schemaClosure();
-        if ($schema->hasTable('fdp_risk_scope_auth')) {
+        if ($schema->hasTable('flz_dp_risk_scope_auth')) {
             return null;
         }
 
-        $table = $schema->createTable('fdp_risk_scope_auth');
+        $table = $schema->createTable('flz_dp_risk_scope_auth');
         $table->addColumn('id', 'bigint', ['autoincrement' => true, 'notnull' => true]);
         $table->addColumn('scope_id', 'string', ['length' => 160, 'notnull' => true]);
         $table->addColumn('revision', 'integer', ['notnull' => true]);
@@ -29,7 +29,7 @@ final class Version000005Date202609290001 extends SimpleMigrationStep {
         $table->addColumn('dpo_confirmed', 'boolean', ['notnull' => true, 'default' => false]);
         $table->addColumn('created_at', 'datetime_immutable', ['notnull' => true]);
         $table->setPrimaryKey(['id']);
-        $table->addUniqueIndex(['scope_id', 'revision'], 'fdp_risk_scope_rev');
+        $table->addUniqueIndex(['scope_id', 'revision'], 'flz_dp_risk_scope_rev');
 
         return $schema;
     }

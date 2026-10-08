@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Controller\SelfServiceController;
-use OCA\FilzmannDataProtection\Exception\AuthenticationRequiredException;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataPage;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProviderDescriptor;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-use OCA\FilzmannDataProtection\Service\PersonalDataAggregator;
-use OCA\FilzmannDataProtection\Service\SelfServiceReportService;
+use OCA\FlzDataProtection\Controller\SelfServiceController;
+use OCA\FlzDataProtection\Exception\AuthenticationRequiredException;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataPage;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataProvider;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
+use OCA\FlzDataProtection\PublicApi\V1\ProviderDescriptor;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FlzDataProtection\Service\PersonalDataAggregator;
+use OCA\FlzDataProtection\Service\SelfServiceReportService;
 use OCP\AppFramework\Http\Http;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;

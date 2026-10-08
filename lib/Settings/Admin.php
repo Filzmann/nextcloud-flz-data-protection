@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Settings;
+namespace OCA\FlzDataProtection\Settings;
 
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Service\RetentionSettingsService;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\Settings\ISettings;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Exception;
+namespace OCA\FlzDataProtection\Exception;
 
 use RuntimeException;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\PublicApi\V1;
+namespace OCA\FlzDataProtection\PublicApi\V1;
 
-use OCA\FilzmannDataProtection\Service\ProcessingMetadataProviderRegistry;
+use OCA\FlzDataProtection\Service\ProcessingMetadataProviderRegistry;
 use OCP\EventDispatcher\Event;
 use Throwable;
 

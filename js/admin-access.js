@@ -9,7 +9,7 @@
     const request = async (path, options = {}) => {
         const headers = { Accept: 'application/json', ...(options.headers || {}) };
         if (options.method && options.method !== 'GET') headers.requesttoken = OC.requestToken;
-        const response = await fetch(OC.generateUrl('/apps/filzmann_data_protection' + path), {
+        const response = await fetch(OC.generateUrl('/apps/flz_data_protection' + path), {
             credentials: 'same-origin',
             ...options,
             headers,

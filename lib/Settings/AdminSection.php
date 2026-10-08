@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Settings;
+namespace OCA\FlzDataProtection\Settings;
 
-use OCA\FilzmannDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\AppInfo\Application;
 use OCP\IURLGenerator;
 use OCP\Settings\IIconSection;
 

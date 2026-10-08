@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Controller\RetentionReviewController;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionCandidate;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewPage;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProviderDescriptor;
-use OCA\FilzmannDataProtection\Service\RetentionAccessService;
-use OCA\FilzmannDataProtection\Service\RetentionPreviewAggregator;
-use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessChecker;
+use OCA\FlzDataProtection\Controller\RetentionReviewController;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionCandidate;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPolicy;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewPage;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProvider;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProviderDescriptor;
+use OCA\FlzDataProtection\Service\RetentionAccessService;
+use OCA\FlzDataProtection\Service\RetentionPreviewAggregator;
+use OCA\FlzDataProtection\Service\RetentionSettingsService;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessChecker;
 use OCP\AppFramework\Http\Http;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;
