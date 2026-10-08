@@ -64,8 +64,8 @@ $request = new PersonalDataRequest(
     50,
     [],
 );
-$coverage = new ProviderCoverageProfile(['available_app', 'duplicate_app', 'future_app', 'missing_app']);
-$report = (new PersonalDataAggregator($events))->collect($request, $coverage);
+$coverageProfile = new ProviderCoverageProfile(['available_app', 'duplicate_app', 'future_app', 'missing_app']);
+$report = (new PersonalDataAggregator($events))->collect($request, $coverageProfile);
 
 $assertSame(1, $dispatches, 'Die Providerregistrierung wurde nicht genau einmal je Auskunftslauf ausgelöst.');
 $assertSame(['available_app', 'duplicate_app', 'future_app', 'missing_app'], array_keys($report->providers()), 'Coverage und Event-Snapshot wurden nicht deterministisch zusammengeführt.');
