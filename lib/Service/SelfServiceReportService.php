@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
-use OCA\FilzmannDataProtection\Exception\AuthenticationRequiredException;
-use OCA\FilzmannDataProtection\Model\ProviderReport;
-use OCA\FilzmannDataProtection\PublicApi\V1\DataSubjectRef;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
+use OCA\FlzDataProtection\Exception\AuthenticationRequiredException;
+use OCA\FlzDataProtection\Model\ProviderReport;
+use OCA\FlzDataProtection\PublicApi\V1\DataSubjectRef;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataEntry;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
 use OCP\IL10N;
 use OCP\IUserSession;
 

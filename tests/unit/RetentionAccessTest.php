@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 namespace {
-    use OCA\FilzmannDataProtection\Service\RetentionAccessService;
-    use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
-    use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessChecker;
+    use OCA\FlzDataProtection\Service\RetentionAccessService;
+    use OCA\FlzDataProtection\Service\RetentionSettingsService;
+    use OCA\FlzDataProtection\Service\TemporaryAdminAccessChecker;
     use OCP\IAppConfig;
     use OCP\IGroupManager;
     use OCP\IUser;

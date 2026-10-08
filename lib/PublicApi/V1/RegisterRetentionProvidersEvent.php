@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\PublicApi\V1;
+namespace OCA\FlzDataProtection\PublicApi\V1;
 
-use OCA\FilzmannDataProtection\Service\RetentionProviderRegistry;
+use OCA\FlzDataProtection\Service\RetentionProviderRegistry;
 use OCP\EventDispatcher\Event;
 
 final class RegisterRetentionProvidersEvent extends Event {

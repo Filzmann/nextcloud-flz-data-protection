@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Privacy;
+namespace OCA\FlzDataProtection\Privacy;
 
 use DateInterval;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionCandidate;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewPage;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProviderDescriptor;
-use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionCandidate;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPolicy;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewPage;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProvider;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProviderDescriptor;
+use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
 
 final class AdminHistoryRetentionProvider implements RetentionProvider {
     public const POLICY_ID='temporary_admin_access_history_review';

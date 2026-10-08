@@ -7,7 +7,7 @@
 
     const endpoint = '/api/v1/risk-scope-authorizations';
     const request = async (options = {}) => {
-        const response = await fetch(OC.generateUrl('/apps/filzmann_data_protection' + endpoint), {
+        const response = await fetch(OC.generateUrl('/apps/flz_data_protection' + endpoint), {
             credentials: 'same-origin',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', requesttoken: OC.requestToken },
             ...options,

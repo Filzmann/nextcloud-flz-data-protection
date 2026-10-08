@@ -38,7 +38,7 @@ Evidenzreferenz, Wirksamkeitszeitraum, DPO-Bestätigung und andere
 Kundeninformationen verlassen das Datenschutz-Center nicht.
 
 Der erste und derzeit einzige Scope ist
-`adroom.secretariat_foreign_booking_intervention` mit `adroom` als einzigem
+`flzroom.secretariat_foreign_booking_intervention` mit `flzroom` als einzigem
 Consumer. Fehlende, deaktivierte, noch nicht wirksame, abgelaufene,
 beschädigte oder versionsinkompatible Konfigurationen bleiben fail-closed.
 Ein aktiver Scope ersetzt weder Fachrolle noch Objektprüfung, Begründung,
@@ -46,7 +46,7 @@ Audit oder Benachrichtigung der Fachapp. Er eröffnet insbesondere keinen
 allgemeinen Auswertungs- oder Fremddatenzugriff.
 
 Die kundenlokale Konfiguration liegt ausschließlich in der app-eigenen
-Tabelle `fdp_risk_scope_auth` und wird additiv als revisionsgesicherte
+Tabelle `flz_dp_risk_scope_auth` und wird additiv als revisionsgesicherte
 Historie gespeichert. Der eindeutige Datenbankschlüssel aus Scope und
 Revision macht den Append atomar: Bei zwei Schreibvorgängen auf derselben
 Ausgangsrevision gewinnt genau einer, der andere wird als Konflikt abgewiesen.
@@ -188,11 +188,11 @@ Freigabe interpretiert.
 Die Aktivierung lässt ausschließlich die fest im Produkt vorgeschlagenen
 Pilot-Policies zu:
 
-- `filzmann_data_protection:temporary_admin_access_history_delete` mit `P6M`
+- `flz_data_protection:temporary_admin_access_history_delete` mit `P6M`
   ab tatsächlichem Ende der Freigabe;
-- `adroom:temporary_admin_access_history_delete` mit `P6M` ab tatsächlichem
+- `flzroom:temporary_admin_access_history_delete` mit `P6M` ab tatsächlichem
   Ende der Freigabe;
-- `adroom:room_booking_delete` mit `P1Y` ab Buchungsende.
+- `flzroom:room_booking_delete` mit `P1Y` ab Buchungsende.
 
 Die Vorschläge sind keine kundenlokale Rechts- oder Beteiligungsentscheidung.
 Es gibt keine benutzerbedienbare Einzellöschung und keine Auswahl einzelner

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
-use OCA\FilzmannDataProtection\Model\AggregateReport;
-use OCA\FilzmannDataProtection\Model\ProviderCoverageProfile;
-use OCA\FilzmannDataProtection\Model\ProviderReport;
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataRequest;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FlzDataProtection\Model\AggregateReport;
+use OCA\FlzDataProtection\Model\ProviderCoverageProfile;
+use OCA\FlzDataProtection\Model\ProviderReport;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use Throwable;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Db;
+namespace OCA\FlzDataProtection\Db;
 
 interface RiskScopeAuthorizationRepositoryInterface {
     /** @return array<string, mixed>|null */

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Model;
+namespace OCA\FlzDataProtection\Model;
 
-use OCA\FilzmannDataProtection\PublicApi\V1\PersonalDataEntry;
+use OCA\FlzDataProtection\PublicApi\V1\PersonalDataEntry;
 
 final class ProviderReport {
     /**

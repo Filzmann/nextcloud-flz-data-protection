@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
-use OCA\FilzmannDataProtection\Controller\RetentionExecutionActivationController;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionActivationService;
+use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
+use OCA\FlzDataProtection\Controller\RetentionExecutionActivationController;
+use OCA\FlzDataProtection\Service\RetentionExecutionActivationService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -75,9 +75,9 @@ $clock = new class implements ITimeFactory {
 $service = new RetentionExecutionActivationService($repository, $groups, $session, $clock);
 $controller = new RetentionExecutionActivationController(new class implements IRequest {}, $service);
 $recommended = [
-    'adroom:room_booking_delete',
-    'adroom:temporary_admin_access_history_delete',
-    'filzmann_data_protection:temporary_admin_access_history_delete',
+    'flzroom:room_booking_delete',
+    'flzroom:temporary_admin_access_history_delete',
+    'flz_data_protection:temporary_admin_access_history_delete',
 ];
 
 $initial = $service->status();

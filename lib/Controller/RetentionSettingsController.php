@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Controller;
+namespace OCA\FlzDataProtection\Controller;
 
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Service\RetentionAccessService;
-use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Service\RetentionAccessService;
+use OCA\FlzDataProtection\Service\RetentionSettingsService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Http;
 use OCP\AppFramework\Http\JSONResponse;

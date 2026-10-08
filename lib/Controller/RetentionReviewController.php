@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Controller;
+namespace OCA\FlzDataProtection\Controller;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Service\RetentionAccessService;
-use OCA\FilzmannDataProtection\Service\RetentionPreviewAggregator;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Service\RetentionAccessService;
+use OCA\FlzDataProtection\Service\RetentionPreviewAggregator;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;

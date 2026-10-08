@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\AppInfo\Application;
 use OCP\IAppConfig;
 use OCP\IGroupManager;
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DateTimeImmutable;
-use OCA\FilzmannDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionBatch;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionRequest;
+use OCA\FlzDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionBatch;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionRequest;
 use OCP\EventDispatcher\IEventDispatcher;
 use Psr\Log\LoggerInterface;
 use Throwable;

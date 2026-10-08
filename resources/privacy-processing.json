@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "app_id": "filzmann_data_protection",
+  "app_id": "flz_data_protection",
   "processings": [
     {
       "processing_id": "article_15_aggregation",
@@ -150,7 +150,7 @@
       ],
       "data_sources": [
         "App-lokaler Freigabevorgang im Nextcloud-Adminbereich",
-        "App-eigene Tabelle fdp_admin_access"
+        "App-eigene Tabelle flz_dp_admin_access"
       ],
       "legal_basis": {
         "status": "PRIVACY-DECISION-REQUIRED",
@@ -242,7 +242,7 @@
       "systems": [
         "Nextcloud",
         "Data Protection Center",
-        "App-eigene Datenbanktabelle fdp_admin_access"
+        "App-eigene Datenbanktabelle flz_dp_admin_access"
       ]
     },
     {
@@ -287,7 +287,7 @@
       ],
       "data_sources": [
         "DPO-geschützte Instanzkonfiguration",
-        "App-eigene Tabelle fdp_retention_profile"
+        "App-eigene Tabelle flz_dp_retention_profile"
       ],
       "legal_basis": {
         "status": "PRIVACY-DECISION-REQUIRED",
@@ -355,7 +355,7 @@
       "systems": [
         "Nextcloud",
         "Data Protection Center",
-        "App-eigene Datenbanktabelle fdp_retention_profile"
+        "App-eigene Datenbanktabelle flz_dp_retention_profile"
       ]
     },
     {
@@ -401,7 +401,7 @@
       "data_sources": [
         "Serverseitig gebundene Nextcloud-Session-UID",
         "Geschützte technische Operator-Konfiguration",
-        "App-eigene Tabelle fdp_retention_exec"
+        "App-eigene Tabelle flz_dp_retention_exec"
       ],
       "legal_basis": {
         "status": "PRIVACY-DECISION-REQUIRED",
@@ -470,7 +470,7 @@
       "systems": [
         "Nextcloud",
         "Data Protection Center",
-        "App-eigene Datenbanktabelle fdp_retention_exec"
+        "App-eigene Datenbanktabelle flz_dp_retention_exec"
       ]
     }
   ]

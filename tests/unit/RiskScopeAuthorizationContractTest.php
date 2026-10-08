@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
-use OCA\FilzmannDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
-use OCA\FilzmannDataProtection\Listener\ScopeAuthorizationQueryListener;
-use OCA\FilzmannDataProtection\Service\RiskScopeAuthorizationService;
+use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
+use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
+use OCA\FlzDataProtection\Listener\ScopeAuthorizationQueryListener;
+use OCA\FlzDataProtection\Service\RiskScopeAuthorizationService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -59,14 +59,14 @@ $clock = new class implements ITimeFactory {
 };
 
 $service = new RiskScopeAuthorizationService($repository, $groups, $session, $clock);
-$scope = ScopeAuthorizationQueryEvent::ADROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION;
+$scope = ScopeAuthorizationQueryEvent::FLZROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION;
 $version = ScopeAuthorizationQueryEvent::CONTRACT_VERSION;
 
 $empty = $service->status();
 $assertSame(true, $empty['performanceMonitoringProhibited'], 'Das Kontrollverbot muss eine unveränderliche Produktgrenze sein.');
 $assertSame(false, $empty['scopes'][$scope]['authorized'], 'Ein unkonfigurierter Scope muss gesperrt starten.');
 $assertSame('configuration_missing', $empty['scopes'][$scope]['status'], 'Der fehlende Instanzstand muss neutral diagnostizierbar sein.');
-$assertSame(false, $service->isAuthorized('adroom', $scope, $version), 'Ein fehlender Scope wurde freigegeben.');
+$assertSame(false, $service->isAuthorized('flzroom', $scope, $version), 'Ein fehlender Scope wurde freigegeben.');
 
 $configuration = [
     'scopeId' => $scope,
@@ -93,12 +93,12 @@ $session->uid = 'privacy-reviewer';
 $saved = $service->save($configuration);
 $assertSame(1, $saved['scopes'][$scope]['configuration']['revision'], 'Die erste Scope-Konfiguration muss Revision 1 erhalten.');
 $assertSame(true, $saved['scopes'][$scope]['authorized'], 'Eine wirksame DPO-bestätigte Konfiguration wurde nicht freigegeben.');
-$assertSame(true, $service->isAuthorized('adroom', $scope, $version), 'Der autorisierte Pilot-Consumer wurde abgewiesen.');
-$assertSame(false, $service->isAuthorized('other_app', $scope, $version), 'Ein fremder Consumer konnte den adroom-Scope verwenden.');
-$assertSame(false, $service->isAuthorized('adroom', 'unknown.scope', $version), 'Ein unbekannter Scope wurde freigegeben.');
-$assertSame(false, $service->isAuthorized('adroom', $scope, '2.0'), 'Eine inkompatible Vertragsversion wurde freigegeben.');
+$assertSame(true, $service->isAuthorized('flzroom', $scope, $version), 'Der autorisierte Pilot-Consumer wurde abgewiesen.');
+$assertSame(false, $service->isAuthorized('other_app', $scope, $version), 'Ein fremder Consumer konnte den flzroom-Scope verwenden.');
+$assertSame(false, $service->isAuthorized('flzroom', 'unknown.scope', $version), 'Ein unbekannter Scope wurde freigegeben.');
+$assertSame(false, $service->isAuthorized('flzroom', $scope, '2.0'), 'Eine inkompatible Vertragsversion wurde freigegeben.');
 
-$event = new ScopeAuthorizationQueryEvent('adroom', $scope, $version);
+$event = new ScopeAuthorizationQueryEvent('flzroom', $scope, $version);
 (new ScopeAuthorizationQueryListener($service))->handle($event);
 $assertSame('authorized', $event->status(), 'Der öffentliche Providervertrag liefert keinen neutralen Allow-Status.');
 $assertSame(true, $event->isAuthorized(), 'Der öffentliche Providervertrag gibt den wirksamen Scope nicht frei.');
@@ -108,13 +108,13 @@ foreach (['policyRevision', 'authorizationReference', 'effectiveAt', 'expiresAt'
     }
 }
 
-$incompatible = new ScopeAuthorizationQueryEvent('adroom', $scope, '2.0');
+$incompatible = new ScopeAuthorizationQueryEvent('flzroom', $scope, '2.0');
 (new ScopeAuthorizationQueryListener($service))->handle($incompatible);
 $assertSame('incompatible', $incompatible->status(), 'Eine inkompatible Vertragsversion bleibt nicht explizit gesperrt.');
 $assertSame(false, $incompatible->isAuthorized(), 'Eine inkompatible Vertragsversion wurde freigegeben.');
 
 $clock->value = new DateTimeImmutable('2027-10-01T09:00:00+00:00');
-$assertSame(false, $service->isAuthorized('adroom', $scope, $version), 'Der Scope bleibt am Ablaufzeitpunkt aktiv.');
+$assertSame(false, $service->isAuthorized('flzroom', $scope, $version), 'Der Scope bleibt am Ablaufzeitpunkt aktiv.');
 $assertSame('expired', $service->status()['scopes'][$scope]['status'], 'Ein abgelaufener Scope ist nicht neutral diagnostizierbar.');
 $clock->value = new DateTimeImmutable('2026-10-01T10:00:00+00:00');
 
@@ -137,16 +137,16 @@ foreach ([
 $disabled = $service->save([...$configuration, 'enabled' => false, 'expectedRevision' => 1]);
 $assertSame(false, $disabled['scopes'][$scope]['authorized'], 'Ein deaktivierter Scope wurde freigegeben.');
 $assertSame('disabled', $disabled['scopes'][$scope]['status'], 'Eine Deaktivierung ist nicht neutral diagnostizierbar.');
-$assertSame(false, $service->isAuthorized('adroom', $scope, $version), 'Ein deaktivierter Scope wurde vom Provider freigegeben.');
+$assertSame(false, $service->isAuthorized('flzroom', $scope, $version), 'Ein deaktivierter Scope wurde vom Provider freigegeben.');
 
 $stored = $repository->rows;
 $repository->rows[1]['authorizationReference'] = '';
-$assertSame(false, $service->isAuthorized('adroom', $scope, $version), 'Ein beschädigter persistierter Stand wurde freigegeben.');
+$assertSame(false, $service->isAuthorized('flzroom', $scope, $version), 'Ein beschädigter persistierter Stand wurde freigegeben.');
 $assertSame('configuration_invalid', $service->status()['scopes'][$scope]['status'], 'Ein beschädigter Stand ist nicht neutral diagnostizierbar.');
 $repository->rows = $stored;
 $repository->rows[1]['schemaVersion'] = '9.0';
 $corruptedDocument = $repository->rows;
-$assertSame(false, $service->isAuthorized('adroom', $scope, $version), 'Ein inkompatibles persistiertes Dokumentschema wurde freigegeben.');
+$assertSame(false, $service->isAuthorized('flzroom', $scope, $version), 'Ein inkompatibles persistiertes Dokumentschema wurde freigegeben.');
 try {
     $service->save([...$configuration, 'expectedRevision' => 2]);
     throw new RuntimeException('Ein inkompatibles persistiertes Dokumentschema wurde überschrieben.');

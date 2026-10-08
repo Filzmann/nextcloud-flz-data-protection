@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Privacy\DataProtectionProcessingMetadataProvider;
-use OCA\FilzmannDataProtection\Privacy\DataProtectionProcessingMetadataProviderListener;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataCatalog;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataProvider;
-use OCA\FilzmannDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\Testing\ProcessingMetadataProviderContractTestKit;
-use OCA\FilzmannDataProtection\Service\ProcessingMetadataProviderRegistry;
+use OCA\FlzDataProtection\Privacy\DataProtectionProcessingMetadataProvider;
+use OCA\FlzDataProtection\Privacy\DataProtectionProcessingMetadataProviderListener;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataCatalog;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProvider;
+use OCA\FlzDataProtection\PublicApi\V1\ProcessingMetadataProviderDescriptor;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\Testing\ProcessingMetadataProviderContractTestKit;
+use OCA\FlzDataProtection\Service\ProcessingMetadataProviderRegistry;
 
 $assertSame = static function (mixed $expected, mixed $actual, string $message): void {
     if ($expected !== $actual) {
@@ -182,7 +182,7 @@ $assertSame(
 
 $realProvider = new DataProtectionProcessingMetadataProvider();
 $realCatalog = ProcessingMetadataProviderContractTestKit::verify($realProvider);
-$assertSame('filzmann_data_protection', $realCatalog->appId(), 'Der eigene Katalog verwendet nicht die kanonische App-ID.');
+$assertSame('flz_data_protection', $realCatalog->appId(), 'Der eigene Katalog verwendet nicht die kanonische App-ID.');
 $assertSame(
     ['article_15_aggregation', 'temporary_admin_full_access', 'retention_execution_profile_configuration', 'retention_execution_technical_activation'],
     $realCatalog->processingIds(),
@@ -196,6 +196,6 @@ $assertSame(false, $activationProcessing['legal_basis']['blocking'] ?? null, 'Of
 $assertSame('P24M', $activationProcessing['retention']['duration_or_deadline'] ?? null, 'Die beschlossene 24-Monatsfrist der Aktivierungsrevisionen fehlt.');
 $realEvent = new RegisterProcessingMetadataProvidersEvent();
 (new DataProtectionProcessingMetadataProviderListener($realProvider))->handle($realEvent);
-$assertSame($realProvider, $realEvent->providers()['filzmann_data_protection'] ?? null, 'Der eigene Processing-Metadata-Provider wird nicht lazy registriert.');
+$assertSame($realProvider, $realEvent->providers()['flz_data_protection'] ?? null, 'Der eigene Processing-Metadata-Provider wird nicht lazy registriert.');
 
 echo "Processing metadata provider contract tests passed.\n";

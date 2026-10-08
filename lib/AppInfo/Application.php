@@ -2,42 +2,42 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\AppInfo;
+namespace OCA\FlzDataProtection\AppInfo;
 
-use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepository;
-use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepository;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepository;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RiskScopeAuthorizationRepository;
-use OCA\FilzmannDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\RetentionHoldRepository;
-use OCA\FilzmannDataProtection\Db\RetentionHoldRepositoryInterface;
-use OCA\FilzmannDataProtection\Listener\ScopeAuthorizationQueryListener;
-use OCA\FilzmannDataProtection\Permission\DataProtectionPermissionProviderListener;
-use OCA\FilzmannDataProtection\Privacy\DataProtectionPersonalDataProviderListener;
-use OCA\FilzmannDataProtection\Privacy\DataProtectionProcessingMetadataProviderListener;
-use OCA\FilzmannDataProtection\Privacy\AdminHistoryRetentionProviderListener;
-use OCA\FilzmannDataProtection\Privacy\AdminHistoryRetentionExecutionProviderListener;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
-use OCA\FilzmannDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
-use OCA\FilzmannDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessChecker;
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionActivationService;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileStatus;
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
+use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepository;
+use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepository;
+use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepository;
+use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
+use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepository;
+use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionHoldRepository;
+use OCA\FlzDataProtection\Db\RetentionHoldRepositoryInterface;
+use OCA\FlzDataProtection\Listener\ScopeAuthorizationQueryListener;
+use OCA\FlzDataProtection\Permission\DataProtectionPermissionProviderListener;
+use OCA\FlzDataProtection\Privacy\DataProtectionPersonalDataProviderListener;
+use OCA\FlzDataProtection\Privacy\DataProtectionProcessingMetadataProviderListener;
+use OCA\FlzDataProtection\Privacy\AdminHistoryRetentionProviderListener;
+use OCA\FlzDataProtection\Privacy\AdminHistoryRetentionExecutionProviderListener;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterProcessingMetadataProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
+use OCA\FlzDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessChecker;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\Service\RetentionExecutionActivationService;
+use OCA\FlzDataProtection\Service\RetentionExecutionProfileStatus;
+use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 
 final class Application extends App implements IBootstrap {
-    public const APP_ID = 'filzmann_data_protection';
+    public const APP_ID = 'flz_data_protection';
 
     public function __construct(array $urlParams = []) {
         parent::__construct(self::APP_ID, $urlParams);

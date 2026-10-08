@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Permission;
+namespace OCA\FlzDataProtection\Permission;
 
-use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
+use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

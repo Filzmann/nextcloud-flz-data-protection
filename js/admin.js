@@ -8,7 +8,7 @@
         event.preventDefault();
         const data = new FormData(form);
         try {
-            const response = await fetch(OC.generateUrl('/apps/filzmann_data_protection/api/v1/retention-settings'), {
+            const response = await fetch(OC.generateUrl('/apps/flz_data_protection/api/v1/retention-settings'), {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: { requesttoken: OC.requestToken, Accept: 'application/json' },

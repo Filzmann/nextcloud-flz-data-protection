@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Privacy;
+namespace OCA\FlzDataProtection\Privacy;
 
 use DateInterval;
 use DateTimeImmutable;
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Db\RetentionHoldRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionBatch;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionCandidate;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionPage;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionProvider;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionProviderDescriptor;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionRequest;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionResult;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Db\RetentionHoldRepositoryInterface;
+use OCA\FlzDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionBatch;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionCandidate;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionPage;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionPolicy;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionProvider;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionProviderDescriptor;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionRequest;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionResult;
 use OCP\IDBConnection;
 use Throwable;
 

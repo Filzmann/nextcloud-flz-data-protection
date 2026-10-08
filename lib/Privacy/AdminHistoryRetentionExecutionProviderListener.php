@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Privacy;
+namespace OCA\FlzDataProtection\Privacy;
 
-use OCA\FilzmannDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
+use OCA\FlzDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
 use OCP\AppFramework\IAppContainer;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;

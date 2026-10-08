@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\PublicApi\V2;
+namespace OCA\FlzDataProtection\PublicApi\V2;
 
 interface RetentionExecutionProvider {
     public function descriptor(): RetentionExecutionProviderDescriptor;

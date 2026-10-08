@@ -30,11 +30,11 @@ class FakeElement {
 const document = {
     createElement: (tagName) => new FakeElement(tagName),
 };
-const window = { FilzmannDataProtection: {} };
+const window = { FlzDataProtection: {} };
 vm.runInNewContext(source, { window, document });
 
 const container = new FakeElement('div');
-window.FilzmannDataProtection.reportView.render(container, {
+window.FlzDataProtection.reportView.render(container, {
     coverageComplete: false,
     discoveryStatus: 'complete',
     providers: {

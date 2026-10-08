@@ -14,10 +14,10 @@ namespace OCP {
 namespace OCP\AppFramework\Utility { interface ITimeFactory { public function now(): \DateTimeImmutable; } }
 
 namespace {
-    use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
-    use OCA\FilzmannDataProtection\Privacy\AdminHistoryRetentionProvider;
-    use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPreviewRequest;
-    use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
+    use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+    use OCA\FlzDataProtection\Privacy\AdminHistoryRetentionProvider;
+    use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
+    use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
 
     $config = new class implements OCP\IAppConfig {
         public array $values = [];

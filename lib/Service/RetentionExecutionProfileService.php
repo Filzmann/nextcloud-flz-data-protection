@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUserSession;

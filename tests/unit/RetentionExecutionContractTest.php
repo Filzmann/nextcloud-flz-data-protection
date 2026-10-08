@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionBatch;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionCandidate;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionPage;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionRequest;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionResult;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionBatch;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionCandidate;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionPage;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionPolicy;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionRequest;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionResult;
 
 $policy = new RetentionExecutionPolicy('room_booking_delete', 'Raumbuchungen', 'Fristgerechte Löschung', 'COMPLETED_AT', 'P1Y', 'DELETE', '2.3');
 $candidate = new RetentionExecutionCandidate('room_booking_delete', 'booking:17', '2025-01-01T10:00:00+00:00', 'DELETE', '2.3', 'opaque-token');

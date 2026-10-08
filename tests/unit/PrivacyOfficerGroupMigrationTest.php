@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Migration\Version000003Date202609250001;
+use OCA\FlzDataProtection\Migration\Version000003Date202609250001;
 use OCP\IGroupManager;
 use OCP\Migration\IOutput;
 

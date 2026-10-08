@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Controller;
+namespace OCA\FlzDataProtection\Controller;
 
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Service\RetentionAccessService;
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
-use OCA\FilzmannDataProtection\Service\AdminHistoryRetentionPolicyService;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileService;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionActivationService;
-use OCA\FilzmannDataProtection\Service\RiskScopeAuthorizationService;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Service\RetentionAccessService;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
+use OCA\FlzDataProtection\Service\RetentionExecutionProfileService;
+use OCA\FlzDataProtection\Service\RetentionExecutionActivationService;
+use OCA\FlzDataProtection\Service\RiskScopeAuthorizationService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;

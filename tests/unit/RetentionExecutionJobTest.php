@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\BackgroundJob\RetentionExecutionJob;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionCoordinator;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileStatus;
+use OCA\FlzDataProtection\BackgroundJob\RetentionExecutionJob;
+use OCA\FlzDataProtection\Service\RetentionExecutionCoordinator;
+use OCA\FlzDataProtection\Service\RetentionExecutionProfileStatus;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;
@@ -15,7 +15,7 @@ $events = new class implements IEventDispatcher {
 };
 $profile = new class implements RetentionExecutionProfileStatus {
     public function status(): array {
-        return ['executionAvailable'=>true, 'configuration'=>['approvedPolicyIds'=>['adroom:room_booking_delete']]];
+        return ['executionAvailable'=>true, 'configuration'=>['approvedPolicyIds'=>['flzroom:room_booking_delete']]];
     }
 };
 $logger = new class implements LoggerInterface {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\RetentionHoldRepositoryInterface;
-use OCA\FilzmannDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\Privacy\AdminHistoryRetentionExecutionProvider;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionBatch;
-use OCA\FilzmannDataProtection\PublicApi\V2\RetentionExecutionRequest;
+use OCA\FlzDataProtection\Db\RetentionHoldRepositoryInterface;
+use OCA\FlzDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\Privacy\AdminHistoryRetentionExecutionProvider;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionBatch;
+use OCA\FlzDataProtection\PublicApi\V2\RetentionExecutionRequest;
 
 $repository=new class implements ExecutableTemporaryAdminAccessRepositoryInterface{
     public array $rows=[7=>['id'=>7,'targetUid'=>'admin-a','grantedBy'=>'dpo','startsAt'=>null,'endsAt'=>null,'revokedAt'=>null,'revokedBy'=>null,'createdAt'=>null]];

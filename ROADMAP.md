@@ -7,7 +7,7 @@ erledigte Änderungen in `CHANGELOG.md` und geltende Architektur in
 
 ## Nextcloud compatibility gate
 
-### FDP-NC-COMPAT – RC-Kompatibilität und Zukunftsobergrenze nachweisen
+### FLZ-DP-NC-COMPAT – RC-Kompatibilität und Zukunftsobergrenze nachweisen
 
 Die `min-version` muss beim Release Candidate die aktuelle, autoritativ
 ermittelte openDesk-Nextcloud-Hauptversion abdecken. Erst beim Erstellen eines

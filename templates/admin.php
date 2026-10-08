@@ -1,6 +1,6 @@
 <?php
-script('filzmann_data_protection', 'admin');
-style('filzmann_data_protection', 'style');
+script('flz_data_protection', 'admin');
+style('flz_data_protection', 'style');
 $settings = $_['settings'];
 ?>
 <section id="data-protection-admin" class="data-protection-admin" aria-labelledby="data-protection-admin-heading">

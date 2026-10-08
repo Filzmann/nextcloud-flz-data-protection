@@ -8,7 +8,7 @@
     const endpoint = '/api/v2/retention-execution-activation';
     const technicalFields = ['backupRegularDays', 'backupBufferDays', 'backupVerifiedAt', 'restoreVerifiedAt', 'verificationDueAt'];
     const request = async (options = {}) => {
-        const response = await fetch(OC.generateUrl('/apps/filzmann_data_protection' + endpoint), {
+        const response = await fetch(OC.generateUrl('/apps/flz_data_protection' + endpoint), {
             credentials: 'same-origin',
             headers: { Accept: 'application/json', 'Content-Type': 'application/json', requesttoken: OC.requestToken },
             ...options,

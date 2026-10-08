@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessDeniedException;
-use OCA\FilzmannDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessDeniedException;
+use OCA\FlzDataProtection\Service\TemporaryAdminAccessService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;

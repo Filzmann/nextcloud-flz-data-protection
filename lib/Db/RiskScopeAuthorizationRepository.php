@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Db;
+namespace OCA\FlzDataProtection\Db;
 
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -13,7 +13,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
 final class RiskScopeAuthorizationRepository implements RiskScopeAuthorizationRepositoryInterface {
-    private const TABLE = 'fdp_risk_scope_auth';
+    private const TABLE = 'flz_dp_risk_scope_auth';
 
     public function __construct(private IDBConnection $db) {
     }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
-use OCA\FilzmannDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
+use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
+use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUserSession;
@@ -20,7 +20,7 @@ final class RiskScopeAuthorizationService {
 
     /** @var array<string, string> scope => sole consumer app */
     private const SUPPORTED_SCOPES = [
-        ScopeAuthorizationQueryEvent::ADROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION => 'adroom',
+        ScopeAuthorizationQueryEvent::FLZROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION => 'flzroom',
     ];
 
     public function __construct(

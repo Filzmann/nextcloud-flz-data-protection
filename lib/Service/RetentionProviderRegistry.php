@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Service;
+namespace OCA\FlzDataProtection\Service;
 
 use DomainException;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionPolicy;
-use OCA\FilzmannDataProtection\PublicApi\V1\RetentionProvider;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionPolicy;
+use OCA\FlzDataProtection\PublicApi\V1\RetentionProvider;
 
 final class RetentionProviderRegistry {
     public const CONTRACT_VERSION = '1.0';

@@ -1,6 +1,6 @@
 # Data Protection Center
 
-`filzmann_data_protection` is a standalone Nextcloud app for provider-based
+`flz_data_protection` is a standalone Nextcloud app for provider-based
 personal-data access reports, visible provider coverage and later retention
 coordination.
 
@@ -60,7 +60,7 @@ remain visible and are not replaced by heuristic fallback access.
   `Datenschutzbeauftragte` may configure them through the protected API. A
   consumer receives only `authorized`, `denied`, `incompatible` or
   `unanswered`; missing, disabled, future, expired, corrupted and incompatible
-  states fail closed. The first closed scope guards the future AD Raumplaner
+  states fail closed. The first closed scope guards the future Filzmann Raumplaner
   secretariat workflow for foreign bookings without enabling that mutation
   workflow itself;
 - the app-owned processing catalog
@@ -71,8 +71,8 @@ remain visible and are not replaced by heuristic fallback access.
   receiving technical defaults.
 
 The provider APIs remain pre-release and are not yet approved for external
-releases. `adroom` is the first V2 DELETE-provider consumer; the Permission
-Matrix, AD Raumplaner and AD Urlaub continue to use the standalone V1
+releases. `flzroom` is the first V2 DELETE-provider consumer; the Permission
+Matrix, Filzmann Raumplaner and Filzmann Urlaubsplanung continue to use the standalone V1
 retention-preview registry. V1 discovery remains lazy, duplicate- and
 version-safe, and V1 intentionally exposes no execution method. V2 providers
 keep deletion inside their own repositories and receive only their approved
@@ -83,7 +83,7 @@ customer-local risk-scope revisions. The recommended six-month admin-history
 and one-year booking policies are recalculated from the original domain
 trigger; deletion leaves no residual person statistics.
 
-The initial consumer sequence started with `adroom`. Provider coverage of an
+The initial consumer sequence started with `flzroom`. Provider coverage of an
 installed workspace is discovered at runtime and is never inferred from that
 pilot history. Remaining app-local work is tracked in [ROADMAP.md](ROADMAP.md).
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use OCA\FilzmannDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
-use OCA\FilzmannDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
-use OCA\FilzmannDataProtection\Service\RiskScopeAuthorizationService;
+use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
+use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
+use OCA\FlzDataProtection\Service\RiskScopeAuthorizationService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -53,7 +53,7 @@ $clock = new class implements ITimeFactory {
     public function now(): DateTimeImmutable { return new DateTimeImmutable('2026-10-01T10:00:00+00:00'); }
 };
 $service = new RiskScopeAuthorizationService($repository, $groups, $session, $clock);
-$scope = ScopeAuthorizationQueryEvent::ADROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION;
+$scope = ScopeAuthorizationQueryEvent::FLZROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION;
 $configuration = [
     'scopeId' => $scope,
     'enabled' => true,

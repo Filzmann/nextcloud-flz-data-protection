@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Model;
+namespace OCA\FlzDataProtection\Model;
 
 final class AggregateReport {
     /** @param array<string, ProviderReport> $providers */

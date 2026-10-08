@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannPermissionMatrix\PublicApi\V1 {
+namespace OCA\FlzPermissionMatrix\PublicApi\V1 {
     interface PermissionProvider { public function descriptor(): PermissionProviderDescriptor; public function collect(): PermissionProviderResult; }
     final class PermissionProviderDescriptor { public function __construct(public string $appId, public string $name, public string $version, public array $capabilities) {} }
     final class PermissionCondition {
@@ -24,10 +24,10 @@ namespace OCA\FilzmannPermissionMatrix\PublicApi\V1 {
 }
 
 namespace {
-    use OCA\FilzmannDataProtection\Permission\DataProtectionPermissionProvider;
-    use OCA\FilzmannDataProtection\Permission\DataProtectionPermissionProviderListener;
-    use OCA\FilzmannDataProtection\Service\RetentionSettingsService;
-    use OCA\FilzmannPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
+    use OCA\FlzDataProtection\Permission\DataProtectionPermissionProvider;
+    use OCA\FlzDataProtection\Permission\DataProtectionPermissionProviderListener;
+    use OCA\FlzDataProtection\Service\RetentionSettingsService;
+    use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
     use OCP\IAppConfig;
     use OCP\IGroupManager;
 
@@ -58,18 +58,18 @@ namespace {
     $profileConfiguration = $byPermission['retention.execution-profile.configure'];
     if ($profileConfiguration->condition->operator !== 'group'
         || $profileConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
-        || $profileConfiguration->source !== 'filzmann_data_protection:RetentionExecutionProfileService::canConfigure') {
+        || $profileConfiguration->source !== 'flz_data_protection:RetentionExecutionProfileService::canConfigure') {
         throw new \RuntimeException('Die DPO-Profilkonfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
     }
     $executionConfiguration = $byPermission['retention.execution.configure'];
     if ($executionConfiguration->condition->operator !== 'nextcloud-admin'
-        || $executionConfiguration->source !== 'filzmann_data_protection:RetentionExecutionActivationService::canConfigure') {
+        || $executionConfiguration->source !== 'flz_data_protection:RetentionExecutionActivationService::canConfigure') {
         throw new \RuntimeException('Die technische Ausführungsaktivierung ist nicht exakt an native Administration gebunden.');
     }
     $scopeConfiguration = $byPermission['risk-scope.configure'];
     if ($scopeConfiguration->condition->operator !== 'group'
         || $scopeConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
-        || $scopeConfiguration->source !== 'filzmann_data_protection:RiskScopeAuthorizationService::canConfigure') {
+        || $scopeConfiguration->source !== 'flz_data_protection:RiskScopeAuthorizationService::canConfigure') {
         throw new \RuntimeException('Die Risikoscope-Konfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
     }
 

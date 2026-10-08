@@ -20,7 +20,7 @@ const calls = [];
 const initialState = {
     action: 'REVIEW', setupRequired: true, configurationValid: false, executionAvailable: false,
     performanceMonitoringProhibited: true, blockers: ['activation_missing'],
-    recommendedPolicyIds: ['adroom:room_booking_delete', 'adroom:temporary_admin_access_history_delete', 'filzmann_data_protection:temporary_admin_access_history_delete'],
+    recommendedPolicyIds: ['flzroom:room_booking_delete', 'flzroom:temporary_admin_access_history_delete', 'flz_data_protection:temporary_admin_access_history_delete'],
     configuration: null,
 };
 const activeState = {

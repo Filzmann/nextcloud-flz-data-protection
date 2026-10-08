@@ -69,6 +69,6 @@
             appendContinuations(article, provider.continuations, onContinue);
         });
     };
-    window.FilzmannDataProtection = window.FilzmannDataProtection || {};
-    window.FilzmannDataProtection.retentionView = { render, append };
+    window.FlzDataProtection = window.FlzDataProtection || {};
+    window.FlzDataProtection.retentionView = { render, append };
 })(window, document);

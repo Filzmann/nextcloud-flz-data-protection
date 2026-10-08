@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OCA\FilzmannDataProtection\Controller;
+namespace OCA\FlzDataProtection\Controller;
 
 use DomainException;
 use InvalidArgumentException;
-use OCA\FilzmannDataProtection\AppInfo\Application;
-use OCA\FilzmannDataProtection\Service\RetentionExecutionProfileService;
+use OCA\FlzDataProtection\AppInfo\Application;
+use OCA\FlzDataProtection\Service\RetentionExecutionProfileService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;

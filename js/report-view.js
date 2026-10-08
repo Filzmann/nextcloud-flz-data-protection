@@ -232,6 +232,6 @@
         };
     };
 
-    window.FilzmannDataProtection = window.FilzmannDataProtection || {};
-    window.FilzmannDataProtection.reportView = { render };
+    window.FlzDataProtection = window.FlzDataProtection || {};
+    window.FlzDataProtection.reportView = { render };
 })(window, document);

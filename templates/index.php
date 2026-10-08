@@ -1,6 +1,6 @@
 <?php
-script('filzmann_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'retention-execution-activation', 'risk-scope-authorization', 'main']);
-style('filzmann_data_protection', 'style');
+script('flz_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'retention-execution-activation', 'risk-scope-authorization', 'main']);
+style('flz_data_protection', 'style');
 ?>
 
 <main id="data-protection-app" aria-labelledby="data-protection-heading">
@@ -114,7 +114,7 @@ style('filzmann_data_protection', 'style');
             <form id="data-protection-risk-scope-authorization-form">
                 <label>Risikofunktion
                     <select name="scopeId" required>
-                        <option value="adroom.secretariat.foreign-booking-intervention">Raumplaner: begründete Eingriffe des Sekretariats in fremde Buchungen</option>
+                        <option value="flzroom.secretariat_foreign_booking_intervention">Raumplaner: begründete Eingriffe des Sekretariats in fremde Buchungen</option>
                     </select>
                 </label>
                 <label><input type="checkbox" name="enabled"> Freigabe aktivieren</label>
