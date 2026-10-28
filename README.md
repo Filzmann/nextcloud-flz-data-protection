@@ -20,11 +20,15 @@ remain visible and are not replaced by heuristic fallback access.
 - protected Self-Service report API whose subject is derived exclusively from
   the authenticated Nextcloud session;
 - accessible transient Self-Service report UI with visible provider and
-  completeness states and text-only rendering of provider values.
+  completeness states and text-only rendering of provider values. It is
+  exposed only through the personal Nextcloud settings section
+  `Datenschutz`, while the app menu contains no personal Art.-15 report;
 - public V1 retention-preview contract with lazy discovery, provider failure
   isolation and `REVIEW` as the only supported action;
 - a transient operational REVIEW dashboard for configured privacy-review
-  groups. A versioned install/upgrade migration creates the canonical
+  groups. The app menu separates fachliche governance, technical operation
+  and REVIEW into keyboard-accessible responsive sections while retaining
+  each server-side role gate. A versioned install/upgrade migration creates the canonical
   `Datenschutzbeauftragte` group idempotently through native Nextcloud group
   management without assigning members. Native Nextcloud administration alone
   grants no fachlich access; only current group members may activate or revoke

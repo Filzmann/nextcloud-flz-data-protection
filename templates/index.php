@@ -1,6 +1,12 @@
 <?php
-script('flz_data_protection', ['report-view', 'retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'retention-execution-activation', 'risk-scope-authorization', 'main']);
+script('flz_data_protection', ['retention-view', 'admin-access', 'retention-policy', 'retention-execution-profile', 'retention-execution-activation', 'risk-scope-authorization', 'main']);
 style('flz_data_protection', 'style');
+$showGovernance = ($_['canConfigureAdminHistoryRetention'] ?? false)
+    || ($_['canConfigureRetentionExecutionProfile'] ?? false)
+    || ($_['canConfigureRiskScopeAuthorizations'] ?? false)
+    || ($_['canManageAdminAccess'] ?? false);
+$showTechnicalOperations = $_['canConfigureRetentionExecutionActivation'] ?? false;
+$showReview = $_['canReviewRetention'] ?? false;
 ?>
 
 <main id="data-protection-app" aria-labelledby="data-protection-heading">
@@ -21,9 +27,28 @@ style('flz_data_protection', 'style');
         </section>
     <?php endif; ?>
 
+    <?php if ($showGovernance || $showTechnicalOperations || $showReview): ?>
+        <nav class="data-protection-area-navigation" aria-label="Bereiche des Datenschutz-Centers">
+            <?php if ($showGovernance): ?><a href="#data-protection-governance">Fachliche Steuerung</a><?php endif; ?>
+            <?php if ($showTechnicalOperations): ?><a href="#data-protection-technical-operations">Technischer Betrieb</a><?php endif; ?>
+            <?php if ($showReview): ?><a href="#data-protection-review-area">REVIEW-Vorschau</a><?php endif; ?>
+        </nav>
+    <?php else: ?>
+        <section class="data-protection-report data-protection-empty-state" aria-labelledby="data-protection-no-app-access-heading">
+            <h2 id="data-protection-no-app-access-heading">Kein fachlicher Bereich verfügbar</h2>
+            <p>Dieser App-Einstieg enthält ausschließlich geschützte Datenschutz- und Betriebsfunktionen. Die persönliche Art.-15-Auskunft befindet sich in den persönlichen Nextcloud-Einstellungen unter „Datenschutz“.</p>
+        </section>
+    <?php endif; ?>
+
+    <?php if ($showGovernance): ?>
+        <section id="data-protection-governance" class="data-protection-area" aria-labelledby="data-protection-governance-heading">
+            <h2 id="data-protection-governance-heading">Fachliche Datenschutzsteuerung</h2>
+            <p>Diese Funktionen bleiben auf die jeweils serverseitig berechtigten Datenschutzrollen begrenzt.</p>
+            <div class="data-protection-area-grid">
+
     <?php if ($_['canConfigureAdminHistoryRetention'] ?? false): ?>
-        <section id="data-protection-admin-history-retention" class="data-protection-report" aria-labelledby="data-protection-admin-history-retention-heading">
-            <h2 id="data-protection-admin-history-retention-heading">Aufbewahrungsprüfung der Adminfreigabehistorie</h2>
+        <section id="data-protection-admin-history-retention" class="data-protection-report data-protection-area-card" aria-labelledby="data-protection-admin-history-retention-heading">
+            <h3 id="data-protection-admin-history-retention-heading">Aufbewahrungsprüfung der Adminfreigabehistorie</h3>
             <p>Standard sind sechs Monate ab tatsächlichem Ende. Diese Konfiguration erzeugt ausschließlich REVIEW-Kandidaten und löscht keine Daten.</p>
             <form id="data-protection-retention-policy-form">
                 <label>Kalenderfrist <input name="durationPeriod" value="P6M" pattern="P[1-9][0-9]*[YMD]" required></label>
@@ -36,8 +61,8 @@ style('flz_data_protection', 'style');
     <?php endif; ?>
 
     <?php if ($_['canConfigureRetentionExecutionProfile'] ?? false): ?>
-        <section id="data-protection-retention-execution-profile" class="data-protection-report" aria-labelledby="data-protection-retention-execution-profile-heading">
-            <h2 id="data-protection-retention-execution-profile-heading">Optionale lokale Rechts- und Betriebsdokumentation</h2>
+        <section id="data-protection-retention-execution-profile" class="data-protection-report data-protection-area-card" aria-labelledby="data-protection-retention-execution-profile-heading">
+            <h3 id="data-protection-retention-execution-profile-heading">Optionale lokale Rechts- und Betriebsdokumentation</h3>
             <p>Diese optionale Dokumentation erfasst kundeneigene Rechts- und Betriebsangaben. Sie aktiviert oder blockiert keine automatische Löschung; die technische Aktivierung ist davon getrennt.</p>
             <p><strong>Unveränderliche Produktgrenze:</strong> keine Leistungs- oder Verhaltenskontrolle.</p>
             <?php if ($_['retentionExecutionProfileSetupRequired'] ?? false): ?>
@@ -84,31 +109,9 @@ style('flz_data_protection', 'style');
         </section>
     <?php endif; ?>
 
-    <?php if ($_['canConfigureRetentionExecutionActivation'] ?? false): ?>
-        <section id="data-protection-retention-execution-activation" class="data-protection-report" aria-labelledby="data-protection-retention-execution-activation-heading">
-            <h2 id="data-protection-retention-execution-activation-heading">Automatische Löschung technisch aktivieren</h2>
-            <p>Standardmäßig ist die Ausführung deaktiviert. Bei Aktivierung gelten die empfohlenen Policies: Raumbuchungen ein Jahr nach Buchungsende, Adminfreigabehistorien sechs Monate nach tatsächlichem Ende. Rechtsgrundlagen, Betriebsvereinbarungen und lokale Beteiligung werden außerhalb des Produkts verantwortet.</p>
-            <p>Technische Schutzgrenzen bleiben zwingend: Holds, unveränderte Policyversion, atomare Löschung sowie aktueller Backup- und Restore-Status.</p>
-            <form id="data-protection-retention-execution-activation-form">
-                <label><input type="checkbox" name="enabled"> Automatische Löschung aktivieren</label>
-                <fieldset data-retention-execution-technical-health>
-                    <legend>Technischer Backup- und Restore-Status</legend>
-                    <label>Backup-Aufbewahrung in Tagen <input type="number" name="backupRegularDays" min="1" max="365" value="365" required></label>
-                    <label>Technischer Puffer in Tagen <input type="number" name="backupBufferDays" min="0" max="5" value="5" required></label>
-                    <label>Backupstatus geprüft am <input type="datetime-local" name="backupVerifiedAt" required></label>
-                    <label>Restore geprüft am <input type="datetime-local" name="restoreVerifiedAt" required></label>
-                    <label>Nächste technische Prüfung spätestens <input type="datetime-local" name="verificationDueAt" required></label>
-                </fieldset>
-                <input type="hidden" name="expectedRevision" value="0">
-                <button type="submit">Technischen Status als neue Revision speichern</button>
-            </form>
-            <p id="data-protection-retention-execution-activation-status" role="status" aria-live="polite">Technischer Status wird geladen.</p>
-        </section>
-    <?php endif; ?>
-
     <?php if ($_['canConfigureRiskScopeAuthorizations'] ?? false): ?>
-        <section id="data-protection-risk-scope-authorizations" class="data-protection-report" aria-labelledby="data-protection-risk-scope-authorizations-heading">
-            <h2 id="data-protection-risk-scope-authorizations-heading">Freigabe risikoreicher Funktionen</h2>
+        <section id="data-protection-risk-scope-authorizations" class="data-protection-report data-protection-area-card" aria-labelledby="data-protection-risk-scope-authorizations-heading">
+            <h3 id="data-protection-risk-scope-authorizations-heading">Freigabe risikoreicher Funktionen</h3>
             <p>Normale Fachfunktionen bleiben unabhängig davon verfügbar. Diese Konfiguration schaltet ausschließlich die hier aufgeführte Risikofunktion kundenlokal frei. Ohne gültige Freigabe bleibt sie gesperrt.</p>
             <p><strong>Unveränderliche Produktgrenze:</strong> keine Leistungs- oder Verhaltenskontrolle.</p>
             <form id="data-protection-risk-scope-authorization-form">
@@ -131,8 +134,8 @@ style('flz_data_protection', 'style');
     <?php endif; ?>
 
     <?php if ($_['canManageAdminAccess'] ?? false): ?>
-        <section id="data-protection-full-access" class="data-protection-report" aria-labelledby="data-protection-full-access-heading">
-            <h2 id="data-protection-full-access-heading">Zeitlich begrenzter Admin-Vollzugriff</h2>
+        <section id="data-protection-full-access" class="data-protection-report data-protection-area-card" aria-labelledby="data-protection-full-access-heading">
+            <h3 id="data-protection-full-access-heading">Zeitlich begrenzter Admin-Vollzugriff</h3>
             <p>Ausschließlich Mitglieder von Datenschutzbeauftragte dürfen einem aktuellen Nextcloud-Administrationskonto für höchstens 24 Stunden fachlichen Vollzugriff erteilen oder ihn widerrufen.</p>
             <form id="data-protection-full-access-form">
                 <label>Admin-Benutzerkennung <input name="targetUid" required maxlength="64" autocomplete="off"></label>
@@ -157,20 +160,49 @@ style('flz_data_protection', 'style');
             </div>
         </section>
     <?php endif; ?>
+            </div>
+        </section>
+    <?php endif; ?>
 
-    <section class="data-protection-report" aria-labelledby="data-protection-status-heading">
-        <h2 id="data-protection-status-heading">Eigene gespeicherte Daten</h2>
-        <p>Die Daten werden für diese Anfrage bei den registrierten Apps abgerufen und nicht als Bericht gespeichert.</p>
-        <div id="data-protection-results" aria-live="polite">
-            <p role="status">Persönliche Auskunft wird geladen.</p>
-        </div>
-    </section>
-    <?php if ($_['canReviewRetention'] ?? false): ?>
-        <section id="data-protection-retention" class="data-protection-report" aria-labelledby="data-protection-retention-heading">
-            <h2 id="data-protection-retention-heading">Datenschutz-REVIEW-Kandidaten</h2>
-            <p>Die Vorschau wird aus den Fachapps abgerufen. Sie löst keine Löschung oder Anonymisierung aus.</p>
-            <div id="data-protection-retention-results" aria-live="polite">
-                <p role="status">REVIEW-Kandidaten werden geladen.</p>
+    <?php if ($showTechnicalOperations): ?>
+        <section id="data-protection-technical-operations" class="data-protection-area" aria-labelledby="data-protection-technical-operations-heading">
+            <h2 id="data-protection-technical-operations-heading">Technischer Betrieb</h2>
+            <p>Die technische Aktivierung bleibt von fachlicher Datenschutzkonfiguration und Berichtszugriff getrennt.</p>
+            <div class="data-protection-area-grid">
+                <section id="data-protection-retention-execution-activation" class="data-protection-report data-protection-area-card" aria-labelledby="data-protection-retention-execution-activation-heading">
+                    <h3 id="data-protection-retention-execution-activation-heading">Automatische Löschung technisch aktivieren</h3>
+                    <p>Standardmäßig ist die Ausführung deaktiviert. Bei Aktivierung gelten die empfohlenen Policies: Raumbuchungen ein Jahr nach Buchungsende, Adminfreigabehistorien sechs Monate nach tatsächlichem Ende. Rechtsgrundlagen, Betriebsvereinbarungen und lokale Beteiligung werden außerhalb des Produkts verantwortet.</p>
+                    <p>Technische Schutzgrenzen bleiben zwingend: Holds, unveränderte Policyversion, atomare Löschung sowie aktueller Backup- und Restore-Status.</p>
+                    <form id="data-protection-retention-execution-activation-form">
+                        <label><input type="checkbox" name="enabled"> Automatische Löschung aktivieren</label>
+                        <fieldset data-retention-execution-technical-health>
+                            <legend>Technischer Backup- und Restore-Status</legend>
+                            <label>Backup-Aufbewahrung in Tagen <input type="number" name="backupRegularDays" min="1" max="365" value="365" required></label>
+                            <label>Technischer Puffer in Tagen <input type="number" name="backupBufferDays" min="0" max="5" value="5" required></label>
+                            <label>Backupstatus geprüft am <input type="datetime-local" name="backupVerifiedAt" required></label>
+                            <label>Restore geprüft am <input type="datetime-local" name="restoreVerifiedAt" required></label>
+                            <label>Nächste technische Prüfung spätestens <input type="datetime-local" name="verificationDueAt" required></label>
+                        </fieldset>
+                        <input type="hidden" name="expectedRevision" value="0">
+                        <button type="submit">Technischen Status als neue Revision speichern</button>
+                    </form>
+                    <p id="data-protection-retention-execution-activation-status" role="status" aria-live="polite">Technischer Status wird geladen.</p>
+                </section>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <?php if ($showReview): ?>
+        <section id="data-protection-review-area" class="data-protection-area" aria-labelledby="data-protection-review-area-heading">
+            <h2 id="data-protection-review-area-heading">Datenschutz-REVIEW</h2>
+            <div class="data-protection-area-grid">
+                <section id="data-protection-retention" class="data-protection-report data-protection-area-card" aria-labelledby="data-protection-retention-heading">
+                    <h3 id="data-protection-retention-heading">Datenschutz-REVIEW-Kandidaten</h3>
+                    <p>Die Vorschau wird aus den Fachapps abgerufen. Sie löst keine Löschung oder Anonymisierung aus.</p>
+                    <div id="data-protection-retention-results" aria-live="polite">
+                        <p role="status">REVIEW-Kandidaten werden geladen.</p>
+                    </div>
+                </section>
             </div>
         </section>
     <?php endif; ?>

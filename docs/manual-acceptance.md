@@ -12,7 +12,10 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 
 ## Kernablauf
 
-- [ ] Self-Service bindet ausschließlich das angemeldete Konto.
+- [ ] Der persönliche Nextcloud-Einstieg `Datenschutz` zeigt den Art.-15-
+      Self-Service und bindet ausschließlich das angemeldete Konto.
+- [ ] Der direkte App-Einstieg zeigt keine persönliche Art.-15-Auskunft;
+      gewöhnliche Konten erhalten dort keine fachlichen Steuerelemente.
 - [ ] Fehlende, inkompatible und fehlerhafte Provider werden sichtbar ausgewiesen.
 - [ ] Teilberichte werden nicht als vollständig bezeichnet.
 - [ ] Fresh Install und Upgrade einer bereits aktivierten App legen eine fehlende
@@ -35,12 +38,15 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Installiert/aktiv, deaktiviert, fehlend, inkompatibel, Update,
       Deinstallation/Neuinstallation und Rollback wurden für jeden migrierten
       Consumer im freigegebenen Lifecycle-Harness geprüft.
-- [ ] Tastatur, Fokus, kleine Viewports und Scrollverhalten wurden geprüft.
+- [ ] Die Bereichslinks im App-Einstieg sind vollständig per Tastatur
+      erreichbar und besitzen einen sichtbaren Fokus.
+- [ ] Persönliche Einstellung und App-Bereiche funktionieren bei kleinen
+      Viewports ohne horizontalen Seitenüberlauf; breite Tabellen scrollen
+      nur in ihrem inneren Wrapper und der App-Root vertikal.
 
 ## Ergebnis
 
-- Ergebnis: Offene UI-Trennung aus dieser Abnahme ist als Punkt 7 in
-  `ROADMAP.md` erfasst.
+- Ergebnis:
 - Abweichungen und reproduzierbare Schritte:
 - Belege ohne Echtdaten:
 

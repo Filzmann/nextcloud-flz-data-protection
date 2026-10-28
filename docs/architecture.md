@@ -86,7 +86,11 @@ Die zentrale administrative Auskunft ist ausschließlich der kanonischen
 Nextcloud-Gruppe `Datenschutzbeauftragte` zugänglich. Nativer Adminstatus und
 eine temporäre fachliche Adminfreigabe ersetzen diese Mitgliedschaft nicht.
 Der sessiongebundene Self-Service der betroffenen Person bleibt davon
-getrennt.
+getrennt und ist ausschließlich im persönlichen Nextcloud-Einstellungsbereich
+`Datenschutz` eingebunden. Der App-Einstieg enthält keine persönliche
+Art.-15-Auskunft; fachliche Datenschutzsteuerung, technischer Betrieb und
+REVIEW bleiben dort als getrennte Bereiche mit ihren jeweiligen
+serverseitigen Rollenprüfungen.
 
 Die öffentliche Registry liest Kataloge ausschließlich über registrierte
 Provider. Sie durchsucht weder andere App-Verzeichnisse noch fremde Tabellen,

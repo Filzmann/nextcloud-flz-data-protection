@@ -55,10 +55,3 @@ Kompatibilitätsbehauptungen.
    activation. Before deleting that documentation history, decide its own
    retention, Art.-15, hold and backup treatment; it never blocks or enables
    V2 execution.
-7. Separate the session-bound Art. 15 self-service from fachliche DPO
-   controls in the UI. Personal Art. 15 information is exposed only through
-   the Nextcloud personal `Datenschutz` settings entry. DPO report, policy,
-   admin-grant and retention functions remain in the app menu and are split
-   into coherent, accessible sections. This navigation change must preserve
-   the existing server-side role separation and needs route, direct-access,
-   keyboard, focus and responsive-layout checks.

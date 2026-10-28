@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Den sessiongebundenen Art.-15-Self-Service aus dem App-Menü in den nativen
+  persönlichen Nextcloud-Abschnitt `Datenschutz` verschoben. Fachliche
+  Datenschutzsteuerung, technischer Betrieb und REVIEW bleiben im App-Menü
+  als semantisch getrennte, tastatur- und responsive nutzbare Bereiche; die
+  bestehenden serverseitigen Allow-/Deny-Grenzen bleiben unverändert.
 - Technische App-Identität auf `flz_data_protection` und
   `OCA\\FlzDataProtection` umgestellt. App-eigene Tabellen und Indizes
   verwenden für den vereinbarten Fresh-Install-Neustart das Präfix `flz_dp`;
