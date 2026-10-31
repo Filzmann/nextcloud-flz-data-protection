@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
 use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
 use OCP\AppFramework\Utility\ITimeFactory;
-use OCP\IGroupManager;
 use OCP\IUserSession;
 use Throwable;
 
@@ -25,22 +24,14 @@ final class RiskScopeAuthorizationService {
 
     public function __construct(
         private RiskScopeAuthorizationRepositoryInterface $repository,
-        private IGroupManager $groups,
         private IUserSession $session,
         private ITimeFactory $clock,
+        private DataProtectionPermissionChecker $authorization,
     ) {
     }
 
     public function canConfigure(): bool {
-        $uid = $this->session->getUser()?->getUID() ?? '';
-        if ($uid === '') {
-            return false;
-        }
-        try {
-            return $this->groups->isInGroup($uid, self::CONFIGURATOR_GROUP);
-        } catch (Throwable) {
-            return false;
-        }
+        return $this->authorization->has(PermissionAssignmentsService::RISK_SCOPE_CONFIGURE);
     }
 
     /** @return array<string, mixed> */

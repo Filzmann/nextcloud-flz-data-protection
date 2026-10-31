@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OCA\FlzDataProtection\Permission;
 
-use OCA\FlzDataProtection\Service\RetentionSettingsService;
+use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
 use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionCondition;
 use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionProvider;
 use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionProviderDescriptor;
@@ -12,7 +12,7 @@ use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionProviderResult;
 use OCA\FlzPermissionMatrix\PublicApi\V1\PermissionRule;
 
 final class DataProtectionPermissionProvider implements PermissionProvider {
-    public function __construct(private RetentionSettingsService $settings) {
+    public function __construct(private PermissionAssignmentsService $settings) {
     }
 
     public function descriptor(): PermissionProviderDescriptor {
@@ -29,9 +29,13 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
             PermissionCondition::nextcloudAdmin(),
             PermissionCondition::temporaryAppAdminGrant(),
         ]);
+        $conditionFor = fn(string $permission): PermissionCondition => PermissionCondition::any(array_map(
+            static fn(string $groupId): PermissionCondition => PermissionCondition::group($groupId),
+            $this->settings->groupsFor($permission),
+        ));
         $reviewConditions = array_map(
             static fn(string $groupId): PermissionCondition => PermissionCondition::group($groupId),
-            $this->settings->reviewerGroups(),
+            $this->settings->groupsFor(PermissionAssignmentsService::RETENTION_REVIEW),
         );
         $reviewConditions[] = $temporaryAdmin;
 
@@ -62,25 +66,13 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
             ),
             new PermissionRule(
                 'AppPermission',
-                'Technische Datenschutz-Konfiguration',
-                'Nextcloud-native Administration; erteilt keinen fachlichen REVIEW-Zugriff',
-                'retention.configure',
-                'Technische Konfiguration verwalten',
-                'allow',
-                'app:flz_data_protection',
-                PermissionCondition::nextcloudAdmin(),
-                'flz_data_protection:RetentionAccessService::canConfigure',
-                'high',
-            ),
-            new PermissionRule(
-                'AppPermission',
                 'Rechts- und Backup-Profil konfigurieren',
-                'Ausschließlich aktuelle Mitglieder der kanonischen Gruppe Datenschutzbeauftragte',
+                'App-lokal zugewiesene Organigrammrollen; Standard Datenschutzbeauftragte',
                 'retention.execution-profile.configure',
                 'Rechts- und Backup-Profil konfigurieren',
                 'allow',
                 'app:flz_data_protection',
-                PermissionCondition::group('Datenschutzbeauftragte'),
+                $conditionFor(PermissionAssignmentsService::EXECUTION_PROFILE_CONFIGURE),
                 'flz_data_protection:RetentionExecutionProfileService::canConfigure',
                 'high',
             ),
@@ -99,15 +91,20 @@ final class DataProtectionPermissionProvider implements PermissionProvider {
             new PermissionRule(
                 'AppPermission',
                 'Risikoscope konfigurieren',
-                'Ausschließlich aktuelle Mitglieder der kanonischen Gruppe Datenschutzbeauftragte',
+                'App-lokal zugewiesene Organigrammrollen; Standard Datenschutzbeauftragte',
                 'risk-scope.configure',
                 'Risikoscope konfigurieren',
                 'allow',
                 'app:flz_data_protection',
-                PermissionCondition::group('Datenschutzbeauftragte'),
+                $conditionFor(PermissionAssignmentsService::RISK_SCOPE_CONFIGURE),
                 'flz_data_protection:RiskScopeAuthorizationService::canConfigure',
                 'high',
             ),
+            new PermissionRule('AppPermission', 'REVIEW-Rollen konfigurieren', 'App-lokal zugewiesene Organigrammrollen', PermissionAssignmentsService::REVIEW_ASSIGNMENTS_CONFIGURE, 'REVIEW-Rollen konfigurieren', 'allow', 'app:flz_data_protection', $conditionFor(PermissionAssignmentsService::REVIEW_ASSIGNMENTS_CONFIGURE), 'flz_data_protection:RetentionSettingsController::save', 'high'),
+            new PermissionRule('AppPermission', 'Adminhistorien-Retention konfigurieren', 'App-lokal zugewiesene Organigrammrollen', PermissionAssignmentsService::ADMIN_HISTORY_RETENTION_CONFIGURE, 'Retention und Prüfprotokoll pflegen', 'allow', 'app:flz_data_protection', $conditionFor(PermissionAssignmentsService::ADMIN_HISTORY_RETENTION_CONFIGURE), 'flz_data_protection:AdminHistoryRetentionPolicyService::canConfigure', 'high'),
+            new PermissionRule('AppPermission', 'Temporäre Adminfreigaben verwalten', 'App-lokal zugewiesene Organigrammrollen', PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_MANAGE, 'Adminfreigaben erteilen und widerrufen', 'allow', 'app:flz_data_protection', $conditionFor(PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_MANAGE), 'flz_data_protection:TemporaryAdminAccessService::canManageGrants', 'high'),
+            new PermissionRule('AppPermission', 'Adminfreigabehistorie lesen', 'App-lokal zugewiesene Organigrammrollen', PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_HISTORY_READ, 'Adminfreigabehistorie lesen', 'allow', 'app:flz_data_protection', $conditionFor(PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_HISTORY_READ), 'flz_data_protection:TemporaryAdminAccessService::state', 'high'),
+            new PermissionRule('AppPermission', 'Datenschutz-Rechtematrix verwalten', 'App-lokal zugewiesene Organigrammrollen', PermissionAssignmentsService::PERMISSION_ASSIGNMENTS_CONFIGURE, 'Datenschutz-Rechtematrix verwalten', 'allow', 'app:flz_data_protection', $conditionFor(PermissionAssignmentsService::PERMISSION_ASSIGNMENTS_CONFIGURE), 'flz_data_protection:RetentionSettingsController::save', 'high'),
         ]);
     }
 }

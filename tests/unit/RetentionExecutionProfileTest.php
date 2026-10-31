@@ -5,6 +5,8 @@ declare(strict_types=1);
 use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
 use OCA\FlzDataProtection\Controller\RetentionExecutionProfileController;
 use OCA\FlzDataProtection\Service\RetentionExecutionProfileService;
+use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
+use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -44,7 +46,14 @@ $clock = new class implements ITimeFactory {
     public function now(): DateTimeImmutable { return $this->value; }
 };
 
-$service = new RetentionExecutionProfileService($repository, $groups, $session, $clock);
+$permissionChecker = new class($session) implements DataProtectionPermissionChecker {
+    public function __construct(private IUserSession $session) {}
+    public function has(string $permission): bool {
+        return $permission === PermissionAssignmentsService::EXECUTION_PROFILE_CONFIGURE
+            && $this->session->getUser()?->getUID() === 'dpo';
+    }
+};
+$service = new RetentionExecutionProfileService($repository, $session, $clock, $permissionChecker);
 $empty = $service->status();
 $assertSame('REVIEW', $empty['action'], 'Eine leere Installation muss REVIEW-only starten.');
 $assertSame(true, $empty['setupRequired'], 'Eine leere Installation muss die verpflichtende DPO-Ersteinrichtung ausweisen.');

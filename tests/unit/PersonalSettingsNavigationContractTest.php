@@ -47,7 +47,7 @@ if (!str_contains($routes, "'name' => 'page#index'")) throw new RuntimeException
 if (!preg_match('/#\[NoAdminRequired\]\s+#\[NoCSRFRequired\]\s+public function index\(\): TemplateResponse/', $pageController) || str_contains($pageController, 'PublicPage')) {
     throw new RuntimeException('Der App-Direktzugriff muss authentifiziert, aber nicht auf native Admins begrenzt sein.');
 }
-foreach (['canReviewRetention', 'canManageAdminAccess', 'canConfigureAdminHistoryRetention', 'canConfigureRetentionExecutionProfile', 'canConfigureRetentionExecutionActivation', 'canConfigureRiskScopeAuthorizations'] as $serverSideBoundary) {
+foreach (['canReviewRetention', 'canManageAdminAccess', 'canReadAdminAccessHistory', 'canConfigureAdminHistoryRetention', 'canConfigureRetentionExecutionProfile', 'canConfigureRiskScopeAuthorizations', 'canConfigurePermissionAssignments', 'canConfigureReviewAssignments'] as $serverSideBoundary) {
     if (!str_contains($pageController, "'" . $serverSideBoundary . "'")) {
         throw new RuntimeException('Bestehende serverseitige App-Grenze fehlt: ' . $serverSideBoundary);
     }
@@ -65,6 +65,9 @@ if (!function_exists('script')) {
 if (!function_exists('style')) {
     function style(...$arguments): void {}
 }
+if (!function_exists('p')) {
+    function p(mixed $value): void { echo htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+}
 $renderApp = static function (array $parameters) use ($root): string {
     $_ = $parameters;
     ob_start();
@@ -74,12 +77,16 @@ $renderApp = static function (array $parameters) use ($root): string {
 $deniedOutput = $renderApp([
     'canReviewRetention' => false,
     'canManageAdminAccess' => false,
+    'canReadAdminAccessHistory' => false,
     'showMissingAdminGrant' => false,
     'showAdminAccessLink' => false,
     'canConfigureAdminHistoryRetention' => false,
     'canConfigureRetentionExecutionProfile' => false,
     'canConfigureRetentionExecutionActivation' => false,
     'canConfigureRiskScopeAuthorizations' => false,
+    'canConfigurePermissionAssignments' => false,
+    'canConfigureReviewAssignments' => false,
+    'permissionSettings' => null,
     'retentionExecutionProfileSetupRequired' => false,
 ]);
 foreach (['data-protection-full-access-form', 'data-protection-retention-policy-form', 'data-protection-retention-execution-activation-form', 'data-protection-risk-scope-authorization-form', 'data-protection-retention-results'] as $protectedControl) {
@@ -94,15 +101,24 @@ if (!str_contains($deniedOutput, 'Kein fachlicher Bereich verfügbar')) {
 $allowedOutput = $renderApp([
     'canReviewRetention' => true,
     'canManageAdminAccess' => true,
+    'canReadAdminAccessHistory' => true,
     'showMissingAdminGrant' => false,
     'showAdminAccessLink' => false,
     'canConfigureAdminHistoryRetention' => true,
     'canConfigureRetentionExecutionProfile' => true,
     'canConfigureRetentionExecutionActivation' => true,
     'canConfigureRiskScopeAuthorizations' => true,
+    'canConfigurePermissionAssignments' => true,
+    'canConfigureReviewAssignments' => true,
+    'permissionSettings' => [
+        'definitions' => ['retention.review' => 'Retention-REVIEW lesen'],
+        'assignments' => ['retention.review' => ['Datenschutzbeauftragte']],
+        'organization_groups' => ['options' => [['groupId' => 'Datenschutzbeauftragte', 'label' => 'Datenschutzbeauftragte', 'kind' => 'Datenschutz-Standardgruppe', 'exists' => true]], 'message' => ''],
+        'unavailable_groups' => [],
+    ],
     'retentionExecutionProfileSetupRequired' => false,
 ]);
-foreach (['data-protection-governance', 'data-protection-technical-operations', 'data-protection-review-area'] as $allowedArea) {
+foreach (['data-protection-settings-panel', 'data-protection-review-panel', 'data-protection-permission-settings-form'] as $allowedArea) {
     if (!str_contains($allowedOutput, 'id="' . $allowedArea . '"')) {
         throw new RuntimeException('Berechtigter App-Direktzugriff rendert den freigegebenen Bereich nicht: ' . $allowedArea);
     }

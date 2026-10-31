@@ -5,6 +5,8 @@ declare(strict_types=1);
 use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
 use OCA\FlzDataProtection\Service\TemporaryAdminAccessDeniedException;
 use OCA\FlzDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
+use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -75,7 +77,17 @@ $logger = new class implements LoggerInterface {
     public function debug(string|Stringable $message, array $context = []): void {}
     public function log(mixed $level, string|Stringable $message, array $context = []): void {}
 };
-$service = new TemporaryAdminAccessService($session, $groups, $repository, $clock, $logger);
+$permissionChecker = new class($session, $groups) implements DataProtectionPermissionChecker {
+    public function __construct(private IUserSession $session, private IGroupManager $groups) {}
+    public function has(string $permission): bool {
+        if (!in_array($permission, [PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_MANAGE, PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_HISTORY_READ], true)) return false;
+        $uid = $this->session->getUser()?->getUID() ?? '';
+        if ($uid === 'history-reader') return $permission === PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_HISTORY_READ;
+        if ($uid === 'grant-manager') return $permission === PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_MANAGE;
+        return $uid !== '' && $this->groups->isInGroup($uid, 'Datenschutzbeauftragte');
+    }
+};
+$service = new TemporaryAdminAccessService($session, $groups, $repository, $clock, $logger, $permissionChecker);
 
 $before = $repository->mutations;
 try {
@@ -87,6 +99,17 @@ if ($repository->mutations !== $before) throw new RuntimeException('Abgewiesene 
 try {
     $service->state();
     throw new RuntimeException('Nativer Admin ohne Datenschutzrolle durfte die Freigabehistorie lesen.');
+} catch (TemporaryAdminAccessDeniedException) {
+}
+
+$session->user = new class implements IUser { public function getUID(): string { return 'history-reader'; } };
+if ($service->canManageGrants()) throw new RuntimeException('Ein reines Historienleserecht erhielt das Verwaltungsrecht.');
+if ($service->state()['history'] !== []) throw new RuntimeException('Das getrennte Historienleserecht kann die leere Historie nicht lesen.');
+$session->user = new class implements IUser { public function getUID(): string { return 'grant-manager'; } };
+if (!$service->canManageGrants()) throw new RuntimeException('Das getrennte Verwaltungsrecht wurde nicht erkannt.');
+try {
+    $service->state();
+    throw new RuntimeException('Das getrennte Verwaltungsrecht erhielt ohne Leserecht die Historie.');
 } catch (TemporaryAdminAccessDeniedException) {
 }
 

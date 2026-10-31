@@ -18,6 +18,8 @@ namespace {
     use OCA\FlzDataProtection\Privacy\AdminHistoryRetentionProvider;
     use OCA\FlzDataProtection\PublicApi\V1\RetentionPreviewRequest;
     use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
+    use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
+    use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
 
     $config = new class implements OCP\IAppConfig {
         public array $values = [];
@@ -37,7 +39,14 @@ namespace {
         public function now(): DateTimeImmutable { return $this->value; }
     };
 
-    $service = new AdminHistoryRetentionPolicyService($config, $groups, $session, $clock);
+    $permissionChecker = new class($session) implements DataProtectionPermissionChecker {
+        public function __construct(private OCP\IUserSession $session) {}
+        public function has(string $permission): bool {
+            return $permission === PermissionAssignmentsService::ADMIN_HISTORY_RETENTION_CONFIGURE
+                && $this->session->getUser()?->getUID() === 'dpo';
+        }
+    };
+    $service = new AdminHistoryRetentionPolicyService($config, $session, $clock, $permissionChecker);
     $default = $service->policy();
     if ($default['durationPeriod'] !== 'P6M' || $default['action'] !== 'REVIEW' || $default['revision'] !== 0 || !$default['reviewDue']) {
         throw new RuntimeException('Die beschlossene Sechsmonatsfrist ist nicht der sichere versionierte Standard.');

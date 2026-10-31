@@ -1,10 +1,13 @@
 (function () {
     'use strict';
 
+    const root = document.getElementById('data-protection-full-access');
+    if (!root) return;
+    const canManage = root.dataset.canManage === 'true';
     const form = document.getElementById('data-protection-full-access-form');
     const history = document.getElementById('data-protection-full-access-history');
     const status = document.getElementById('data-protection-full-access-status');
-    if (!form || !history || !status) return;
+    if (!status) return;
 
     const request = async (path, options = {}) => {
         const headers = { Accept: 'application/json', ...(options.headers || {}) };
@@ -21,6 +24,7 @@
 
     const dateLabel = (value) => value ? new Date(value).toLocaleString() : '—';
     const loadGrants = async () => {
+        if (!history) return;
         try {
             const state = await request('/api/v1/admin/full-access');
             history.replaceChildren();
@@ -48,7 +52,7 @@
                     row.append(cell);
                 });
                 const action = document.createElement('td');
-                if (active) {
+                if (active && canManage) {
                     const button = document.createElement('button');
                     button.type = 'button';
                     button.textContent = 'Widerrufen';
@@ -64,7 +68,7 @@
         }
     };
 
-    form.addEventListener('submit', async (event) => {
+    if (form && canManage) form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const data = new FormData(form);
         if (data.get('enabled') !== 'on') return;
@@ -87,7 +91,7 @@
         }
     });
 
-    history.addEventListener('click', async (event) => {
+    if (history && canManage) history.addEventListener('click', async (event) => {
         const button = event.target.closest('button[data-revoke-uid]');
         if (!button) return;
         button.disabled = true;
@@ -103,5 +107,5 @@
         }
     });
 
-    void loadGrants();
+    if (history) void loadGrants();
 })();

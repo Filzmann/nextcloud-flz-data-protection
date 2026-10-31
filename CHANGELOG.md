@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Fachliche Datenschutzrechte von Organigrammgruppen getrennt: acht
+  serverseitig geprüfte Einzelrechte besitzen jeweils
+  `Datenschutzbeauftragte` als Default und können im geschützten
+  Einstellungstab über Organigramm-Auswahlmenüs separat zugeordnet werden.
+  Verwaltung und Lesen der temporären Adminfreigabehistorie sind unabhängig;
+  native Administration behält ausschließlich die technische
+  Retention-Aktivierung und erhält keinen fachlichen Vollzugriff.
 - Den sessiongebundenen Art.-15-Self-Service aus dem App-Menü in den nativen
   persönlichen Nextcloud-Abschnitt `Datenschutz` verschoben. Fachliche
   Datenschutzsteuerung, technischer Betrieb und REVIEW bleiben im App-Menü
@@ -39,8 +46,8 @@
   Nebenwirkung. Das Verbot von Leistungs- und Verhaltenskontrolle bleibt
   unveränderlich.
 - Additive, revisionsgeführte optionale Instanzdokumentation für die
-  geschlossenen deutschen Rechtsprofile ergänzt. Nur
-  `Datenschutzbeauftragte` sehen und bearbeiten sie; unvollständige Eingaben
+  geschlossenen deutschen Rechtsprofile ergänzt. Nur Konten mit dem
+  zugehörigen app-lokalen Einzelrecht sehen und bearbeiten sie; unvollständige Eingaben
   erzeugen keine Revision, und jede
   spätere Änderung wird ausschließlich als neue, appseitig unveränderliche Revision
   angefügt. Diese Dokumentation erzeugt keinen Job- oder Löschpfad und ist
@@ -56,12 +63,11 @@
   opake seitenweise Fortsetzungen, isolierte Providerfehler und robuste
   Nachladezustände ergänzt; Filzmann Raumplaner und Filzmann Urlaubsplanung vom LocalBase-Pilot
   als eigenständige Consumer migriert.
-- App-lokale Adminfreigabe an die feste Gruppe `Datenschutzbeauftragte`
-  gebunden, aus der technischen Administration in den geschützten App-Einstieg
+- App-lokale Adminfreigabe aus der technischen Administration in den geschützten App-Einstieg
   verschoben und um rollenabhängige Eintrittsmeldung, Direktlink sowie
   Allow-, Deny- und Manipulationsnachweise ergänzt.
-- Sechsmonats-Standard der eigenen Adminfreigabehistorie ausschließlich für
-  `Datenschutzbeauftragte` versioniert konfigurierbar gemacht und als
+- Sechsmonats-Standard der eigenen Adminfreigabehistorie über das zugehörige
+  app-lokale Einzelrecht versioniert konfigurierbar gemacht und als
   datenminimierte, rückwirkend vom tatsächlichen Ende berechnete
   `REVIEW`-Vorschau registriert; V1 besitzt weiterhin keinen Ausführungspfad.
 - Dokumentations- und Steuerungsstruktur vereinheitlicht.

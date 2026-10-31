@@ -21,10 +21,10 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Fresh Install und Upgrade einer bereits aktivierten App legen eine fehlende
       Gruppe `Datenschutzbeauftragte` an; eine vorhandene Gruppe und ihre
       Mitgliedschaften bleiben unverändert.
-- [ ] Ein Mitglied von `Datenschutzbeauftragte` ohne nativen Adminstatus kann
+- [ ] Ein Konto mit `temporary-admin-access.manage` ohne nativen Adminstatus kann
       die app-lokale Freigabesteuerung öffnen, einem bestätigten Admin für
       höchstens 24 Stunden freigeben und widerrufen.
-- [ ] Ein nativer Admin ohne Mitgliedschaft in `Datenschutzbeauftragte` kann
+- [ ] Ein nativer Admin ohne fachliche Einzelrechte kann
       weder Freigaben noch Historie verwalten und erhält ohne aktive Freigabe
       nur die sichere Eintrittsmeldung ohne Direktlink.
 - [ ] Ein Konto mit beiden Rollen erhält in der Eintrittsmeldung den
@@ -38,8 +38,18 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Installiert/aktiv, deaktiviert, fehlend, inkompatibel, Update,
       Deinstallation/Neuinstallation und Rollback wurden für jeden migrierten
       Consumer im freigegebenen Lifecycle-Harness geprüft.
-- [ ] Die Bereichslinks im App-Einstieg sind vollständig per Tastatur
+- [ ] REVIEW und Einstellungen sind als semantische Tabs vollständig per Tastatur
       erreichbar und besitzen einen sichtbaren Fokus.
+- [ ] Das Verwaltungsrecht für temporäre Adminfreigaben funktioniert ohne
+      Historienleserecht; ein reines Historienleserecht zeigt keine
+      Widerrufsaktion.
+- [ ] Alle acht fachlichen Rechte starten mit `Datenschutzbeauftragte` und
+      lassen sich einzeln ausschließlich über Auswahlmenüs auf vorhandene
+      Organigrammgruppen umstellen. Fehlerhafte oder fachfremde Gruppenwerte
+      werden serverseitig ohne Teiländerung abgewiesen.
+- [ ] Die technische Retention-Aktivierung bleibt ausschließlich im nativen
+      Nextcloud-Adminbereich und ist für fachlich Berechtigte ohne nativen
+      Adminstatus nicht erreichbar.
 - [ ] Persönliche Einstellung und App-Bereiche funktionieren bei kleinen
       Viewports ohne horizontalen Seitenüberlauf; breite Tabellen scrollen
       nur in ihrem inneren Wrapper und der App-Root vertikal.

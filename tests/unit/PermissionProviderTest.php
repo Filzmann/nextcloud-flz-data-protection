@@ -26,13 +26,15 @@ namespace OCA\FlzPermissionMatrix\PublicApi\V1 {
 namespace {
     use OCA\FlzDataProtection\Permission\DataProtectionPermissionProvider;
     use OCA\FlzDataProtection\Permission\DataProtectionPermissionProviderListener;
-    use OCA\FlzDataProtection\Service\RetentionSettingsService;
+    use OCA\FlzDataProtection\Contract\OrganizationSnapshotSource;
+    use OCA\FlzDataProtection\Service\OrganizationGroupPolicy;
+    use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
     use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
     use OCP\IAppConfig;
     use OCP\IGroupManager;
 
     $config = new class implements IAppConfig {
-        public function getValueArray(string $appId, string $key, array $default = [], bool $lazy = false): array { return ['Datenschutzbeauftragte']; }
+        public function getValueArray(string $appId, string $key, array $default = [], bool $lazy = false): array { return $default; }
         public function getValueBool(string $appId, string $key, bool $default = false, bool $lazy = false): bool { return $default; }
         public function setValueArray(string $appId, string $key, array $value, bool $lazy = false): void {}
         public function setValueBool(string $appId, string $key, bool $value, bool $lazy = false): void {}
@@ -42,22 +44,35 @@ namespace {
         public function isInGroup(string $uid, string $gid): bool { return false; }
         public function groupExists(string $gid): bool { return true; }
     };
-    $settings = new RetentionSettingsService($config, $groups);
+    $source = new class implements OrganizationSnapshotSource {
+        public function snapshot(): ?array { return ['contractVersion' => '1.0', 'valid' => true, 'roles' => [], 'areas' => []]; }
+    };
+    $settings = new PermissionAssignmentsService($config, $groups, new OrganizationGroupPolicy($source, $groups));
     $provider = new DataProtectionPermissionProvider($settings);
     $rules = $provider->collect()->rules;
     $byPermission = [];
     foreach ($rules as $rule) $byPermission[$rule->permission] = $rule;
 
-    if (array_keys($byPermission) !== ['personal-data.self', 'retention.review', 'retention.configure', 'retention.execution-profile.configure', 'retention.execution.configure', 'risk-scope.configure']) throw new \RuntimeException('Das Datenschutz-Rechteinventar ist unvollständig.');
+    if (array_keys($byPermission) !== [
+        'personal-data.self',
+        'retention.review',
+        'retention.execution-profile.configure',
+        'retention.execution.configure',
+        'risk-scope.configure',
+        'retention.review-assignments.configure',
+        'admin-history-retention.configure',
+        'temporary-admin-access.manage',
+        'temporary-admin-access.history.read',
+        'permissions.configure',
+    ]) throw new \RuntimeException('Das Datenschutz-Rechteinventar ist unvollständig.');
     if (array_map(static fn($child): string => $child->operator, $byPermission['personal-data.self']->condition->children) !== ['authenticated', 'self']) throw new \RuntimeException('Selbstauskunft ist nicht strikt an Anmeldung und eigene Person gebunden.');
     $reviewChildren = $byPermission['retention.review']->condition->children;
     if ($reviewChildren[0]->operator !== 'group' || $reviewChildren[0]->groupId !== 'Datenschutzbeauftragte') throw new \RuntimeException('Konfigurierte Prüfgruppe fehlt.');
     $temporaryAdmin = $reviewChildren[1];
     if ($temporaryAdmin->operator !== 'all' || array_map(static fn($child): string => $child->operator, $temporaryAdmin->children) !== ['nextcloud-admin', 'app-admin-grant']) throw new \RuntimeException('Native Administration ist nicht an die aktive app-lokale Freigabe gekoppelt.');
-    if ($byPermission['retention.configure']->condition->operator !== 'nextcloud-admin') throw new \RuntimeException('Technisches Konfigurationsrecht wurde mit fachlichem REVIEW vermischt.');
     $profileConfiguration = $byPermission['retention.execution-profile.configure'];
-    if ($profileConfiguration->condition->operator !== 'group'
-        || $profileConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
+    if ($profileConfiguration->condition->operator !== 'any'
+        || $profileConfiguration->condition->children[0]->groupId !== 'Datenschutzbeauftragte'
         || $profileConfiguration->source !== 'flz_data_protection:RetentionExecutionProfileService::canConfigure') {
         throw new \RuntimeException('Die DPO-Profilkonfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
     }
@@ -67,8 +82,8 @@ namespace {
         throw new \RuntimeException('Die technische Ausführungsaktivierung ist nicht exakt an native Administration gebunden.');
     }
     $scopeConfiguration = $byPermission['risk-scope.configure'];
-    if ($scopeConfiguration->condition->operator !== 'group'
-        || $scopeConfiguration->condition->groupId !== 'Datenschutzbeauftragte'
+    if ($scopeConfiguration->condition->operator !== 'any'
+        || $scopeConfiguration->condition->children[0]->groupId !== 'Datenschutzbeauftragte'
         || $scopeConfiguration->source !== 'flz_data_protection:RiskScopeAuthorizationService::canConfigure') {
         throw new \RuntimeException('Die Risikoscope-Konfiguration fehlt oder ist nicht exakt an Datenschutzbeauftragte gebunden.');
     }

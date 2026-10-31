@@ -11,6 +11,8 @@ use OCA\FlzDataProtection\PublicApi\V1\DataSubjectRef;
 use OCA\FlzDataProtection\PublicApi\V1\PersonalDataRequest;
 use OCA\FlzDataProtection\PublicApi\V1\RegisterPersonalDataProvidersEvent;
 use OCA\FlzDataProtection\Service\AdminHistoryRetentionPolicyService;
+use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
+use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
 
 $repository = new class implements TemporaryAdminAccessRepositoryInterface {
     public array $requests = [];
@@ -51,7 +53,10 @@ $session = new class implements OCP\IUserSession {
 $clock = new class implements OCP\AppFramework\Utility\ITimeFactory {
     public function now(): DateTimeImmutable { return new DateTimeImmutable('2026-09-25T10:00:00+00:00'); }
 };
-$retentionPolicy = new AdminHistoryRetentionPolicyService($config, $groups, $session, $clock);
+$policyPermission = new class implements DataProtectionPermissionChecker {
+    public function has(string $permission): bool { return $permission === PermissionAssignmentsService::ADMIN_HISTORY_RETENTION_CONFIGURE; }
+};
+$retentionPolicy = new AdminHistoryRetentionPolicyService($config, $session, $clock, $policyPermission);
 $retentionPolicy->save(['durationPeriod' => 'P9M', 'expectedRevision' => 0]);
 $executionProfiles = new class implements RetentionExecutionProfileRepositoryInterface {
     public function latest(): ?array { return null; }
@@ -171,7 +176,7 @@ $blankConfig = clone $config;
 $blankConfig->values = [];
 $pagedProvider = new DataProtectionPersonalDataProvider(
     $emptyAdminHistory,
-    new AdminHistoryRetentionPolicyService($blankConfig, $groups, $session, $clock),
+    new AdminHistoryRetentionPolicyService($blankConfig, $session, $clock, $policyPermission),
     $manyProfiles,
     new class implements RetentionExecutionActivationRepositoryInterface {
         public function latest(): ?array { return null; }

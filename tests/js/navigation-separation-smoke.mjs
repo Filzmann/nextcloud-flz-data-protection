@@ -7,31 +7,30 @@ const personalTemplate = readFileSync(`${root}/templates/personal.php`, 'utf8');
 const style = readFileSync(`${root}/css/style.css`, 'utf8');
 
 for (const contract of [
-    'class="data-protection-area-navigation"',
-    'aria-label="Bereiche des Datenschutz-Centers"',
-    'id="data-protection-governance"',
-    'id="data-protection-technical-operations"',
-    'id="data-protection-review-area"',
+    'role="tablist"',
+    'role="tab"',
+    'role="tabpanel"',
+    'id="data-protection-settings-tab"',
+    'id="data-protection-settings-panel"',
+    'id="data-protection-review-tab"',
+    'id="data-protection-review-panel"',
     'class="data-protection-area-grid"',
 ]) {
     if (!appTemplate.includes(contract)) throw new Error(`Semantische App-Bereichstrennung fehlt: ${contract}`);
 }
 
-for (const target of ['#data-protection-governance', '#data-protection-technical-operations', '#data-protection-review-area']) {
-    if (!appTemplate.includes(`href="${target}"`)) throw new Error(`Tastaturbedienbarer Bereichslink fehlt: ${target}`);
-}
+if (!appTemplate.includes('aria-controls="data-protection-settings-panel"') || !appTemplate.includes('aria-labelledby="data-protection-settings-tab"')) throw new Error('Einstellungstab und Panel sind nicht semantisch verbunden.');
+if (!appTemplate.includes('aria-controls="data-protection-review-panel"') || !appTemplate.includes('aria-labelledby="data-protection-review-tab"')) throw new Error('REVIEW-Tab und Panel sind nicht semantisch verbunden.');
 if (!personalTemplate.includes('aria-labelledby="data-protection-personal-heading"')) {
     throw new Error('Persönlicher Self-Service besitzt keine eindeutige semantische Überschrift.');
 }
-if (!/\.data-protection-area-navigation a:focus-visible\s*\{[^}]*outline:/s.test(style)) {
+if (!/\.data-protection-tab:focus-visible\s*\{[^}]*outline:/s.test(style)) {
     throw new Error('Sichtbarer Tastaturfokus der Bereichsnavigation fehlt.');
 }
 if (!/\.data-protection-area-grid\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(min\(100%,\s*360px\),\s*1fr\)\)/s.test(style)) {
     throw new Error('Responsives Bereichsraster fehlt.');
 }
-if (!/@media\s*\(max-width:\s*600px\)[\s\S]*\.data-protection-area-navigation\s*\{[^}]*align-items:\s*stretch/s.test(style)) {
-    throw new Error('Schmale Ansichten stapeln die Bereichsnavigation nicht robust.');
-}
+if (!/\.data-protection-tablist\s*\{[^}]*overflow-x:\s*auto/s.test(style)) throw new Error('Tabs bleiben in schmalen Ansichten nicht horizontal erreichbar.');
 if (!/\.data-protection-personal\s*\{[^}]*min-width:\s*0/s.test(style)) {
     throw new Error('Persönlicher Einstellungsbereich kann in schmalen Nextcloud-Layouts überlaufen.');
 }

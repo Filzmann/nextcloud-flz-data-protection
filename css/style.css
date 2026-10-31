@@ -46,6 +46,36 @@
     outline-offset: 2px;
 }
 
+.data-protection-tablist {
+    display: flex;
+    width: min(100%, 960px);
+    gap: 4px;
+    margin: 0 auto 16px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.data-protection-tab {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 6px 14px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-main-text);
+}
+
+.data-protection-tab[aria-selected="true"] {
+    border-bottom-color: var(--color-primary-element);
+    font-weight: 600;
+}
+
+.data-protection-tab:focus-visible {
+    outline: 2px solid var(--color-primary-element);
+    outline-offset: -2px;
+}
+
 .data-protection-area {
     scroll-margin-top: 16px;
 }

@@ -25,10 +25,13 @@ remain visible and are not replaced by heuristic fallback access.
   `Datenschutz`, while the app menu contains no personal Art.-15 report;
 - public V1 retention-preview contract with lazy discovery, provider failure
   isolation and `REVIEW` as the only supported action;
-- a transient operational REVIEW dashboard for configured privacy-review
-  groups. The app menu separates fachliche governance, technical operation
-  and REVIEW into keyboard-accessible responsive sections while retaining
-  each server-side role gate. A versioned install/upgrade migration creates the canonical
+- a transient operational REVIEW dashboard and an app-local matrix of eight
+  separately assignable privacy permissions. Every permission defaults to the
+  native `Datenschutzbeauftragte` group and may be reassigned only to current,
+  selectable organization groups. The authenticated app menu separates REVIEW
+  and fachliche settings into keyboard-accessible responsive tabs while retaining
+  each server-side permission gate. The native Nextcloud admin section contains
+  only the technical retention activation. A versioned install/upgrade migration creates the canonical
   `Datenschutzbeauftragte` group idempotently through native Nextcloud group
   management without assigning members. Native Nextcloud administration alone
   grants no fachlich access; only current group members may activate or revoke
@@ -36,7 +39,7 @@ remain visible and are not replaced by heuristic fallback access.
   the technical admin settings, and the actual interval remains auditable;
 - a protected-path notice shown only to native administrators without an
   active grant. It links to the app-local grant controls only when the same
-  account is also a member of `Datenschutzbeauftragte`; ordinary and otherwise
+  account also holds `temporary-admin-access.manage`; ordinary and otherwise
   unauthorized accounts receive neither the administrative state nor the
   link;
 - a public PermissionProvider that distinguishes self-service, REVIEW and
@@ -60,8 +63,9 @@ remain visible and are not replaced by heuristic fallback access.
   duplicate- and version-safe lazy registry, strict app/catalog ownership,
   failure isolation and a reusable contract-test kit;
 - a neutral public V1 risk-scope authorization query. Customer-local policy
-  revisions remain private in this app and only current members of
-  `Datenschutzbeauftragte` may configure them through the protected API. A
+  revisions remain private in this app and only accounts holding the app-local
+  `risk-scope.configure` permission may configure them through the protected API;
+  the native `Datenschutzbeauftragte` group is the default. A
   consumer receives only `authorized`, `denied`, `incompatible` or
   `unanswered`; missing, disabled, future, expired, corrupted and incompatible
   states fail closed. The first closed scope guards the future Filzmann Raumplaner

@@ -22,6 +22,7 @@ final class TemporaryAdminAccessService implements TemporaryAdminAccessChecker {
         private TemporaryAdminAccessRepositoryInterface $repository,
         private ITimeFactory $clock,
         private LoggerInterface $logger,
+        private DataProtectionPermissionChecker $authorization,
     ) {
     }
 
@@ -62,7 +63,7 @@ final class TemporaryAdminAccessService implements TemporaryAdminAccessChecker {
     }
 
     public function state(): array {
-        $this->requirePrivacyOfficer();
+        $this->requirePermission(PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_HISTORY_READ);
         return ['maxDurationMinutes' => self::MAX_DURATION_MINUTES, 'history' => $this->repository->history()];
     }
 
@@ -72,11 +73,15 @@ final class TemporaryAdminAccessService implements TemporaryAdminAccessChecker {
             return false;
         }
         try {
-            return $this->groups->isInGroup($uid, self::GRANT_MANAGER_GROUP);
+            return $this->authorization->has(PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_MANAGE);
         } catch (Throwable) {
             $this->logger->error('Temporary app admin access grantor check failed.');
             return false;
         }
+    }
+
+    public function canReadHistory(): bool {
+        return $this->authorization->has(PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_HISTORY_READ);
     }
 
     public function currentAdminNeedsGrant(): bool {
@@ -93,8 +98,12 @@ final class TemporaryAdminAccessService implements TemporaryAdminAccessChecker {
     }
 
     private function requirePrivacyOfficer(): string {
+        return $this->requirePermission(PermissionAssignmentsService::TEMPORARY_ADMIN_ACCESS_MANAGE);
+    }
+
+    private function requirePermission(string $permission): string {
         $uid = $this->session->getUser()?->getUID() ?? '';
-        if ($uid === '' || !$this->canManageGrants()) {
+        if ($uid === '' || !$this->authorization->has($permission)) {
             throw new TemporaryAdminAccessDeniedException('Zugriff verweigert.');
         }
         return $uid;

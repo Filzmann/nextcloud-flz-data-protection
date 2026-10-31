@@ -28,9 +28,41 @@ const loadRetentionReview = async (continuation = null, button = null) => {
     }
 };
 
+const initializeTabs = () => {
+    const tabs = Array.from(document.querySelectorAll('.data-protection-tablist [role="tab"]'));
+    if (tabs.length === 0) return;
+
+    const activate = (activeTab, moveFocus = false) => {
+        tabs.forEach((tab) => {
+            const selected = tab === activeTab;
+            tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+            tab.tabIndex = selected ? 0 : -1;
+            const panelId = tab.getAttribute('aria-controls');
+            const panel = panelId ? document.getElementById(panelId) : null;
+            if (panel) panel.hidden = !selected;
+        });
+        if (moveFocus) activeTab.focus();
+    };
+
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activate(tab));
+        tab.addEventListener('keydown', (event) => {
+            let targetIndex = null;
+            if (event.key === 'ArrowRight') targetIndex = (index + 1) % tabs.length;
+            if (event.key === 'ArrowLeft') targetIndex = (index - 1 + tabs.length) % tabs.length;
+            if (event.key === 'Home') targetIndex = 0;
+            if (event.key === 'End') targetIndex = tabs.length - 1;
+            if (targetIndex === null) return;
+            event.preventDefault();
+            activate(tabs[targetIndex], true);
+        });
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('data-protection-app');
     if (root) {
+        initializeTabs();
         loadRetentionReview();
         root.dataset.ready = 'true';
     }

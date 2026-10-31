@@ -12,7 +12,7 @@ use OCA\FlzDataProtection\PublicApi\V1\RetentionProvider;
 use OCA\FlzDataProtection\PublicApi\V1\RetentionProviderDescriptor;
 use OCA\FlzDataProtection\Service\RetentionAccessService;
 use OCA\FlzDataProtection\Service\RetentionPreviewAggregator;
-use OCA\FlzDataProtection\Service\RetentionSettingsService;
+use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
 use OCA\FlzDataProtection\Service\TemporaryAdminAccessChecker;
 use OCP\AppFramework\Http\Http;
 use OCP\EventDispatcher\Event;
@@ -62,18 +62,19 @@ $events = new class($provider, $dispatches) implements IEventDispatcher {
     }
 };
 $request = new class implements IRequest {};
-$settings = new RetentionSettingsService($store, $groups);
 $aggregator = new RetentionPreviewAggregator($events);
 $grants = new class implements TemporaryAdminAccessChecker {
     public array $active = ['admin-user'];
     public function hasActiveGrant(string $uid): bool { return in_array($uid, $this->active, true); }
 };
 
-$denied = new RetentionReviewController($request, new RetentionAccessService($sessionFor('ordinary-user'), $groups, $settings, $grants), $aggregator);
+$deniedChecker = new class implements DataProtectionPermissionChecker { public function has(string $permission): bool { return false; } };
+$denied = new RetentionReviewController($request, new RetentionAccessService($sessionFor('ordinary-user'), $groups, $deniedChecker, $grants), $aggregator);
 $assertSame(Http::STATUS_FORBIDDEN, $denied->report()->getStatus(), 'Ein unberechtigtes Konto erhielt die REVIEW-Vorschau.');
 $assertSame(0, $dispatches, 'Ein verweigerter REVIEW-Aufruf hat Provider entdeckt.');
 
-$allowed = new RetentionReviewController($request, new RetentionAccessService($sessionFor('admin-user'), $groups, $settings, $grants), $aggregator);
+$allowedChecker = new class implements DataProtectionPermissionChecker { public function has(string $permission): bool { return false; } };
+$allowed = new RetentionReviewController($request, new RetentionAccessService($sessionFor('admin-user'), $groups, $allowedChecker, $grants), $aggregator);
 $response = $allowed->report();
 $assertSame(Http::STATUS_OK, $response->getStatus(), 'Die aktive Adminfreigabe wurde nicht erlaubt.');
 $assertSame(1, $dispatches, 'Der erlaubte REVIEW-Aufruf muss genau eine Discovery auslösen.');

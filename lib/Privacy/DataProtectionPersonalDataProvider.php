@@ -120,11 +120,11 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
             summary: 'Kundenprofilrevision gespeichert',
             purpose: 'Nachweis der DPO-bestätigten Rechts-, Backup- und Restore-Konfiguration',
             source: 'Eigene Eingabe in der geschützten Datenschutzkonfiguration',
-            recipientCategories: ['Betroffene Person und aktuelle Mitglieder von Datenschutzbeauftragte'],
+            recipientCategories: ['Betroffene Person und app-lokal berechtigte Datenschutzrollen'],
             retention: 'Die revisionsgeführte Profilhistorie besitzt noch keinen freigegebenen ausführenden Löschpfad.',
             thirdCountryTransfer: 'Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.',
             automatedDecision: 'Die Profilkonfiguration aktiviert keine Retention-Ausführung und bleibt REVIEW-only.',
-            thirdPartyContentNotice: 'Die Projektion enthält keine Kennungen anderer Datenschutzbeauftragter und keine externen Evidenzinhalte.',
+            thirdPartyContentNotice: 'Die Projektion enthält keine Kennungen anderer berechtigter Datenschutzrollen und keine externen Evidenzinhalte.',
             attributes: [
                 'Profil' => $entry['profileId'],
                 'Profilrevision' => $entry['profileRevision'],

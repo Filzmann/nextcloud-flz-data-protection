@@ -1,21 +1,27 @@
 <?php
-script('flz_data_protection', 'admin');
+script('flz_data_protection', 'retention-execution-activation');
 style('flz_data_protection', 'style');
-$settings = $_['settings'];
 ?>
 <section id="data-protection-admin" class="data-protection-admin" aria-labelledby="data-protection-admin-heading">
-    <h2 id="data-protection-admin-heading">Datenschutz-REVIEW</h2>
-    <p class="data-protection-warning">
-        Native Nextcloud-Administration erteilt kein automatisches fachliches Leserecht.
-        REVIEW-Zugriff entsteht über eine Datenschutz-Prüfgruppe oder eine höchstens 24 Stunden gültige app-lokale Freigabe.
-    </p>
-    <form id="data-protection-admin-form">
-        <label>
-            Datenschutz-Prüfgruppen
-            <textarea name="reviewer_groups" rows="4" aria-describedby="data-protection-reviewer-help"><?php p(implode("\n", $settings['reviewer_groups'])); ?></textarea>
-        </label>
-        <p id="data-protection-reviewer-help">Standardmäßig ist die Gruppe Datenschutzbeauftragte vorgesehen. Weitere Gruppen werden nur nach ausdrücklicher Konfiguration berechtigt.</p>
-        <button type="submit">Speichern</button>
-    </form>
-    <p id="data-protection-admin-notice" role="status" aria-live="polite" hidden></p>
+    <h2 id="data-protection-admin-heading">Technischer Betrieb</h2>
+    <p class="data-protection-warning">Native Nextcloud-Administration erteilt kein automatisches fachliches Leserecht. Dieser Bereich steuert ausschließlich die technische Retention-Ausführung.</p>
+    <section id="data-protection-retention-execution-activation" class="data-protection-report" aria-labelledby="data-protection-retention-execution-activation-heading">
+        <h3 id="data-protection-retention-execution-activation-heading">Automatische Löschung technisch aktivieren</h3>
+        <p>Standardmäßig ist die Ausführung deaktiviert. Die fachliche Datenschutzsteuerung und die Rechtematrix befinden sich im geschützten Einstellungstab der App.</p>
+        <p>Technische Schutzgrenzen bleiben zwingend: Holds, unveränderte Policyversion, atomare Löschung sowie aktueller Backup- und Restore-Status.</p>
+        <form id="data-protection-retention-execution-activation-form">
+            <label><input type="checkbox" name="enabled"> Automatische Löschung aktivieren</label>
+            <fieldset data-retention-execution-technical-health>
+                <legend>Technischer Backup- und Restore-Status</legend>
+                <label>Backup-Aufbewahrung in Tagen <input type="number" name="backupRegularDays" min="1" max="365" value="365" required></label>
+                <label>Technischer Puffer in Tagen <input type="number" name="backupBufferDays" min="0" max="5" value="5" required></label>
+                <label>Backupstatus geprüft am <input type="datetime-local" name="backupVerifiedAt" required></label>
+                <label>Restore geprüft am <input type="datetime-local" name="restoreVerifiedAt" required></label>
+                <label>Nächste technische Prüfung spätestens <input type="datetime-local" name="verificationDueAt" required></label>
+            </fieldset>
+            <input type="hidden" name="expectedRevision" value="0">
+            <button type="submit">Technischen Status als neue Revision speichern</button>
+        </form>
+        <p id="data-protection-retention-execution-activation-status" role="status" aria-live="polite">Technischer Status wird geladen.</p>
+    </section>
 </section>

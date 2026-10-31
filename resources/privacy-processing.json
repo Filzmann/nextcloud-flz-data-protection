@@ -115,7 +115,7 @@
         "business_owner": "Datenschutzbeauftragte"
       },
       "data_categories": [
-        "Nextcloud-UID des Zielkontos (aktives Nextcloud-Administrationskonto) sowie UIDs der freigebenden und widerrufenden Mitglieder von Datenschutzbeauftragte",
+        "Nextcloud-UID des Zielkontos (aktives Nextcloud-Administrationskonto) sowie UIDs der freigebenden und widerrufenden app-lokal berechtigten Datenschutzrollen",
         "Beginn, geplantes Ende, tatsächliches Ende und Status der Freigabe"
       ],
       "data_subjects": [
@@ -126,7 +126,7 @@
         "Nachvollziehbarer Sicherheits- und Auditnachweis der Freigabehistorie"
       ],
       "access_roles": [
-        "Erteilen und Widerrufen: Mitglied der kanonischen Nextcloud-Gruppe Datenschutzbeauftragte; nativer Adminstatus ist dafür weder erforderlich noch ausreichend",
+        "Erteilen und Widerrufen: app-lokales Einzelrecht temporary-admin-access.manage; Standardgruppe Datenschutzbeauftragte; nativer Adminstatus ist dafür weder erforderlich noch ausreichend",
         "Ziel: ausschließlich aktives Nextcloud-Administrationskonto",
         "Betroffene Person für die eigene Art.-15-Projektion",
         "Ausdrücklich berechtigte Datenschutz-Prüfrolle"
@@ -171,7 +171,7 @@
         "conditions_or_holds": [
           "Nach Fristablauf wird die Adminfreigabehistorie vollständig gelöscht; es verbleibt kein anonymisierter oder statistischer Restbestand.",
           "Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung.",
-          "Nur Mitglieder der Nextcloud-Gruppe Datenschutzbeauftragte dürfen eine Sperre begründet und auditiert aufheben.",
+          "Nur app-lokal für die fachliche Retention-Steuerung berechtigte Datenschutzrollen dürfen eine Sperre begründet und auditiert aufheben.",
           "Änderungen der Aufbewahrungsfrist werden anhand des ursprünglichen tatsächlichen Endes auch für vorhandene Historien neu berechnet.",
           "Nach Restore wird der ursprüngliche Trigger erneut ausgewertet; bereits abgelaufene ungesperrte Historie wird wieder zur Löschung eingeplant und eine fachliche Freigabe niemals reaktiviert.",
           "Automatische Ausführung nur nach technischer Aktivierung durch native Nextcloud-Administration und bei gültiger Policyversion, Fälligkeit, Providerkompatibilität, Hold-, Integritäts-, Backup-/Restore- und Prüffristlage."
@@ -228,7 +228,7 @@
           "responsible_party": "ungeklärt",
           "blocking": true
         },
-        "erasure_or_anonymization": "Die Adminfreigabehistorie wird bei technischer Operatoraktivierung standardmäßig sechs Monate nach ihrem tatsächlichen Ende vollständig gelöscht, ohne anonymisierten oder statistischen Restbestand. Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung; nur Datenschutzbeauftragte dürfen sie begründet und auditiert aufheben. Fehlende kundenlokale Rechts- oder Vereinbarungsreferenzen blockieren den technischen Löschlauf nicht."
+        "erasure_or_anonymization": "Die Adminfreigabehistorie wird bei technischer Operatoraktivierung standardmäßig sechs Monate nach ihrem tatsächlichen Ende vollständig gelöscht, ohne anonymisierten oder statistischen Restbestand. Aktive rechtliche oder datenschutzrechtliche Sperren blockieren die Löschung; nur app-lokal für die fachliche Retention-Steuerung berechtigte Datenschutzrollen dürfen sie begründet und auditiert aufheben. Fehlende kundenlokale Rechts- oder Vereinbarungsreferenzen blockieren den technischen Löschlauf nicht."
       },
       "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen dieser Historie vorgesehen.",
       "automated_decisions": "Der fachliche Vollzugriff endet serverseitig spätestens nach 24 Stunden; dies ist eine Sicherheitsbegrenzung und keine fachliche Entscheidung über die betroffene Person.",
@@ -237,7 +237,7 @@
         "Freigabe ist app-lokal und pro Administrationskonto höchstens 24 Stunden gültig",
         "Self-Service-Ausgabe neutralisiert Kennungen anderer beteiligter Personen",
         "Retention-Ausführung standardmäßig deaktiviert und nur über getrennte technische Operatoraktivierung verfügbar",
-        "Die Laufzeitdurchsetzung der Ziel- und Gruppenbedingungen sowie Allow-, Deny- und Manipulationsprüfungen stehen aus; diese Metadaten aktivieren keine Rechte"
+        "Ziel-, Rollen- und Einzelrechtsbedingungen werden serverseitig geprüft; verweigerte und manipulierte Vorgänge bleiben ohne Historienmutation"
       ],
       "systems": [
         "Nextcloud",
@@ -253,35 +253,35 @@
         "business_owner": "Datenschutzbeauftragte"
       },
       "data_categories": [
-        "Nextcloud-UID des konfigurierenden Mitglieds von Datenschutzbeauftragte",
+        "Nextcloud-UID des konfigurierenden Kontos mit app-lokalem Einzelrecht für das Rechts- und Backup-Profil",
         "Optionale Profil-ID, Revision, Geltungs-, Rechts- und Schutzmaßnahmenreferenzen",
         "Optionale Backup- und Restore-Nachweisreferenzen, Fristen, Nachweis- und Prüftermine"
       ],
       "data_subjects": [
-        "Mitglieder von Datenschutzbeauftragte mit Bezug zu einer Profilrevision"
+        "App-lokal berechtigte Datenschutzrollen mit Bezug zu einer Profilrevision"
       ],
       "purposes": [
         "Optionale kundenlokale Dokumentation von Rechts-, Beteiligungs-, Backup- und Restoreentscheidungen",
         "Revisionssichere Nachvollziehbarkeit einer kundenlokalen DPO-Dokumentation ohne Ausführungswirkung"
       ],
       "access_roles": [
-        "Erfassen und Lesen: aktuelle Mitglieder der kanonischen Nextcloud-Gruppe Datenschutzbeauftragte",
+        "Erfassen und Lesen: app-lokales Einzelrecht retention.execution-profile.configure; Standardgruppe Datenschutzbeauftragte",
         "Betroffene Person für die eigene Art.-15-Projektion"
       ],
       "recipients": [
         {
           "category": "Betroffene Person",
           "allowed_disclosures": [
-            "Eigene Profilrevisionen ohne Kennungen anderer Datenschutzbeauftragter und ohne externe Evidenzinhalte"
+            "Eigene Profilrevisionen ohne Kennungen anderer berechtigter Datenschutzrollen und ohne externe Evidenzinhalte"
           ]
         },
         {
-          "category": "Aktuelle Mitglieder von Datenschutzbeauftragte",
+          "category": "App-lokal berechtigte Datenschutzrollen",
           "allowed_disclosures": [
             "Für Prüfung und Revision erforderliche Profil- und Nachweisreferenzen"
           ],
           "conditions": [
-            "Serverseitige Prüfung der aktuellen Gruppenmitgliedschaft"
+            "Serverseitige Prüfung des app-lokalen Einzelrechts"
           ]
         }
       ],
@@ -291,11 +291,11 @@
       ],
       "legal_basis": {
         "status": "PRIVACY-DECISION-REQUIRED",
-        "affected_data": "UID und revisionsgeführte Konfigurationshandlungen von Datenschutzbeauftragten",
+        "affected_data": "UID und revisionsgeführte Konfigurationshandlungen app-lokal berechtigter Datenschutzrollen",
         "planned_processing": "Audit der Rechts-, Backup- und Restore-Profilkonfiguration",
         "missing_decision": "Eigenständige Rechtsgrundlage und verbindliche Dokumentation für die Speicherung der Profilrevisionshistorie",
         "reason": "Das ausgewählte Rechtsprofil für die Adminfreigabehistorie bestimmt nicht automatisch die Rechtsgrundlage der Konfigurationshistorie selbst.",
-        "technical_impact": "Die Profilkonfiguration aktiviert oder blockiert keine Retention-Ausführung; ihre Historie bleibt auf Datenschutzbeauftragte und die subjectgebundene Auskunft begrenzt.",
+        "technical_impact": "Die Profilkonfiguration aktiviert oder blockiert keine Retention-Ausführung; ihre Historie bleibt auf app-lokal berechtigte Datenschutzrollen und die subjectgebundene Auskunft begrenzt.",
         "privacy_preserving_alternative": "Nur technische Referenzen statt Dokumentkopien oder Freitextsachverhalte speichern.",
         "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
         "blocking": false
@@ -307,7 +307,7 @@
         "missing_decision": "Eigenständiger Trigger, Zeitraum, Holds sowie Lösch- und Nachweisgrenze der Profilrevisionen",
         "reason": "Die sechsmonatige Frist der Adminfreigabehistorie gilt nicht für die getrennte Profilrevisionshistorie.",
         "technical_impact": "Es existiert kein Löschpfad für diese optionale Dokumentationshistorie; das blockiert den getrennten V2-DELETE-Pfad für Fachdaten nicht.",
-        "privacy_preserving_alternative": "Profilrevisionen weiterhin ausschließlich DPO-geschützt und in der Art.-15-Projektion minimiert ausgeben.",
+        "privacy_preserving_alternative": "Profilrevisionen weiterhin ausschließlich durch das app-lokale Einzelrecht schützen und in der Art.-15-Projektion minimiert ausgeben.",
         "responsible_party": "Verantwortlicher Kunde und Datenschutzbeauftragte",
         "blocking": true
       },
@@ -336,18 +336,18 @@
         "other_outputs": [
           "DPO-geschützte Anzeige der Profilrevisionshistorie"
         ],
-        "minimization": "In der Selbstauskunft keine externe Evidenzreferenz und keine Kennung anderer Datenschutzbeauftragter ausgeben."
+        "minimization": "In der Selbstauskunft keine externe Evidenzreferenz und keine Kennung anderer berechtigter Datenschutzrollen ausgeben."
       },
       "data_subject_rights": {
         "article_15": "Subjectgebundene paginierte Projektion eigener Profilrevisionen ist implementiert.",
         "rectification": "Korrekturen erfolgen als neue Revision; historische Auditzeilen werden nicht überschrieben.",
-        "restriction": "Bis zu einer gesonderten Entscheidung bleibt der Zugriff auf Datenschutzbeauftragte und die eigene Auskunft begrenzt.",
+        "restriction": "Bis zu einer gesonderten Entscheidung bleibt der Zugriff auf app-lokal berechtigte Datenschutzrollen und die eigene Auskunft begrenzt.",
         "erasure_or_anonymization": "PRIVACY-DECISION-REQUIRED: Es ist kein Lösch- oder Anonymisierungspfad freigegeben."
       },
       "international_transfers": "Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.",
       "automated_decisions": "Die optionale Dokumentation aktiviert oder blockiert keine automatische Retention-Ausführung und trifft keine Entscheidung über Beschäftigte.",
       "special_safeguards": [
-        "Nur aktuelle Mitglieder von Datenschutzbeauftragte dürfen Revisionen speichern",
+        "Nur Konten mit dem app-lokalen Einzelrecht retention.execution-profile.configure dürfen Revisionen speichern",
         "Keine Dokumentkopien oder freien Fallschilderungen",
         "Keine Leistungs- oder Verhaltenskontrolle",
         "Keine Wirkung auf technische Aktivierung, Löschendpunkt oder Hintergrundjob"
