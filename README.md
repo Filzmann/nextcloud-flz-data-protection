@@ -58,7 +58,13 @@ remain visible and are not replaced by heuristic fallback access.
   Holds, policy/version/time integrity, provider compatibility, atomic
   provider execution and concurrency remain fail-closed. No customer legal
   source, BV reference, DPO/BR confirmation or legal evidence is requested by
-  or blocks this activation;
+  or blocks this activation. The isolated Nextcloud 34/PostgreSQL 16 runtime
+  acceptance covers fresh installation, reinstall, provider discovery,
+  technical activation boundaries, real DELETE transactions, holds, job
+  restart and idempotency, concurrent execution, rollback before commit and
+  restore quarantine. A fabricated historical V2 upgrade is deliberately not
+  claimed because no authoritative prior V2 runtime snapshot exists in the
+  development-phase workspace;
 - a public additive V1 `ProcessingMetadataProvider` contract with a
   duplicate- and version-safe lazy registry, strict app/catalog ownership,
   failure isolation and a reusable contract-test kit;

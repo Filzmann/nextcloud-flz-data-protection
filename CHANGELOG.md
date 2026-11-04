@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Isolierte V2-Runtime-Abnahme auf Nextcloud 34.0.2 und PostgreSQL 16
+  abgeschlossen: Fresh Install und Reinstall, Provider-Discovery,
+  Aktivierungsgrenzen, echte DELETE-Transaktionen, Holds,
+  Background-Job-Wiederanlauf und Idempotenz, Nebenläufigkeit, Rollback vor
+  Commit sowie Restore-Quarantäne sind grün. Ein historischer V2-Upgradepfad
+  bleibt mangels autoritativem Vorzustand im Entwicklungsprojekt ausdrücklich
+  nicht behauptet; der kanonische Reinstall ist nachgewiesen.
 - Fachliche Datenschutzrechte von Organigrammgruppen getrennt: acht
   serverseitig geprüfte Einzelrechte besitzen jeweils
   `Datenschutzbeauftragte` als Default und können im geschützten

@@ -24,26 +24,18 @@ Kompatibilitätsbehauptungen.
 
 ## Next implementation gates
 
-1. Complete runtime acceptance of the implemented V2 DELETE pilot on the
-   supported real database matrix. Verify fresh installation, upgrade,
-   background-job restart, concurrent provider execution, rollback before a
-   candidate commit and restore quarantine without weakening the unit and
-   contract tests. The runtime proof must also show that missing, disabled,
-   future, stale or invalid technical activation remains fail-closed while no
-   legal-basis, agreement, DPO/works-council or customer-evidence field is
-   required. This needs a separately authorized DDEV/runtime run.
-2. **Release gate – development cleanup:** before the next release, inventory
+1. **Release gate – development cleanup:** before the next release, inventory
    all obsolete development `privacy-officer` groups, accounts, fixtures and
    configuration remnants. Safely remove every unused remnant rather than
    retaining legacy compatibility; the project is not productive and has no
    historical state to preserve. This is a separately authorized cleanup task:
    no deletion occurs through this roadmap entry.
-3. Implement the decided lifecycle for technical activation revisions: retain
+2. Implement the decided lifecycle for technical activation revisions: retain
    them for 24 months after supersession, expose only the subject's own
    operator revisions through Art. 15 and add their automatic deletion without
    preserving person statistics. This is independent of provider-domain
    booking and admin-history deletion.
-4. Keep optional customer legal-profile documentation separate from technical
+3. Keep optional customer legal-profile documentation separate from technical
    activation. Before deleting that documentation history, decide its own
    retention, Art.-15, hold and backup treatment; it never blocks or enables
    V2 execution.
