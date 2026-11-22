@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const rootPath = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${rootPath}/js/personal.js`, 'utf8');
+const sourcePath = `${rootPath}/js/personal.js`;
+const source = readFileSync(sourcePath, 'utf8');
 const root = { dataset: {} };
 const results = {};
 let readyCallback = null;
@@ -33,7 +34,7 @@ const OC = {
     generateUrl: (path) => path,
 };
 
-vm.runInNewContext(source, { document, fetch, window, OC });
+vm.runInNewContext(source, { document, fetch, window, OC }, { filename: sourcePath });
 if (readyCallback === null) throw new Error('Self-Service registriert keinen DOM-Start.');
 readyCallback();
 await new Promise((resolve) => setTimeout(resolve, 0));

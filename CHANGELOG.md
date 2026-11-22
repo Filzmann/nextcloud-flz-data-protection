@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- JavaScript-VM-Smokes verknüpfen ihre Ausführung mit dem absoluten Pfad der
+  jeweils gelesenen Quelldatei, damit die Coverage-Messung sie korrekt zuordnet.
 - Isolierte V2-Runtime-Abnahme auf Nextcloud 34.0.2 und PostgreSQL 16
   abgeschlossen: Fresh Install und Reinstall, Provider-Discovery,
   Aktivierungsgrenzen, echte DELETE-Transaktionen, Holds,

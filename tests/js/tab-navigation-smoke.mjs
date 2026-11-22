@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${root}/js/main.js`, 'utf8');
+const sourcePath = `${root}/js/main.js`;
+const source = readFileSync(sourcePath, 'utf8');
 const domListeners = {};
 const makeTab = (id, panelId, selected) => {
     const listeners = {};
@@ -35,7 +36,7 @@ const document = {
     },
 };
 
-vm.runInNewContext(source, { document, window: {}, encodeURIComponent, Error });
+vm.runInNewContext(source, { document, window: {}, encodeURIComponent, Error }, { filename: sourcePath });
 domListeners.DOMContentLoaded();
 if (typeof settingsTab.listeners.click !== 'function' || typeof reviewTab.listeners.keydown !== 'function') {
     throw new Error('Die semantischen Tabs werden nicht interaktiv initialisiert.');

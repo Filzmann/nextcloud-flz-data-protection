@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${root}/js/admin.js`, 'utf8');
+const sourcePath = `${root}/js/admin.js`;
+const source = readFileSync(sourcePath, 'utf8');
 
 const listeners = {};
 const selects = [
@@ -40,7 +41,7 @@ const fetch = async (url, options) => {
 };
 const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
 
-vm.runInNewContext(source, { document, fetch, OC, URLSearchParams, Error });
+vm.runInNewContext(source, { document, fetch, OC, URLSearchParams, Error }, { filename: sourcePath });
 if (typeof listeners.submit !== 'function') throw new Error('Das sichtbare Berechtigungsformular wird nicht initialisiert.');
 
 await listeners.submit({ preventDefault() {} });

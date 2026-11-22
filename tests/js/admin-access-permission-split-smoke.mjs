@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const rootPath = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${rootPath}/js/admin-access.js`, 'utf8');
+const sourcePath = `${rootPath}/js/admin-access.js`;
+const source = readFileSync(sourcePath, 'utf8');
 
 const runScenario = async ({ canManage, withForm, withHistory }) => {
     const calls = [];
@@ -53,7 +54,7 @@ const runScenario = async ({ canManage, withForm, withHistory }) => {
         }
     };
     const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
-    vm.runInNewContext(source, { document, fetch, FormData, OC, Date, JSON, Number, String, encodeURIComponent, Error });
+    vm.runInNewContext(source, { document, fetch, FormData, OC, Date, JSON, Number, String, encodeURIComponent, Error }, { filename: sourcePath });
     await new Promise(resolve => setTimeout(resolve, 0));
     return { calls, formListeners, historyListeners, buttonsCreated, status };
 };

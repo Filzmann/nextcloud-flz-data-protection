@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${root}/js/retention-execution-activation.js`, 'utf8');
+const sourcePath = `${root}/js/retention-execution-activation.js`;
+const source = readFileSync(sourcePath, 'utf8');
 const names = ['enabled', 'backupRegularDays', 'backupBufferDays', 'backupVerifiedAt', 'restoreVerifiedAt', 'verificationDueAt', 'expectedRevision'];
 const elements = Object.fromEntries(names.map(name => [name, { value: '', checked: false, required: false, disabled: false }]));
 const listeners = {};
@@ -39,7 +40,7 @@ const fetch = async (url, options = {}) => {
 };
 const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
 
-vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number });
+vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number }, { filename: sourcePath });
 await new Promise(resolve => setTimeout(resolve, 0));
 if (!calls[0]?.[0]?.includes('/api/v2/retention-execution-activation')) throw new Error('Die technische Aktivierung lädt nicht über ihren getrennten API-Pfad.');
 if (elements.enabled.checked || elements.expectedRevision.value !== '0') throw new Error('Eine frische Installation wird nicht sichtbar deaktiviert dargestellt.');
