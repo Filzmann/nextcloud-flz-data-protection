@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Die Gruppenauswahl der Datenschutzrechte konsumiert ausschließlich den
+  aktivierten öffentlichen V1-Vertrag von `flz_organization`. Fehlende,
+  inkompatible, ungültige und fehlerhafte Provider liefern keine
+  Organisationsgruppen und werden nicht durch LocalBase ersetzt. Die
+  app-eigene Standardgruppe `Datenschutzbeauftragte` bleibt unabhängig nutzbar.
+- Providerfehler werden ausschließlich mit technischer Fehlerklasse
+  protokolliert; der neue Consumer ist durch Allow-/Deny-Verhaltenstests und
+  eine echte, rein lesende DDEV-Providerprobe abgesichert.
+- Die native Aktivierungsprüfung des Organisationsproviders unterstützt auch
+  die deklarierte Nextcloud-29–31-API. Der Regressionstest prüft die ältere
+  und die aktuelle API-Form einschließlich deaktivierter und fehlerhafter
+  Provider; er ersetzt keine vollständige Laufzeitmatrix dieser Versionen.
 - JavaScript-VM-Smokes verknüpfen ihre Ausführung mit dem absoluten Pfad der
   jeweils gelesenen Quelldatei, damit die Coverage-Messung sie korrekt zuordnet.
 - Isolierte V2-Runtime-Abnahme auf Nextcloud 34.0.2 und PostgreSQL 16

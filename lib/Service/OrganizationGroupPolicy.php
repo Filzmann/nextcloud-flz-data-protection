@@ -27,7 +27,7 @@ final class OrganizationGroupPolicy {
             return $this->unavailable('Das Organigramm konnte nicht gelesen werden. Es ist nur die vorhandene Datenschutz-Standardgruppe auswählbar.', $options);
         }
         if ($snapshot === null) {
-            return $this->unavailable('LocalBase stellt derzeit kein Organigramm bereit. Es ist nur die vorhandene Datenschutz-Standardgruppe auswählbar.', $options);
+            return $this->unavailable('Der Organisationsprovider stellt derzeit kein gültiges Organigramm bereit. Es ist nur die vorhandene Datenschutz-Standardgruppe auswählbar.', $options);
         }
         if (($snapshot['contractVersion'] ?? null) !== '1.0' || ($snapshot['valid'] ?? null) !== true) {
             return $this->unavailable('Das Organigramm ist ungültig oder inkompatibel. Es ist nur die vorhandene Datenschutz-Standardgruppe auswählbar.', $options);

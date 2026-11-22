@@ -134,6 +134,18 @@ Produktrolle. Native
 Nextcloud-Administration bleibt für technische App-Verwaltung zuständig,
 erteilt aber kein Recht zur fachlichen Datenschutzkonfiguration.
 
+Eigentümer des optionalen Organigrammvertrags ist ausschließlich die
+eigenständige Laufzeit-App `flz_organization`. Vor der öffentlichen
+Serviceauflösung prüft der Consumer die native App-Aktivierung und den
+V1-Vertrag `1.0`; nur gültige Snapshots liefern Rollen und Bereiche.
+Fehlende, deaktivierte, inkompatible oder fehlerhafte Provider liefern keine
+Organisationsgruppen. Die eigene Standardgruppe bleibt davon unabhängig;
+LocalBase ist weder Provider noch Fallback. Es werden ausschließlich
+Gruppenkennungen und Bezeichnungen projiziert, keine vollständige
+Organisationsdefinition und keine personenbezogenen Mitgliedschaftsdaten.
+Providerfehler enthalten im technischen Log nur Providerkennung und
+Exceptionklasse.
+
 Die app-lokale Freigabesteuerung folgt derselben harten Rollentrennung:
 Ausschließlich Konten mit dem Einzelrecht `temporary-admin-access.manage`
 dürfen einem aktuellen nativen Nextcloud-Administrationskonto einen

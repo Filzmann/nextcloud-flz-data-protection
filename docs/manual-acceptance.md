@@ -62,6 +62,44 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 
 ## Vorbereitung
 
+### Automatisierter Organisationsconsumer-Nachweis
+
+Der neue `flz_organization`-Consumer wurde mit einem zunächst fehlgeschlagenen
+fokussierten Test (`php -d auto_prepend_file=tests/bootstrap.php
+tests/unit/OrganizationSnapshotSourceTest.php`, Exit 255) und anschließend
+grünen Tests abgesichert. Die Tests prüfen aktive, fehlende, inkompatible,
+ungültige, nicht auflösbare und fehlerhafte Provider sowie datensparsames
+Logging; LocalBase liefert keine Ersatzrechte.
+
+Der zusätzliche Kompatibilitätstest reproduzierte zuerst auf der
+Nextcloud-29–31-API-Form einen fehlenden Organisationssnapshot (Exit 255).
+Nach der Korrektur verwendet der Consumer auf diesen Versionen die native
+instanzweite Prüfung `isInstalled`, ab Nextcloud 32 `isEnabledForAnyone`.
+Beide API-Formen sowie deaktivierte und fehlerhafte Aktivierungsprüfungen
+werden mit ausbleibender Providerauflösung im verweigerten Fall geprüft
+(Exit 0). Dies ist kein vollständiger Nextcloud-29–31-Laufzeit-,
+Provider-Lifecycle- oder Browsernachweis.
+
+Die frühere bereits implementierte Aufteilung der acht Datenschutzrechte
+wurde bei dieser Übernahme durch die vorhandenen Allow-/Deny-,
+Manipulations- und UI-Verhaltenstests charakterisiert. Ihre ursprüngliche
+zeitliche Red–Green-Reihenfolge ist nicht mehr belegbar und wird als
+begründete Abweichung der übernommenen Nextcloud-Integration ausgewiesen.
+Diese Charakterisierung behauptet keine rückwirkende TDD-Konformität.
+
+Die rein lesende Probe wird aus dem Parent-Verzeichnis `nextcloud-dev`
+ausgeführt:
+
+```sh
+bash ../flz_data_protection/tests/organization-runtime-probe.sh
+```
+
+Die lokale DDEV-Probe bestätigte den echten V1-Service mit gültigem Snapshot,
+20 Rollen und drei Bereichen. Sie prüft Containerauflösung und Projektion,
+keinen vollständigen Installations-/Deaktivierungs-/Reinstall-Lifecycle und
+keine Browser- oder HTTP-CSRF-End-to-End-Bedienung. Diese Nachweise bleiben
+vor einer entsprechenden Releaseaussage separat erforderlich.
+
 Vor der manuellen Abnahme die vorgesehenen lokalen Prüfungen ausführen und ihre
 Ergebnisse zusammen mit dem geprüften Commit im Ergebnisfeld dokumentieren.
 Die Vorprüfung ersetzt weder die manuelle Bedien- und Integrationsprüfung noch

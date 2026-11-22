@@ -28,7 +28,10 @@ remain visible and are not replaced by heuristic fallback access.
 - a transient operational REVIEW dashboard and an app-local matrix of eight
   separately assignable privacy permissions. Every permission defaults to the
   native `Datenschutzbeauftragte` group and may be reassigned only to current,
-  selectable organization groups. The authenticated app menu separates REVIEW
+  selectable organization groups from the enabled public V1 contract of
+  `flz_organization`. Missing or incompatible organization providers leave only
+  the app-owned default group available; LocalBase supplies no replacement
+  organization data. The authenticated app menu separates REVIEW
   and fachliche settings into keyboard-accessible responsive tabs while retaining
   each server-side permission gate. The native Nextcloud admin section contains
   only the technical retention activation. A versioned install/upgrade migration creates the canonical
