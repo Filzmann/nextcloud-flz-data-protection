@@ -25,6 +25,6 @@ final class RetentionExecutionJob extends TimedJob {
         }
 
         $diagnosticCode = $result['diagnosticCode'] ?? 'unknown_failure';
-        throw new RuntimeException('Retention execution failed: ' . $diagnosticCode);
+        throw new RuntimeException('Retention-Ausführung fehlgeschlagen: ' . $diagnosticCode);
     }
 }

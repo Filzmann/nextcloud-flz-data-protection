@@ -20,7 +20,7 @@ final class PersonalDataProviderContractTestKit {
         $descriptor = $provider->descriptor();
 
         if (!$descriptor->supportsSubjectType($request->subject()->subjectType())) {
-            throw new DomainException('The contract scenario subject type is not supported.');
+            throw new DomainException('Der Subjekttyp des Vertragsszenarios wird nicht unterstützt.');
         }
 
         $providerRequest = $request->forProvider(
@@ -30,7 +30,7 @@ final class PersonalDataProviderContractTestKit {
         $page = $provider->collect($providerRequest);
 
         if ($page->nextCursor() !== null && $page->nextCursor() === $providerRequest->cursor()) {
-            throw new DomainException('A provider cursor must progress between pages.');
+            throw new DomainException('Ein Provider-Cursor muss zwischen Seiten fortschreiten.');
         }
 
         return $page;

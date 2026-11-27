@@ -17,16 +17,16 @@ final class RetentionProviderRegistry {
         $descriptor = $provider->descriptor();
         $appId = $descriptor->appId();
         if ($descriptor->contractVersion() !== self::CONTRACT_VERSION || isset($this->providers[$appId])) {
-            throw new DomainException('Incompatible retention provider.');
+            throw new DomainException('Inkompatibler Retention-Provider.');
         }
         $policyIds = [];
         foreach ($provider->policies() as $policy) {
             if (!$policy instanceof RetentionPolicy || $policy->action() !== 'REVIEW' || isset($policyIds[$policy->policyId()])) {
-                throw new DomainException('Invalid retention policy catalog.');
+                throw new DomainException('Ungültiger Retention-Richtlinienkatalog.');
             }
             $policyIds[$policy->policyId()] = true;
         }
-        if ($policyIds === []) throw new DomainException('Empty retention policy catalog.');
+        if ($policyIds === []) throw new DomainException('Leerer Retention-Richtlinienkatalog.');
         $this->providers[$appId] = $provider;
     }
 

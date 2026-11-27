@@ -13,10 +13,11 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IL10N;
 use OCP\IRequest;
 
 final class RiskScopeAuthorizationController extends Controller {
-    public function __construct(IRequest $request, private RiskScopeAuthorizationService $service) {
+    public function __construct(IRequest $request, private RiskScopeAuthorizationService $service, private IL10N $l10n) {
         parent::__construct(Application::APP_ID, $request);
     }
 
@@ -44,6 +45,6 @@ final class RiskScopeAuthorizationController extends Controller {
     }
 
     private function denied(): JSONResponse {
-        return new JSONResponse(['message' => 'Zugriff verweigert.'], Http::STATUS_FORBIDDEN);
+        return new JSONResponse(['message' => $this->l10n->t('Zugriff verweigert.')], Http::STATUS_FORBIDDEN);
     }
 }

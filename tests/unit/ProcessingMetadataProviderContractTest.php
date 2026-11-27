@@ -142,7 +142,7 @@ $event = new RegisterProcessingMetadataProvidersEvent();
 $event->register($provider);
 $event->register($provider);
 $assertSame([], $event->providers(), 'Eine doppelte Provider-ID blieb ausführbar.');
-$assertSame(['reference_app' => 'Processing metadata provider incompatible.'], $event->registrationFailures(), 'Doppelte Registrierung ist nicht diagnostizierbar.');
+$assertSame(['reference_app' => 'Verarbeitungsmetadaten-Provider ist inkompatibel.'], $event->registrationFailures(), 'Doppelte Registrierung ist nicht diagnostizierbar.');
 
 $failingProvider = new class implements ProcessingMetadataProvider {
     public function descriptor(): ProcessingMetadataProviderDescriptor {
@@ -157,7 +157,7 @@ $isolatedEvent->register($failingProvider);
 $isolatedEvent->register($provider);
 $assertSame(['reference_app'], array_keys($isolatedEvent->providers()), 'Ein defekter Katalog blockiert einen nachfolgenden Provider.');
 $assertSame(
-    ['failing_app' => 'Processing metadata provider incompatible.'],
+    ['failing_app' => 'Verarbeitungsmetadaten-Provider ist inkompatibel.'],
     $isolatedEvent->registrationFailures(),
     'Ein defekter Katalog bleibt nicht datensparsam diagnostizierbar.',
 );
@@ -175,7 +175,7 @@ $descriptorEvent->register($failingDescriptorProvider);
 $descriptorEvent->register($provider);
 $assertSame(['reference_app'], array_keys($descriptorEvent->providers()), 'Ein defekter Descriptor blockiert einen nachfolgenden Provider.');
 $assertSame(
-    ['unknown_provider_1' => 'Processing metadata provider incompatible.'],
+    ['unknown_provider_1' => 'Verarbeitungsmetadaten-Provider ist inkompatibel.'],
     $descriptorEvent->registrationFailures(),
     'Ein defekter Descriptor bleibt nicht datensparsam diagnostizierbar.',
 );

@@ -34,7 +34,7 @@ final class RetentionExecutionCoordinator {
         try {
             $this->events->dispatchTyped($event);
         } catch (Throwable $error) {
-            $this->logger->error('Retention execution provider discovery failed.', [
+            $this->logger->error('Ermittlung des Retention-Ausführungs-Providers fehlgeschlagen.', [
                 'stage' => 'provider_discovery',
                 'error_type' => get_debug_type($error),
             ]);
@@ -63,7 +63,7 @@ final class RetentionExecutionCoordinator {
             } catch (Throwable $error) {
                 $failed = true;
                 $reports[$appId] = ['status'=>'failed','policies'=>[]];
-                $this->logger->error('Retention execution provider failed.', [
+                $this->logger->error('Retention-Ausführungs-Provider fehlgeschlagen.', [
                     'stage' => 'provider_execution',
                     'provider_app_id' => $appId,
                     'error_type' => get_debug_type($error),
@@ -73,7 +73,7 @@ final class RetentionExecutionCoordinator {
         foreach ($event->registrationFailures() as $appId => $_failure) {
             $failed = true;
             $reports[$appId] = ['status'=>'failed','policies'=>[]];
-            $this->logger->error('Retention execution provider registration failed.', [
+            $this->logger->error('Registrierung des Retention-Ausführungs-Providers fehlgeschlagen.', [
                 'stage' => 'provider_registration',
                 'provider_app_id' => $appId,
             ]);
@@ -88,7 +88,7 @@ final class RetentionExecutionCoordinator {
         }
         $missing = array_values(array_diff($approved, array_keys($covered)));
         if ($missing !== []) {
-            $this->logger->error('Retention execution provider coverage is incomplete.', [
+            $this->logger->error('Die Abdeckung des Retention-Ausführungs-Providers ist unvollständig.', [
                 'stage' => 'provider_coverage',
                 'missing_count' => count($missing),
             ]);
@@ -118,7 +118,7 @@ final class RetentionExecutionCoordinator {
                     if ($failedReferences > 0) {
                         $failed = true;
                         $reports[$appId]['status'] = 'failed';
-                        $this->logger->error('Retention execution provider reported failed candidates.', [
+                        $this->logger->error('Retention-Ausführungs-Provider meldete fehlgeschlagene Kandidaten.', [
                             'stage' => 'provider_execution',
                             'provider_app_id' => $appId,
                             'policy_id' => $policy->policyId(),
@@ -129,7 +129,7 @@ final class RetentionExecutionCoordinator {
             } catch (Throwable $error) {
                 $failed = true;
                 $reports[$appId] = ['status'=>'failed','policies'=>[]];
-                $this->logger->error('Retention execution provider failed.', [
+                $this->logger->error('Retention-Ausführungs-Provider fehlgeschlagen.', [
                     'stage' => 'provider_execution',
                     'provider_app_id' => $appId,
                     'error_type' => get_debug_type($error),

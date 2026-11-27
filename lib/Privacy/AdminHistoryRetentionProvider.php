@@ -29,5 +29,5 @@ final class AdminHistoryRetentionProvider implements RetentionProvider {
         $candidates=array_map(static function(array $grant):RetentionCandidate{$actualEnd=$grant['revokedAt']!==null&&$grant['revokedAt']<$grant['endsAt']?$grant['revokedAt']:$grant['endsAt'];return new RetentionCandidate(self::POLICY_ID,'admin-grant:'.$grant['id'],$actualEnd->format(DATE_ATOM),'REVIEW','Adminfreigabe endete vor dem konfigurierten REVIEW-Stichtag.');},$rows);
         return new RetentionPreviewPage($hasMore?'partial':'complete',$candidates,[],$hasMore?(string)($offset+$request->limit()):null);
     }
-    private function offset(?string $cursor):int{if($cursor===null)return 0;if(!preg_match('/^(?:0|[1-9][0-9]{0,8})$/',$cursor))throw new InvalidArgumentException('Invalid admin-history retention cursor.');return(int)$cursor;}
+    private function offset(?string $cursor):int{if($cursor===null)return 0;if(!preg_match('/^(?:0|[1-9][0-9]{0,8})$/',$cursor))throw new InvalidArgumentException('Ungültiger Admin-Historie-Retention-Cursor.');return(int)$cursor;}
 }

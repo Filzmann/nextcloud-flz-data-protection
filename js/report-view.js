@@ -1,12 +1,14 @@
 (function (window, document) {
     'use strict';
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
 
     const statusLabels = {
-        complete: 'Vollständig',
-        partial: 'Teilweise',
-        not_applicable: 'Keine Daten vorhanden',
-        failed: 'Fehlgeschlagen',
-        missing: 'Fehlt',
+        complete: translate('flz_data_protection', 'Vollständig'),
+        partial: translate('flz_data_protection', 'Teilweise'),
+        not_applicable: translate('flz_data_protection', 'Keine Daten vorhanden'),
+        failed: translate('flz_data_protection', 'Fehlgeschlagen'),
+        missing: translate('flz_data_protection', 'Fehlt'),
     };
 
     const element = (tagName, text, className) => {
@@ -28,19 +30,19 @@
     };
 
     const metadataFields = [
-        ['purpose', 'Zweck', (entry) => entry.purpose],
-        ['source', 'Herkunft', (entry) => entry.source],
-        ['recipientCategories', 'Empfängerkategorien', (entry) => (entry.recipientCategories || []).join(', ')],
-        ['retention', 'Aufbewahrung', (entry) => entry.retention],
-        ['thirdCountryTransfer', 'Drittlandübermittlung', (entry) => entry.thirdCountryTransfer],
-        ['automatedDecision', 'Automatisierte Entscheidung', (entry) => entry.automatedDecision],
-        ['thirdPartyContentNotice', 'Drittpersonenhinweis', (entry) => entry.thirdPartyContentNotice],
+        ['purpose', translate('flz_data_protection', 'Zweck'), (entry) => entry.purpose],
+        ['source', translate('flz_data_protection', 'Herkunft'), (entry) => entry.source],
+        ['recipientCategories', translate('flz_data_protection', 'Empfängerkategorien'), (entry) => (entry.recipientCategories || []).join(', ')],
+        ['retention', translate('flz_data_protection', 'Aufbewahrung'), (entry) => entry.retention],
+        ['thirdCountryTransfer', translate('flz_data_protection', 'Drittlandübermittlung'), (entry) => entry.thirdCountryTransfer],
+        ['automatedDecision', translate('flz_data_protection', 'Automatisierte Entscheidung'), (entry) => entry.automatedDecision],
+        ['thirdPartyContentNotice', translate('flz_data_protection', 'Drittpersonenhinweis'), (entry) => entry.thirdPartyContentNotice],
     ];
 
     const displayValue = (value) => {
         if (value === null || value === undefined || value === '') return '—';
-        if (value === true) return 'Ja';
-        if (value === false) return 'Nein';
+        if (value === true) return translate('flz_data_protection', 'Ja');
+        if (value === false) return translate('flz_data_protection', 'Nein');
         return String(value);
     };
 
@@ -75,16 +77,16 @@
         const reference = String(entry.reference || '');
         const separator = reference.lastIndexOf(':');
         const identifier = separator >= 0 ? reference.slice(separator + 1) : reference;
-        const label = entry.categoryLabel || 'Datensatz';
-        if (/^[0-9]+$/.test(identifier)) return `${label} Nr. ${identifier}`;
-        return identifier ? `${label}, interne Kennung ${identifier.replaceAll('_', ' ').replaceAll('-', ' ')}` : label;
+        const label = entry.categoryLabel || translate('flz_data_protection', 'Datensatz');
+        if (/^[0-9]+$/.test(identifier)) return translate('flz_data_protection', '{label} Nr. {id}', {label: label, id: identifier});
+        return identifier ? translate('flz_data_protection', '{label}, interne Kennung {id}', {label: label, id: identifier.replaceAll(String.fromCharCode(95), String.fromCharCode(32)).replaceAll(String.fromCharCode(45), String.fromCharCode(32))}) : label;
     };
 
     const entriesTable = (entries, columns) => {
         const wrapper = element('div', null, 'data-protection-table-wrapper');
         const table = document.createElement('table');
         table.className = 'data-protection-table';
-        const caption = element('caption', `${entries[0]?.categoryLabel || 'Datensätze'}: unterschiedliche gespeicherte Angaben`);
+        const caption = element('caption', translate('flz_data_protection', '{label}: unterschiedliche gespeicherte Angaben', {label: entries[0]?.categoryLabel || 'Datensätze'}));
         const head = document.createElement('thead');
         const headRow = document.createElement('tr');
         columns.forEach(({ label }) => {
@@ -111,23 +113,23 @@
 
     const categoryView = (entries, providerCommon) => {
         const section = element('section', null, 'data-protection-entry');
-        const label = entries[0]?.categoryLabel || 'Datensätze';
+        const label = entries[0]?.categoryLabel || translate('flz_data_protection', 'Datensätze');
         section.append(element('h3', `${label} (${entries.length})`));
 
         const summary = sharedValue(entries, (entry) => entry.summary);
         if (summary !== null) {
-            section.append(element('p', entries.length > 1 ? `${summary}: ${entries.length}-mal protokolliert.` : summary, 'data-protection-category-summary'));
+            section.append(element('p', entries.length > 1 ? translate('flz_data_protection', '{summary}: {count}-mal protokolliert.', {summary: summary, count: entries.length}) : summary, 'data-protection-category-summary'));
         }
 
         const categoryCommon = commonValues(entries, metadataFields.filter(([key]) => !providerCommon.has(key)));
         const attributeNames = [...new Set(entries.flatMap((entry) => Object.keys(entry.attributes || {})))];
         const commonAttributes = commonValues(entries, attributeNames.map((name) => [name, name, (entry) => entry.attributes?.[name]]));
         const combined = new Map([...categoryCommon, ...commonAttributes]);
-        const common = commonBlock('Gilt für diesen Datentyp', combined);
+        const common = commonBlock(translate('flz_data_protection', 'Gilt für diesen Datentyp'), combined);
         if (common) section.append(common);
 
-        const columns = [{ label: 'Interne Zuordnung', getter: humanReference }];
-        if (summary === null) columns.push({ label: 'Datensatz', getter: (entry) => entry.summary });
+        const columns = [{ label: translate('flz_data_protection', 'Interne Zuordnung'), getter: humanReference }];
+        if (summary === null) columns.push({ label: translate('flz_data_protection', 'Datensatz'), getter: (entry) => entry.summary });
         attributeNames.filter((name) => !commonAttributes.has(name)).forEach((name) => {
             columns.push({ label: name, getter: (entry) => entry.attributes?.[name] });
         });
@@ -151,12 +153,12 @@
         }
         const entries = provider.entries || [];
         if (entries.length === 0) {
-            article.append(element('p', provider.status === 'failed' ? 'Diese App konnte für die Auskunft nicht erreicht werden.' : 'Für dich sind in dieser App keine Datensätze vorhanden.'));
+            article.append(element('p', provider.status === 'failed' ? translate('flz_data_protection', 'Diese App konnte für die Auskunft nicht erreicht werden.') : translate('flz_data_protection', 'Für dich sind in dieser App keine Datensätze vorhanden.')));
             return article;
         }
 
         const providerCommon = commonValues(entries, metadataFields);
-        const shared = commonBlock('Gilt für alle folgenden Daten', providerCommon, `${entries.length} gespeicherte Einträge`);
+        const shared = commonBlock(translate('flz_data_protection', 'Gilt für alle folgenden Daten'), providerCommon, translate('flz_data_protection', '{count} gespeicherte Einträge', {count: entries.length}));
         if (shared) article.append(shared);
 
         const categories = new Map();
@@ -174,8 +176,8 @@
         const status = element(
             'p',
             report.coverageComplete
-                ? 'Die konfigurierte Providerabdeckung ist vollständig.'
-                : 'Die appübergreifende Auskunft ist derzeit nicht vollständig.',
+                ? translate('flz_data_protection', 'Die konfigurierte Providerabdeckung ist vollständig.')
+                : translate('flz_data_protection', 'Die appübergreifende Auskunft ist derzeit nicht vollständig.'),
             'data-protection-summary',
         );
         status.setAttribute('role', 'status');
@@ -183,7 +185,7 @@
 
         const providers = Object.entries(report.providers || {});
         if (providers.length === 0) {
-            container.append(element('p', 'Noch sind keine Datenschutzprovider registriert.'));
+            container.append(element('p', translate('flz_data_protection', 'Noch sind keine Datenschutzprovider registriert.')));
             bindPersistentHorizontalScroll(container);
             return;
         }

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- L10N-Migration (ZM-06): sichtbare Texte über Nextcloud-l10n (deutsche Quelltexte, Kataloge `l10n/en.*` + `l10n/en_GB.*`), inkl. `tests/Ui/L10nCatalogContractTest.php` und `docs/l10n-inventory.md`.
+
 - Die Gruppenauswahl der Datenschutzrechte konsumiert ausschließlich den
   aktivierten öffentlichen V1-Vertrag von `flz_organization`. Fehlende,
   inkompatible, ungültige und fehlerhafte Provider liefern keine

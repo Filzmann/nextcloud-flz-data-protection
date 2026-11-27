@@ -65,7 +65,7 @@ window.FlzDataProtection.reportView.render(container, {
         },
         missing_app: {
             status: 'missing',
-            restrictions: ['Expected provider unavailable.'],
+            restrictions: ['Erwarteter Provider ist nicht verfügbar.'],
             nextCursor: null,
             entries: [],
         },

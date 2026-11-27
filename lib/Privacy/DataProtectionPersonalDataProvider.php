@@ -194,12 +194,12 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
         $json = base64_decode(strtr($cursor . str_repeat('=', $padding), '-_', '+/'), true);
         $state = $json === false ? null : json_decode($json, true);
         if (!is_array($state) || !is_string($state['asOf'] ?? null) || !is_int($state['offset'] ?? null) || $state['offset'] < 1 || $state['offset'] > self::MAX_OFFSET) {
-            throw new InvalidArgumentException('Invalid Data Protection privacy cursor.');
+            throw new InvalidArgumentException('Ungültiger Datenschutz-Privacy-Cursor.');
         }
         try {
             $asOf = (new DateTimeImmutable($state['asOf']))->format(DATE_ATOM);
         } catch (\Throwable) {
-            throw new InvalidArgumentException('Invalid Data Protection privacy cursor.');
+            throw new InvalidArgumentException('Ungültiger Datenschutz-Privacy-Cursor.');
         }
         return [$asOf, $state['offset']];
     }

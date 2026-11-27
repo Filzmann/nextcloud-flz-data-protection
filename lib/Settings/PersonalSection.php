@@ -9,7 +9,7 @@ use OCP\IURLGenerator;
 use OCP\Settings\IIconSection;
 
 final class PersonalSection implements IIconSection {
-    public function __construct(private IURLGenerator $url) {}
+    public function __construct(private IURLGenerator $url, private IL10N $l10n) {}
 
     public function getIcon(): string {
         return $this->url->imagePath(Application::APP_ID, 'app.svg');
@@ -20,7 +20,7 @@ final class PersonalSection implements IIconSection {
     }
 
     public function getName(): string {
-        return 'Datenschutz';
+        return $this->l10n->t('Datenschutz');
     }
 
     public function getPriority(): int {

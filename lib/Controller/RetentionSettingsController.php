@@ -12,6 +12,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Http;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IL10N;
 use OCP\IRequest;
 
 final class RetentionSettingsController extends Controller {
@@ -19,6 +20,7 @@ final class RetentionSettingsController extends Controller {
         IRequest $request,
         private DataProtectionPermissionChecker $authorization,
         private PermissionAssignmentsService $settings,
+        private IL10N $l10n,
     ) {
         parent::__construct(Application::APP_ID, $request);
     }
@@ -34,13 +36,13 @@ final class RetentionSettingsController extends Controller {
             $canManageAll = $this->authorization->has(PermissionAssignmentsService::PERMISSION_ASSIGNMENTS_CONFIGURE);
             $canManageReview = $this->authorization->has(PermissionAssignmentsService::REVIEW_ASSIGNMENTS_CONFIGURE);
             if (!$canManageAll && (!$canManageReview || array_keys($changes) !== [PermissionAssignmentsService::RETENTION_REVIEW])) {
-                return new JSONResponse(['message' => 'Zugriff verweigert.'], Http::STATUS_FORBIDDEN);
+                return new JSONResponse(['message' => $this->l10n->t('Zugriff verweigert.')], Http::STATUS_FORBIDDEN);
             }
             return new JSONResponse(['assignments' => $this->settings->save($changes)]);
         } catch (InvalidArgumentException $e) {
-            return new JSONResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['message' => $this->l10n->t($e->getMessage())], Http::STATUS_BAD_REQUEST);
         } catch (\Throwable) {
-            return new JSONResponse(['message' => 'Einstellungen konnten nicht gespeichert werden.'], Http::STATUS_INTERNAL_SERVER_ERROR);
+            return new JSONResponse(['message' => $this->l10n->t('Einstellungen konnten nicht gespeichert werden.')], Http::STATUS_INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -17,19 +17,19 @@ final class RetentionCandidate {
         private array $attributes = [],
     ) {
         if (!preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $policyId) || $reference === '' || strlen($reference) > 255) {
-            throw new InvalidArgumentException('Invalid retention candidate identity.');
+            throw new InvalidArgumentException('Ungültige Retention-Kandidatenidentität.');
         }
         try {
             $this->occurredAt = (new DateTimeImmutable($occurredAt))->format(DATE_ATOM);
         } catch (\Throwable) {
-            throw new InvalidArgumentException('Invalid retention candidate date.');
+            throw new InvalidArgumentException('Ungültiges Retention-Kandidatendatum.');
         }
         if ($action !== 'REVIEW' || $reviewReason === '') {
-            throw new InvalidArgumentException('V1 retention candidates must require REVIEW.');
+            throw new InvalidArgumentException('V1-Retention-Kandidaten müssen REVIEW erfordern.');
         }
         foreach ($attributes as $label => $value) {
             if (!is_string($label) || $label === '' || !(is_scalar($value) || $value === null)) {
-                throw new InvalidArgumentException('Invalid retention candidate attribute.');
+                throw new InvalidArgumentException('Ungültiges Retention-Kandidatenattribut.');
             }
         }
     }

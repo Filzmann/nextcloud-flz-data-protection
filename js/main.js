@@ -1,3 +1,4 @@
+const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
 const loadRetentionReview = async (continuation = null, button = null) => {
     const results = document.getElementById('data-protection-retention-results');
     if (!results) return;
@@ -11,7 +12,7 @@ const loadRetentionReview = async (continuation = null, button = null) => {
             headers: { Accept: 'application/json', requesttoken: OC.requestToken },
         });
         const report = await response.json();
-        if (!response.ok) throw new Error('Retention review unavailable.');
+        if (!response.ok) throw new Error(translate('flz_data_protection', 'Retention-Prüfung ist nicht verfügbar.'));
         const continueReview = (token, sourceButton) => loadRetentionReview(token, sourceButton);
         if (continuation === null) {
             window.FlzDataProtection.retentionView.render(results, report, continueReview);
@@ -21,7 +22,7 @@ const loadRetentionReview = async (continuation = null, button = null) => {
     } catch (error) {
         const message = document.createElement('p');
         message.setAttribute('role', 'alert');
-        message.textContent = 'Die REVIEW-Vorschau konnte nicht geladen werden.';
+        message.textContent = translate('flz_data_protection', 'Die REVIEW-Vorschau konnte nicht geladen werden.');
         if (continuation === null) results.replaceChildren(message);
         else results.append(message);
         if (button) button.disabled = false;

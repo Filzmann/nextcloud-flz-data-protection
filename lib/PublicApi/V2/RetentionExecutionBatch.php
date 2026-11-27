@@ -13,7 +13,7 @@ final class RetentionExecutionBatch {
             if (!$candidate instanceof RetentionExecutionCandidate
                 || $candidate->policyId() !== $request->policyId()
                 || $candidate->policyVersion() !== $request->policyVersion()) {
-                throw new InvalidArgumentException('Execution batch does not match its dry run.');
+                throw new InvalidArgumentException('Ausführungscharge stimmt nicht mit ihrem Testlauf überein.');
             }
         }
     }

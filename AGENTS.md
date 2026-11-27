@@ -76,6 +76,9 @@ fehlendem sicheren Rückbau wird nicht implementiert.
 
 ## Tests und Definition of Done
 
+- Lokalisierung (ZM-06): Sichtbare Texte ausschließlich über Nextcloud-l10n — deutsche Quelltexte via `IL10N::t()`/`window.t('flz_data_protection', …)`, Kataloge `l10n/en.*` und `l10n/en_GB.*` (Englisch); technische IDs bleiben unübersetzt. `tests/Ui/L10nCatalogContractTest.php` erzwingt das Rohtext-Gate (siehe `docs/l10n-inventory.md`).
+
+
 - PHP: `php tests/run.php`
 - JavaScript: `node tests/run-js.mjs`
 - Zusätzlich `git diff --check` und die Parent-Strukturprüfung.

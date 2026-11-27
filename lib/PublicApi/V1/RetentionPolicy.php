@@ -17,19 +17,19 @@ final class RetentionPolicy {
         private string $version,
     ) {
         if (!preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $policyId)) {
-            throw new InvalidArgumentException('Invalid retention policy ID.');
+            throw new InvalidArgumentException('Ungültige Retention-Richtlinien-ID.');
         }
         if ($dataClass === '' || $purpose === '') {
-            throw new InvalidArgumentException('Retention policy labels must not be empty.');
+            throw new InvalidArgumentException('Retention-Richtlinienbezeichnungen dürfen nicht leer sein.');
         }
         if (!in_array($trigger, ['CREATED_AT', 'COMPLETED_AT', 'SUBJECT_EVENT', 'FIXED_DATE', 'NO_AUTO_ACTION'], true)) {
-            throw new InvalidArgumentException('Invalid retention trigger.');
+            throw new InvalidArgumentException('Ungültiger Retention-Trigger.');
         }
         if (!$this->validDuration($durationDays) || $action !== 'REVIEW') {
-            throw new InvalidArgumentException('V1 retention preview supports REVIEW periods up to ten years.');
+            throw new InvalidArgumentException('V1-Retention-Vorschau unterstützt REVIEW-Zeiträume von bis zu zehn Jahren.');
         }
         if (!preg_match('/^[1-9][0-9]*\.[0-9]+$/', $version)) {
-            throw new InvalidArgumentException('Invalid retention policy version.');
+            throw new InvalidArgumentException('Ungültige Retention-Richtlinienversion.');
         }
     }
 

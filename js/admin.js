@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
     const form = document.getElementById('data-protection-permission-settings-form');
     const notice = document.getElementById('data-protection-admin-notice');
     if (!form || !notice) return;
@@ -22,11 +24,11 @@
                 body,
             });
             const payload = await response.json();
-            if (!response.ok) throw new Error(payload.message || 'Speichern fehlgeschlagen.');
-            notice.textContent = 'Gespeichert.';
+            if (!response.ok) throw new Error(payload.message || translate('flz_data_protection', 'Speichern fehlgeschlagen.'));
+            notice.textContent = translate('flz_data_protection', 'Gespeichert.');
             notice.setAttribute('role', 'status');
         } catch (error) {
-            notice.textContent = error.message || 'Speichern fehlgeschlagen.';
+            notice.textContent = error.message || translate('flz_data_protection', 'Speichern fehlgeschlagen.');
             notice.setAttribute('role', 'alert');
         }
         notice.hidden = false;

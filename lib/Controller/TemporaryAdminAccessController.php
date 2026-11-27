@@ -14,6 +14,7 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\IL10N;
 use OCP\IRequest;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -23,6 +24,7 @@ final class TemporaryAdminAccessController extends Controller {
         IRequest $request,
         private TemporaryAdminAccessService $service,
         private LoggerInterface $logger,
+        private IL10N $l10n,
     ) {
         parent::__construct(Application::APP_ID, $request);
     }
@@ -46,7 +48,7 @@ final class TemporaryAdminAccessController extends Controller {
         try {
             return new JSONResponse(['grant' => $this->serializeGrant($this->service->activate($targetUid, $durationMinutes))]);
         } catch (InvalidArgumentException $error) {
-            return new JSONResponse(['message' => $error->getMessage()], Http::STATUS_BAD_REQUEST);
+            return new JSONResponse(['message' => $this->l10n->t($error->getMessage())], Http::STATUS_BAD_REQUEST);
         } catch (TemporaryAdminAccessDeniedException) {
             return $this->denied();
         } catch (Throwable $error) {
@@ -75,11 +77,11 @@ final class TemporaryAdminAccessController extends Controller {
     }
 
     private function denied(): JSONResponse {
-        return new JSONResponse(['message' => 'Keine Berechtigung.'], Http::STATUS_FORBIDDEN);
+        return new JSONResponse(['message' => $this->l10n->t('Keine Berechtigung.')], Http::STATUS_FORBIDDEN);
     }
 
     private function failed(Throwable $error): JSONResponse {
         $this->logger->error('Temporärer Admin-Vollzugriff konnte nicht verarbeitet werden.', ['exception' => $error]);
-        return new JSONResponse(['message' => 'Der Vollzugriff konnte nicht verarbeitet werden.'], Http::STATUS_INTERNAL_SERVER_ERROR);
+        return new JSONResponse(['message' => $this->l10n->t('Der Vollzugriff konnte nicht verarbeitet werden.')], Http::STATUS_INTERNAL_SERVER_ERROR);
     }
 }

@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
 
     const form = document.getElementById('data-protection-retention-execution-profile-form');
     const statusElement = document.getElementById('data-protection-retention-execution-profile-status');
@@ -20,7 +22,7 @@
             ...options,
         });
         const body = await response.json();
-        if (!response.ok) throw new Error(body.message || 'Profilanfrage fehlgeschlagen.');
+        if (!response.ok) throw new Error(body.message || translate('flz_data_protection', 'Profilanfrage fehlgeschlagen.'));
         return body;
     };
 
@@ -55,12 +57,12 @@
         applyProfileRequirements();
         statusElement.setAttribute('role', 'status');
         statusElement.textContent = state.setupRequired === true
-            ? 'Optionale lokale Dokumentation noch nicht eingerichtet. Die technische Löschaktivierung wird separat verwaltet.'
+            ? translate('flz_data_protection', 'Optionale lokale Dokumentation noch nicht eingerichtet. Die technische Löschaktivierung wird separat verwaltet.')
             : state.configurationValid
-            ? 'Lokale Profilrevision gespeichert. Sie aktiviert oder blockiert die technische Löschung nicht.'
-            : 'Lokale Profilrevision ist unvollständig: ' + state.blockers.join(', ') + '. Die technische Löschaktivierung bleibt davon getrennt.';
+            ? translate('flz_data_protection', 'Lokale Profilrevision gespeichert. Sie aktiviert oder blockiert die technische Löschung nicht.')
+            : translate('flz_data_protection', 'Lokale Profilrevision ist unvollständig: {blockers}. Die technische Löschaktivierung bleibt davon getrennt.', {blockers: state.blockers.join(', ')});
         if (state.performanceMonitoringProhibited !== true || state.executionAvailable !== false) {
-            throw new Error('Unveränderliche Produktschutzgrenze wurde verletzt.');
+            throw new Error(translate('flz_data_protection', 'Unveränderliche Produktschutzgrenze wurde verletzt.'));
         }
     };
 
@@ -72,7 +74,7 @@
         if (!form.checkValidity()) {
             form.reportValidity();
             statusElement.setAttribute('role', 'alert');
-            statusElement.textContent = 'Die optionale lokale Dokumentation ist unvollständig. Es wurde keine Profilrevision gespeichert.';
+            statusElement.textContent = translate('flz_data_protection', 'Die optionale lokale Dokumentation ist unvollständig. Es wurde keine Profilrevision gespeichert.');
             return;
         }
         try {
