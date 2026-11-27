@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use OCA\FlzDataProtection\Tests\Support\FakeL10N;
 use OCA\FlzDataProtection\Controller\RetentionReviewController;
 use OCA\FlzDataProtection\PublicApi\V1\RegisterRetentionProvidersEvent;
 use OCA\FlzDataProtection\PublicApi\V1\RetentionCandidate;
@@ -69,12 +70,12 @@ $grants = new class implements TemporaryAdminAccessChecker {
 };
 
 $deniedChecker = new class implements DataProtectionPermissionChecker { public function has(string $permission): bool { return false; } };
-$denied = new RetentionReviewController($request, new RetentionAccessService($sessionFor('ordinary-user'), $groups, $deniedChecker, $grants), $aggregator);
+$denied = new RetentionReviewController($request, new RetentionAccessService($sessionFor('ordinary-user'), $groups, $deniedChecker, $grants), $aggregator, new FakeL10N());
 $assertSame(Http::STATUS_FORBIDDEN, $denied->report()->getStatus(), 'Ein unberechtigtes Konto erhielt die REVIEW-Vorschau.');
 $assertSame(0, $dispatches, 'Ein verweigerter REVIEW-Aufruf hat Provider entdeckt.');
 
 $allowedChecker = new class implements DataProtectionPermissionChecker { public function has(string $permission): bool { return false; } };
-$allowed = new RetentionReviewController($request, new RetentionAccessService($sessionFor('admin-user'), $groups, $allowedChecker, $grants), $aggregator);
+$allowed = new RetentionReviewController($request, new RetentionAccessService($sessionFor('admin-user'), $groups, $allowedChecker, $grants), $aggregator, new FakeL10N());
 $response = $allowed->report();
 $assertSame(Http::STATUS_OK, $response->getStatus(), 'Die aktive Adminfreigabe wurde nicht erlaubt.');
 $assertSame(1, $dispatches, 'Der erlaubte REVIEW-Aufruf muss genau eine Discovery auslösen.');

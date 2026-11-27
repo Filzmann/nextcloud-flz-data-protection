@@ -30,6 +30,15 @@ spl_autoload_register(static function (string $class): void {
         return;
     }
 
+    $testsPrefix = 'OCA\\FlzDataProtection\\Tests\\';
+    if (str_starts_with($class, $testsPrefix)) {
+        $testsPath = __DIR__ . '/' . str_replace('\\', '/', substr($class, strlen($testsPrefix))) . '.php';
+        if (is_file($testsPath)) {
+            require $testsPath;
+        }
+        return;
+    }
+
     $prefix = 'OCA\\FlzDataProtection\\';
     if (!str_starts_with($class, $prefix)) {
         return;

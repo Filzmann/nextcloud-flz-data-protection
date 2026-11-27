@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
+use OCA\FlzDataProtection\Tests\Support\FakeL10N;
 use OCA\FlzDataProtection\Controller\RetentionExecutionProfileController;
 use OCA\FlzDataProtection\Service\RetentionExecutionProfileService;
 use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
@@ -87,7 +88,7 @@ $collective = [
     'expectedRevision' => 0,
 ];
 
-$controller = new RetentionExecutionProfileController(new class implements IRequest {}, $service);
+$controller = new RetentionExecutionProfileController(new class implements IRequest {}, $service, new FakeL10N());
 $rowsBeforeIncompleteSetup = $repository->rows;
 $assertSame(400, $controller->save(['expectedRevision' => 0])->getStatus(), 'Eine unvollständige Ersteinrichtung muss als ungültig abgewiesen werden.');
 $assertSame($rowsBeforeIncompleteSetup, $repository->rows, 'Eine unvollständige Ersteinrichtung darf keine Profilrevision erzeugen.');

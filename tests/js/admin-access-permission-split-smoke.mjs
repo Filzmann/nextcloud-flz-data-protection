@@ -3,6 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const rootPath = fileURLToPath(new URL('../..', import.meta.url));
+const overlayPath = `${rootPath}/js/shared/overlay.js`;
+const overlaySource = readFileSync(overlayPath, 'utf8');
 const sourcePath = `${rootPath}/js/admin-access.js`;
 const source = readFileSync(sourcePath, 'utf8');
 
@@ -23,12 +25,19 @@ const runScenario = async ({ canManage, withForm, withHistory }) => {
         append(row) { this.rows.push(row); },
     } : null;
     const status = { textContent: '', role: '', setAttribute(name, value) { if (name === 'role') this.role = value; } };
+    const overlay = { hidden: true, listeners: {}, addEventListener(name, callback) { (this.listeners[name] = this.listeners[name] || []).push(callback); }, setAttribute() {} };
+    const trigger = { attributes: {}, focused: false, listeners: {}, addEventListener(name, callback) { (this.listeners[name] = this.listeners[name] || []).push(callback); }, setAttribute(name, value) { this.attributes[name] = String(value); }, getAttribute(name) { return this.attributes[name] ?? null; }, focus() { this.focused = true; } };
+    const closeButton = { focused: false, listeners: {}, addEventListener(name, callback) { (this.listeners[name] = this.listeners[name] || []).push(callback); }, focus() { this.focused = true; } };
+    const docListeners = {};
     const document = {
         getElementById(id) {
             if (id === 'data-protection-full-access') return root;
             if (id === 'data-protection-full-access-form') return form;
             if (id === 'data-protection-full-access-history') return history;
             if (id === 'data-protection-full-access-status') return status;
+            if (id === 'data-protection-admin-access-overlay') return overlay;
+            if (id === 'data-protection-admin-grant-warning') return trigger;
+            if (id === 'data-protection-admin-access-overlay-close') return closeButton;
             return null;
         },
         createElement(tag) {
@@ -39,6 +48,11 @@ const runScenario = async ({ canManage, withForm, withHistory }) => {
                 closest() { return null; },
             };
         },
+        addEventListener(name, callback) { (docListeners[name] = docListeners[name] || []).push(callback); },
+        querySelectorAll: () => [],
+    };
+    const openOverlay = async () => {
+        for (const callback of trigger.listeners.click || []) await callback({ target: trigger });
     };
     const fetch = async (url, options = {}) => {
         calls.push([url, options]);
@@ -54,9 +68,14 @@ const runScenario = async ({ canManage, withForm, withHistory }) => {
         }
     };
     const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
-    vm.runInNewContext(source, { document, fetch, FormData, OC, Date, JSON, Number, String, encodeURIComponent, Error }, { filename: sourcePath });
+    const context = { window: {}, document, fetch, FormData, OC, Date, JSON, Number, String, Intl, Promise, encodeURIComponent, Error };
+    vm.runInNewContext(overlaySource, context, { filename: overlayPath });
+    vm.runInNewContext(source, context, { filename: sourcePath });
     await new Promise(resolve => setTimeout(resolve, 0));
-    return { calls, formListeners, historyListeners, buttonsCreated, status };
+    if (calls.length !== 0) throw new Error('Vor dem Öffnen des Overlays darf nichts geladen werden.');
+    await openOverlay();
+    if (overlay.hidden !== false || trigger.getAttribute('aria-expanded') !== 'true' || !closeButton.focused) throw new Error('Warn-Icon öffnet das Overlay nicht korrekt.');
+    return { calls, formListeners, historyListeners, buttonsCreated, status, overlay, trigger, docListeners };
 };
 
 const manager = await runScenario({ canManage: true, withForm: true, withHistory: false });
@@ -66,6 +85,8 @@ await manager.formListeners.submit({ preventDefault() {} });
 if (manager.calls[0]?.[1]?.method !== 'POST' || manager.calls[0]?.[1]?.headers?.requesttoken !== 'synthetic-token') {
     throw new Error('Das getrennte Verwaltungsrecht kann keine CSRF-geschützte Freigabe erteilen.');
 }
+for (const callback of manager.docListeners.keydown || []) await callback({ key: 'Escape' });
+if (manager.overlay.hidden !== true || manager.trigger.getAttribute('aria-expanded') !== 'false') throw new Error('Escape schließt das Overlay nicht korrekt.');
 
 const reader = await runScenario({ canManage: false, withForm: false, withHistory: true });
 if (reader.calls[0]?.[1]?.method === 'POST' || reader.calls.length !== 1) throw new Error('Das reine Leserecht löst eine Mutation aus oder lädt die Historie nicht genau einmal.');

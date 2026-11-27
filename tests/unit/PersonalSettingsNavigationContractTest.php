@@ -33,7 +33,7 @@ foreach ([
 }
 if (!str_contains($personalSettings, "'personal'")) throw new RuntimeException('Persönliche Einstellung rendert nicht das getrennte Self-Service-Template.');
 if (!str_contains($personalSettings, 'return Application::APP_ID')) throw new RuntimeException('Persönliche Einstellung und Abschnitt verwenden nicht dieselbe kanonische ID.');
-if (!str_contains($personalSection, "return 'Datenschutz'")) throw new RuntimeException('Persönlicher Nextcloud-Abschnitt heißt nicht Datenschutz.');
+if (!str_contains($personalSection, "t('Datenschutz')")) throw new RuntimeException('Persönlicher Nextcloud-Abschnitt heißt nicht Datenschutz.');
 
 foreach (['id="data-protection-personal"', 'id="data-protection-results"', 'Persönliche Auskunft'] as $contract) {
     if (!str_contains($personalTemplate, $contract)) throw new RuntimeException('Self-Service-Template ist unvollständig: ' . $contract);

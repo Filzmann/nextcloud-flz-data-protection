@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use OCA\FlzDataProtection\Tests\Support\FakeL10N;
 use OCA\FlzDataProtection\Controller\SelfServiceController;
 use OCA\FlzDataProtection\Exception\AuthenticationRequiredException;
 use OCA\FlzDataProtection\PublicApi\V1\PersonalDataPage;
@@ -84,7 +85,7 @@ $assertSame(false, $report['coverageComplete'] ?? null, 'Ohne Coverage-Profil wu
 
 $request = new class implements IRequest {
 };
-$authorizedController = new SelfServiceController($request, $service);
+$authorizedController = new SelfServiceController($request, $service, new FakeL10N());
 $authorizedResponse = $authorizedController->report();
 $assertSame(Http::STATUS_OK, $authorizedResponse->getStatus(), 'Der authentifizierte API-Aufruf wurde nicht erlaubt.');
 $assertSame('session-user', $authorizedResponse->getData()['subject']['id'] ?? null, 'Der API-Aufruf gibt nicht die Sitzungs-UID aus.');
@@ -114,7 +115,7 @@ try {
 $assertSame(true, $anonymousRejected, 'Eine anonyme Self-Service-Auskunft wurde nicht verweigert.');
 $assertSame(0, $anonymousDispatches, 'Eine verweigerte Auskunft hat Provider aufgerufen.');
 
-$controller = new SelfServiceController($request, $anonymousService);
+$controller = new SelfServiceController($request, $anonymousService, new FakeL10N());
 $response = $controller->report();
 $assertSame(Http::STATUS_UNAUTHORIZED, $response->getStatus(), 'Der anonyme API-Aufruf liefert keinen 401-Status.');
 $assertSame(['message' => 'Authentifizierung erforderlich.'], $response->getData(), 'Der anonyme API-Aufruf gibt einen unstabilen oder zu detaillierten Fehler aus.');

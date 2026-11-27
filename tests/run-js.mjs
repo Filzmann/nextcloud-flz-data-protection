@@ -50,8 +50,11 @@ if (adminTemplate.includes('id="data-protection-full-access-form"')) throw new E
 if (!template.includes("$_['canManageAdminAccess']")) throw new Error('DPO-geschützte Freigabesteuerung fehlt.');
 if (!template.includes("$_['showMissingAdminGrant']")) throw new Error('Sichere Eintrittsmeldung für Admins ohne Freigabe fehlt.');
 if (!template.includes("$_['showAdminAccessLink']")) throw new Error('Rollenabhängiger Direktlink fehlt.');
-for (const contract of ['data-protection-admin-grant-warning', '<details', 'ausdrücklich berechtigte Datenschutzrollen', 'href="#data-protection-full-access"']) if (!template.includes(contract)) throw new Error(`Titelwarnung für fehlenden Admin-Vollzugriff fehlt: ${contract}`);
-if (!style.includes('.data-protection-admin-grant-warning')) throw new Error('Titelwarnung für fehlenden Admin-Vollzugriff ist nicht als kleines Floating-Icon gestaltet.');
+for (const contract of ['id="data-protection-admin-access-overlay"', 'role="dialog"', 'aria-modal="true"', 'id="data-protection-admin-grant-warning"', 'aria-haspopup="dialog"', 'aria-controls="data-protection-admin-access-overlay"', 'ausdrücklich berechtigte Datenschutzrollen']) if (!template.includes(contract)) throw new Error(`Overlay für fehlenden Admin-Vollzugriff fehlt: ${contract}`);
+if (template.includes('<details class="data-protection-admin-grant-warning"') || template.includes('href="#data-protection-full-access"')) throw new Error('Warn-Icon/Verweis ist noch als details-Element bzw. Anchor umgesetzt.');
+const bundleOverlay = readFileSync(new URL('../js/shared/overlay.js', import.meta.url), 'utf8');
+for (const contract of ['class="flz-shared-warn-trigger"', 'class="flz-shared-overlay"', "'shared/overlay'"]) if (!template.includes(contract)) throw new Error(`Geteilte Overlay-Klassen/Registrierung fehlen in der Vorlage: ${contract}`);
+if (!bundleOverlay.includes('.flz-shared-warn-trigger') || !bundleOverlay.includes('.flz-shared-overlay')) throw new Error('Warn-Icon und Overlay werden nicht mehr durch das geteilte Bundle gestaltet.');
 if (!template.includes('id="data-protection-full-access-form"')) throw new Error('App-lokale Adminfreigabe fehlt.');
 if (!template.includes('value="1440"')) throw new Error('Die maximale Dauer von 24 Stunden fehlt.');
 if (adminTemplate.includes('name="allow_nextcloud_admin_review"')) throw new Error('Der alte unbefristete Adminzugriff ist noch konfigurierbar.');
@@ -101,3 +104,4 @@ await import('./js/navigation-separation-smoke.mjs');
 await import('./js/permission-settings-smoke.mjs');
 await import('./js/tab-navigation-smoke.mjs');
 await import('./js/admin-access-permission-split-smoke.mjs');
+await import('./js/shared-bundle-runtime-smoke.mjs');

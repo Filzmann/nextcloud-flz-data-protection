@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use OCA\FlzDataProtection\Contract\OrganizationSnapshotSource;
+use OCA\FlzDataProtection\Tests\Support\FakeL10N;
 use OCA\FlzDataProtection\Controller\RetentionSettingsController;
 use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
 use OCA\FlzDataProtection\Service\OrganizationGroupPolicy;
@@ -40,7 +41,7 @@ $request = new class implements IRequest {
     public array $params = [];
     public function getParams(): array { return $this->params; }
 };
-$controller = new RetentionSettingsController($request, $authorization, $settings);
+$controller = new RetentionSettingsController($request, $authorization, $settings, new FakeL10N());
 
 $request->params = ['assignments' => [PermissionAssignmentsService::RETENTION_REVIEW => ['Org-Datenschutz']]];
 $before = $config->values;
