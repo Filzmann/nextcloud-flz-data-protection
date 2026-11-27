@@ -52,8 +52,8 @@ Revision macht den Append atomar: Bei zwei Schreibvorgängen auf derselben
 Ausgangsrevision gewinnt genau einer, der andere wird als Konflikt abgewiesen.
 Vorhandene Revisionen besitzen keinen Update- oder Löschpfad. Das auslieferbare
 Paket enthält keine Kunden-, Vereinbarungs-, Rechtsgrundlagen- oder
-DPO-Werte. Ausschließlich aktuelle Mitglieder von
-`Datenschutzbeauftragte` dürfen über die CSRF-geschützte API
+DPO-Werte. Ausschließlich Konten mit dem app-lokalen Einzelrecht
+`risk-scope.configure` dürfen über die CSRF-geschützte API
 `/api/v1/risk-scope-authorizations` eine Revision mit Policy- und
 Evidenzreferenz, Wirksamkeitsbeginn, Ablaufzeitpunkt und ausdrücklicher
 DPO-Bestätigung anlegen. Policy- und Evidenzreferenzen sind opake,
@@ -86,7 +86,11 @@ Die zentrale administrative Auskunft ist ausschließlich der kanonischen
 Nextcloud-Gruppe `Datenschutzbeauftragte` zugänglich. Nativer Adminstatus und
 eine temporäre fachliche Adminfreigabe ersetzen diese Mitgliedschaft nicht.
 Der sessiongebundene Self-Service der betroffenen Person bleibt davon
-getrennt.
+getrennt und ist ausschließlich im persönlichen Nextcloud-Einstellungsbereich
+`Datenschutz` eingebunden. Der App-Einstieg enthält keine persönliche
+Art.-15-Auskunft; fachliche Datenschutzsteuerung, technischer Betrieb und
+REVIEW bleiben dort als getrennte Bereiche mit ihren jeweiligen
+serverseitigen Rollenprüfungen.
 
 Die öffentliche Registry liest Kataloge ausschließlich über registrierte
 Provider. Sie durchsucht weder andere App-Verzeichnisse noch fremde Tabellen,
@@ -113,26 +117,44 @@ unvollständig und werden niemals durch direkten Tabellen-, Datei-, AppConfig-
 oder Reflection-Zugriff ersetzt.
 
 Fachliche Datenschutzkonfiguration einschließlich app-eigener
-Aufbewahrungsfristen ist ausschließlich Mitgliedern der dedizierten
-Nextcloud-Gruppe `Datenschutzbeauftragte` erlaubt. Fehlt sie, legt eine
+Aufbewahrungsfristen ist durch acht app-lokale Einzelrechte getrennt. REVIEW,
+REVIEW-Rollenzuordnung, Rechts-/Backup-Profil, Risikoscopes,
+Adminhistorien-Retention, Adminfreigabeverwaltung, Historienleserecht und
+Verwaltung der Rechtematrix sind unabhängig zuweisbar. Alle acht Rechte
+verwenden die dedizierte Nextcloud-Gruppe `Datenschutzbeauftragte` als
+Standard. Die Rechtematrix akzeptiert ausschließlich vorhandene Gruppen aus
+dem aktuellen Organigrammvertrag; beliebige Freitexte oder fachfremde native
+Gruppen werden abgewiesen. Fehlt die Standardgruppe, legt eine
 versionierte Migration sie bei frischer Installation beziehungsweise beim
 nächsten Upgrade einer bereits aktivierten App idempotent über die native
 Nextcloud-Gruppenverwaltung an. Vorhandene Gruppen und Mitgliedschaften
-bleiben unverändert. Diese Gruppen-ID ist der kanonische Default; die nur für
+bleiben unverändert. Diese Gruppen-ID bleibt der kanonische Default; die nur für
 Entwicklungsumgebungen verwendete Bezeichnung `privacy-officer` ist keine
 Produktrolle. Native
 Nextcloud-Administration bleibt für technische App-Verwaltung zuständig,
 erteilt aber kein Recht zur fachlichen Datenschutzkonfiguration.
 
+Eigentümer des optionalen Organigrammvertrags ist ausschließlich die
+eigenständige Laufzeit-App `flz_organization`. Vor der öffentlichen
+Serviceauflösung prüft der Consumer die native App-Aktivierung und den
+V1-Vertrag `1.0`; nur gültige Snapshots liefern Rollen und Bereiche.
+Fehlende, deaktivierte, inkompatible oder fehlerhafte Provider liefern keine
+Organisationsgruppen. Die eigene Standardgruppe bleibt davon unabhängig;
+LocalBase ist weder Provider noch Fallback. Es werden ausschließlich
+Gruppenkennungen und Bezeichnungen projiziert, keine vollständige
+Organisationsdefinition und keine personenbezogenen Mitgliedschaftsdaten.
+Providerfehler enthalten im technischen Log nur Providerkennung und
+Exceptionklasse.
+
 Die app-lokale Freigabesteuerung folgt derselben harten Rollentrennung:
-Ausschließlich aktuell bestätigte Mitglieder von `Datenschutzbeauftragte`
+Ausschließlich Konten mit dem Einzelrecht `temporary-admin-access.manage`
 dürfen einem aktuellen nativen Nextcloud-Administrationskonto einen
 UID-genauen fachlichen Vollzugriff von höchstens 24 Stunden erteilen oder ihn
 widerrufen. Dafür ist kein eigener nativer Adminstatus erforderlich. Die
 Steuerung liegt im authentifizierten App-Einstieg und nicht im technischen
 Nextcloud-Adminbereich. Ein natives Administrationskonto ohne aktive Freigabe
 erhält dort eine zustandssichere Meldung; der Direktlink zur Steuerung
-erscheint nur bei zusätzlicher Mitgliedschaft in `Datenschutzbeauftragte`.
+erscheint nur bei zusätzlichem Verwaltungsrecht.
 Gewöhnliche und andere unberechtigte Konten erhalten weder diesen
 administrativen Zustand noch den Link. API und fachlicher REVIEW-Zugriff
 prüfen die jeweilige Rolle beziehungsweise Freigabe unabhängig von der UI
@@ -143,7 +165,8 @@ und werden aus deren ursprünglichem fachlichem Trigger neu berechnet. Die
 eigene Adminhistorien-Policy führt jede Konfiguration mit fortlaufender
 Revision, Wirksamkeitszeitpunkt und Akteur und verweigert unberechtigte,
 veraltete oder beschädigte Änderungen ohne Nebenwirkung. Sie bleibt mindestens
-24 Monate auditierbar; die Gruppe `Datenschutzbeauftragte` überprüft die
+24 Monate auditierbar; Konten mit dem Einzelrecht
+`admin-history-retention.configure` überprüfen die
 Konfiguration mindestens jährlich. Bis zur ersten dokumentierten
 Konfiguration oder Prüfung gilt der Review als fällig.
 

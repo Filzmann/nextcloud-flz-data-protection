@@ -40,7 +40,7 @@ try {
     $run->invoke($job, null);
     throw new RuntimeException('Ein fehlgeschlagener Retention-Lauf wurde vom Background-Job als Erfolg behandelt.');
 } catch (RuntimeException $error) {
-    if ($error->getMessage() !== 'Retention execution failed: provider_discovery_failed') {
+    if ($error->getMessage() !== 'Retention-Ausführung fehlgeschlagen: provider_discovery_failed') {
         throw $error;
     }
 }

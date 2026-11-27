@@ -12,16 +12,19 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 
 ## Kernablauf
 
-- [ ] Self-Service bindet ausschließlich das angemeldete Konto.
+- [ ] Der persönliche Nextcloud-Einstieg `Datenschutz` zeigt den Art.-15-
+      Self-Service und bindet ausschließlich das angemeldete Konto.
+- [ ] Der direkte App-Einstieg zeigt keine persönliche Art.-15-Auskunft;
+      gewöhnliche Konten erhalten dort keine fachlichen Steuerelemente.
 - [ ] Fehlende, inkompatible und fehlerhafte Provider werden sichtbar ausgewiesen.
 - [ ] Teilberichte werden nicht als vollständig bezeichnet.
 - [ ] Fresh Install und Upgrade einer bereits aktivierten App legen eine fehlende
       Gruppe `Datenschutzbeauftragte` an; eine vorhandene Gruppe und ihre
       Mitgliedschaften bleiben unverändert.
-- [ ] Ein Mitglied von `Datenschutzbeauftragte` ohne nativen Adminstatus kann
+- [ ] Ein Konto mit `temporary-admin-access.manage` ohne nativen Adminstatus kann
       die app-lokale Freigabesteuerung öffnen, einem bestätigten Admin für
       höchstens 24 Stunden freigeben und widerrufen.
-- [ ] Ein nativer Admin ohne Mitgliedschaft in `Datenschutzbeauftragte` kann
+- [ ] Ein nativer Admin ohne fachliche Einzelrechte kann
       weder Freigaben noch Historie verwalten und erhält ohne aktive Freigabe
       nur die sichere Eintrittsmeldung ohne Direktlink.
 - [ ] Ein Konto mit beiden Rollen erhält in der Eintrittsmeldung den
@@ -35,16 +38,67 @@ Es ist keine Produktivfreigabe und enthält keine echten Auskunftsdaten.
 - [ ] Installiert/aktiv, deaktiviert, fehlend, inkompatibel, Update,
       Deinstallation/Neuinstallation und Rollback wurden für jeden migrierten
       Consumer im freigegebenen Lifecycle-Harness geprüft.
-- [ ] Tastatur, Fokus, kleine Viewports und Scrollverhalten wurden geprüft.
+- [ ] REVIEW und Einstellungen sind als semantische Tabs vollständig per Tastatur
+      erreichbar und besitzen einen sichtbaren Fokus.
+- [ ] Das Verwaltungsrecht für temporäre Adminfreigaben funktioniert ohne
+      Historienleserecht; ein reines Historienleserecht zeigt keine
+      Widerrufsaktion.
+- [ ] Alle acht fachlichen Rechte starten mit `Datenschutzbeauftragte` und
+      lassen sich einzeln ausschließlich über Auswahlmenüs auf vorhandene
+      Organigrammgruppen umstellen. Fehlerhafte oder fachfremde Gruppenwerte
+      werden serverseitig ohne Teiländerung abgewiesen.
+- [ ] Die technische Retention-Aktivierung bleibt ausschließlich im nativen
+      Nextcloud-Adminbereich und ist für fachlich Berechtigte ohne nativen
+      Adminstatus nicht erreichbar.
+- [ ] Persönliche Einstellung und App-Bereiche funktionieren bei kleinen
+      Viewports ohne horizontalen Seitenüberlauf; breite Tabellen scrollen
+      nur in ihrem inneren Wrapper und der App-Root vertikal.
 
 ## Ergebnis
 
-- Ergebnis: Offene UI-Trennung aus dieser Abnahme ist als Punkt 7 in
-  `ROADMAP.md` erfasst.
+- Ergebnis:
 - Abweichungen und reproduzierbare Schritte:
 - Belege ohne Echtdaten:
 
 ## Vorbereitung
+
+### Automatisierter Organisationsconsumer-Nachweis
+
+Der neue `flz_organization`-Consumer wurde mit einem zunächst fehlgeschlagenen
+fokussierten Test (`php -d auto_prepend_file=tests/bootstrap.php
+tests/unit/OrganizationSnapshotSourceTest.php`, Exit 255) und anschließend
+grünen Tests abgesichert. Die Tests prüfen aktive, fehlende, inkompatible,
+ungültige, nicht auflösbare und fehlerhafte Provider sowie datensparsames
+Logging; LocalBase liefert keine Ersatzrechte.
+
+Der zusätzliche Kompatibilitätstest reproduzierte zuerst auf der
+Nextcloud-29–31-API-Form einen fehlenden Organisationssnapshot (Exit 255).
+Nach der Korrektur verwendet der Consumer auf diesen Versionen die native
+instanzweite Prüfung `isInstalled`, ab Nextcloud 32 `isEnabledForAnyone`.
+Beide API-Formen sowie deaktivierte und fehlerhafte Aktivierungsprüfungen
+werden mit ausbleibender Providerauflösung im verweigerten Fall geprüft
+(Exit 0). Dies ist kein vollständiger Nextcloud-29–31-Laufzeit-,
+Provider-Lifecycle- oder Browsernachweis.
+
+Die frühere bereits implementierte Aufteilung der acht Datenschutzrechte
+wurde bei dieser Übernahme durch die vorhandenen Allow-/Deny-,
+Manipulations- und UI-Verhaltenstests charakterisiert. Ihre ursprüngliche
+zeitliche Red–Green-Reihenfolge ist nicht mehr belegbar und wird als
+begründete Abweichung der übernommenen Nextcloud-Integration ausgewiesen.
+Diese Charakterisierung behauptet keine rückwirkende TDD-Konformität.
+
+Die rein lesende Probe wird aus dem Parent-Verzeichnis `nextcloud-dev`
+ausgeführt:
+
+```sh
+bash ../flz_data_protection/tests/organization-runtime-probe.sh
+```
+
+Die lokale DDEV-Probe bestätigte den echten V1-Service mit gültigem Snapshot,
+20 Rollen und drei Bereichen. Sie prüft Containerauflösung und Projektion,
+keinen vollständigen Installations-/Deaktivierungs-/Reinstall-Lifecycle und
+keine Browser- oder HTTP-CSRF-End-to-End-Bedienung. Diese Nachweise bleiben
+vor einer entsprechenden Releaseaussage separat erforderlich.
 
 Vor der manuellen Abnahme die vorgesehenen lokalen Prüfungen ausführen und ihre
 Ergebnisse zusammen mit dem geprüften Commit im Ergebnisfeld dokumentieren.

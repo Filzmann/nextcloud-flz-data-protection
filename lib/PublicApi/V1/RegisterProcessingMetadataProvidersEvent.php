@@ -25,7 +25,7 @@ final class RegisterProcessingMetadataProvidersEvent extends Event {
             $this->registry->register($provider);
         } catch (Throwable) {
             $appId ??= 'unknown_provider_' . (count($this->registrationFailures) + 1);
-            $this->registrationFailures[$appId] = 'Processing metadata provider incompatible.';
+            $this->registrationFailures[$appId] = 'Verarbeitungsmetadaten-Provider ist inkompatibel.';
         }
     }
 

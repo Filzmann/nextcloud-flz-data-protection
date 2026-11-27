@@ -18,19 +18,19 @@ final class ProcessingMetadataProviderRegistry {
         try {
             $descriptor = $provider->descriptor();
         } catch (Throwable) {
-            throw new DomainException('Processing metadata provider unavailable.');
+            throw new DomainException('Verarbeitungsmetadaten-Provider ist nicht verfügbar.');
         }
         $appId = $descriptor->appId();
         if ($descriptor->contractVersion() !== self::CONTRACT_VERSION || isset($this->providers[$appId])) {
-            throw new DomainException('Incompatible processing metadata provider.');
+            throw new DomainException('Inkompatibler Verarbeitungsmetadaten-Provider.');
         }
         try {
             $catalog = $provider->catalog();
         } catch (Throwable) {
-            throw new DomainException('Processing metadata catalog unavailable.');
+            throw new DomainException('Der Verarbeitungsmetadaten-Katalog ist nicht verfügbar.');
         }
         if ($catalog->appId() !== $appId) {
-            throw new DomainException('Processing metadata catalog belongs to another app.');
+            throw new DomainException('Der Verarbeitungsmetadaten-Katalog gehört zu einer anderen App.');
         }
         $this->providers[$appId] = $provider;
     }

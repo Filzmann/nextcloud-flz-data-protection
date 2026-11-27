@@ -48,7 +48,7 @@ final class PersonalDataAggregator {
                 $reports[$appId] = new ProviderReport(
                     'failed',
                     [],
-                    ['Provider unavailable.'],
+                    ['Provider ist nicht verfügbar.'],
                     null,
                     $descriptor?->displayName(),
                 );
@@ -63,7 +63,7 @@ final class PersonalDataAggregator {
 
         foreach ($coverage?->expectedAppIds() ?? [] as $appId) {
             if (!isset($reports[$appId])) {
-                $reports[$appId] = new ProviderReport('missing', [], ['Expected provider unavailable.'], null);
+                $reports[$appId] = new ProviderReport('missing', [], ['Erwarteter Provider ist nicht verfügbar.'], null);
             }
         }
 

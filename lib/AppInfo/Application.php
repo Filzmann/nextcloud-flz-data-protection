@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OCA\FlzDataProtection\AppInfo;
 
 use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepository;
+use OCA\FlzDataProtection\Contract\OrganizationSnapshotSource;
 use OCA\FlzDataProtection\Db\TemporaryAdminAccessRepositoryInterface;
 use OCA\FlzDataProtection\Db\ExecutableTemporaryAdminAccessRepositoryInterface;
 use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepository;
@@ -28,6 +29,9 @@ use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
 use OCA\FlzDataProtection\PublicApi\V2\RegisterRetentionExecutionProvidersEvent;
 use OCA\FlzDataProtection\Service\TemporaryAdminAccessChecker;
 use OCA\FlzDataProtection\Service\TemporaryAdminAccessService;
+use OCA\FlzDataProtection\Service\FlzOrganizationSnapshotSource;
+use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
+use OCA\FlzDataProtection\Service\DataProtectionAuthorizationService;
 use OCA\FlzDataProtection\Service\RetentionExecutionActivationService;
 use OCA\FlzDataProtection\Service\RetentionExecutionProfileStatus;
 use OCA\FlzPermissionMatrix\PublicApi\V1\RegisterPermissionProvidersEvent;
@@ -51,6 +55,8 @@ final class Application extends App implements IBootstrap {
         $context->registerEventListener(ScopeAuthorizationQueryEvent::class, ScopeAuthorizationQueryListener::class);
         $context->registerEventListener(RegisterPermissionProvidersEvent::class, DataProtectionPermissionProviderListener::class);
         $context->registerServiceAlias(TemporaryAdminAccessChecker::class, TemporaryAdminAccessService::class);
+        $context->registerServiceAlias(OrganizationSnapshotSource::class, FlzOrganizationSnapshotSource::class);
+        $context->registerServiceAlias(DataProtectionPermissionChecker::class, DataProtectionAuthorizationService::class);
         $context->registerServiceAlias(TemporaryAdminAccessRepositoryInterface::class, TemporaryAdminAccessRepository::class);
         $context->registerServiceAlias(ExecutableTemporaryAdminAccessRepositoryInterface::class, TemporaryAdminAccessRepository::class);
         $context->registerServiceAlias(RetentionExecutionProfileRepositoryInterface::class, RetentionExecutionProfileRepository::class);

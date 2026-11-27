@@ -13,11 +13,11 @@ final class ProviderCoverageProfile {
     /** @param list<string> $expectedAppIds */
     public function __construct(array $expectedAppIds) {
         if ($expectedAppIds === []) {
-            throw new InvalidArgumentException('A coverage profile requires at least one expected provider.');
+            throw new InvalidArgumentException('Ein Abdeckungsprofil erfordert mindestens einen erwarteten Provider.');
         }
         foreach ($expectedAppIds as $appId) {
             if (!is_string($appId) || !preg_match('/^[a-z][a-z0-9_]{1,63}$/', $appId)) {
-                throw new InvalidArgumentException('Invalid expected provider app ID.');
+                throw new InvalidArgumentException('Ungültige erwartete Provider-App-ID.');
             }
         }
 

@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${root}/js/retention-execution-profile.js`, 'utf8');
+const sourcePath = `${root}/js/retention-execution-profile.js`;
+const source = readFileSync(sourcePath, 'utf8');
 const fieldNames = [
     'profileId', 'profileRevision', 'legalEvidenceReference', 'scopeReference', 'accountCategories',
     'purposeReference', 'necessityAssessmentReference', 'impactAssessmentReference', 'safeguardsReference',
@@ -47,7 +48,7 @@ const fetch = async (url, options = {}) => {
 };
 const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
 
-vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number });
+vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number }, { filename: sourcePath });
 await new Promise(resolve => setTimeout(resolve, 0));
 if (calls[0]?.[1]?.headers?.requesttoken !== OC.requestToken || elements.expectedRevision.value !== '0') throw new Error('Leerer Profilstatus wird nicht sitzungsgebunden mit dem Erst-Revisionsanker geladen.');
 if (!statusElement.textContent.includes('Optionale lokale Dokumentation')) throw new Error('Die optionale lokale DPO-Dokumentation wird nicht verständlich ausgewiesen.');

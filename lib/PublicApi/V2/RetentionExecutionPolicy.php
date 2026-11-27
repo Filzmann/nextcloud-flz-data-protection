@@ -17,13 +17,13 @@ final class RetentionExecutionPolicy {
         private string $version,
     ) {
         if (!preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $policyId) || $dataClass === '' || $purpose === '') {
-            throw new InvalidArgumentException('Invalid retention execution policy.');
+            throw new InvalidArgumentException('Ungültige Retention-Ausführungsrichtlinie.');
         }
         if (!in_array($trigger, ['CREATED_AT', 'COMPLETED_AT', 'FIXED_DATE'], true)
             || !preg_match('/^P([1-9][0-9]*)([YMD])$/', $durationPeriod)
             || $action !== 'DELETE'
             || !preg_match('/^2\.[0-9]+$/', $version)) {
-            throw new InvalidArgumentException('Invalid retention execution policy semantics.');
+            throw new InvalidArgumentException('Ungültige Semantik der Retention-Ausführungsrichtlinie.');
         }
     }
 

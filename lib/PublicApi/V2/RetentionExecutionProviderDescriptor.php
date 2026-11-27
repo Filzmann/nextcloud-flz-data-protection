@@ -9,7 +9,7 @@ use InvalidArgumentException;
 final class RetentionExecutionProviderDescriptor {
     public function __construct(private string $appId, private string $displayName, private string $contractVersion, private int $maxBatchSize) {
         if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/', $appId) || $displayName === '' || $contractVersion !== '2.0' || $maxBatchSize < 1 || $maxBatchSize > 500) {
-            throw new InvalidArgumentException('Invalid retention execution provider descriptor.');
+            throw new InvalidArgumentException('Ungültiger Retention-Ausführungsanbieter-Deskriptor.');
         }
     }
     public function appId(): string { return $this->appId; }

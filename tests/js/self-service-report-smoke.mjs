@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${root}/js/report-view.js`, 'utf8');
+const sourcePath = `${root}/js/report-view.js`;
+const source = readFileSync(sourcePath, 'utf8');
 
 class FakeElement {
     constructor(tagName) {
@@ -31,7 +32,7 @@ const document = {
     createElement: (tagName) => new FakeElement(tagName),
 };
 const window = { FlzDataProtection: {} };
-vm.runInNewContext(source, { window, document });
+vm.runInNewContext(source, { window, document }, { filename: sourcePath });
 
 const container = new FakeElement('div');
 window.FlzDataProtection.reportView.render(container, {
@@ -64,7 +65,7 @@ window.FlzDataProtection.reportView.render(container, {
         },
         missing_app: {
             status: 'missing',
-            restrictions: ['Expected provider unavailable.'],
+            restrictions: ['Erwarteter Provider ist nicht verfügbar.'],
             nextCursor: null,
             entries: [],
         },

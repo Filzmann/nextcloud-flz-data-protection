@@ -21,10 +21,10 @@ final class RetentionExecutionCandidate {
             || $reference === '' || strlen($reference) > 255
             || $action !== 'DELETE' || !preg_match('/^2\.[0-9]+$/', $policyVersion)
             || $executionToken === '' || strlen($executionToken) > 255) {
-            throw new InvalidArgumentException('Invalid retention execution candidate.');
+            throw new InvalidArgumentException('Ungültiger Retention-Ausführungskandidat.');
         }
         try { $this->occurredAt = (new DateTimeImmutable($occurredAt))->format(DATE_ATOM); }
-        catch (Throwable $error) { throw new InvalidArgumentException('Invalid retention execution date.', 0, $error); }
+        catch (Throwable $error) { throw new InvalidArgumentException('Ungültiges Retention-Ausführungsdatum.', 0, $error); }
     }
     public function policyId(): string { return $this->policyId; }
     public function reference(): string { return $this->reference; }

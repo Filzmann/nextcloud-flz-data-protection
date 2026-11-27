@@ -2,11 +2,11 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>flz_data_protection</id>
-    <name>Data Protection Center</name>
+    <name>Datenschutz-Center</name>
     <name lang="de">Datenschutz-Center</name>
-    <summary>Provider-based personal data access and retention coordination for Nextcloud.</summary>
+    <summary>Providerbasierte Datenauskunft und Retention-Koordination für Nextcloud.</summary>
     <summary lang="de">Providerbasierte Datenauskunft und Retention-Koordination für Nextcloud.</summary>
-    <description>Aggregates transparent personal-data reports through public, versioned provider contracts without directly accessing data owned by other apps.</description>
+    <description>Aggregiert verständliche Auskünfte über öffentliche, versionierte Providerverträge ohne direkten Zugriff auf Daten anderer Apps.</description>
     <description lang="de">Aggregiert verständliche Auskünfte über öffentliche, versionierte Providerverträge ohne direkten Zugriff auf Daten anderer Apps.</description>
     <version>0.1.5</version>
     <licence>agpl</licence>
@@ -15,7 +15,7 @@
     <namespace>FlzDataProtection</namespace>
     <category>tools</category>
     <dependencies>
-        <nextcloud min-version="29" max-version="35"/>
+        <nextcloud min-version="33" max-version="35"/>
     </dependencies>
     <background-jobs>
         <job>OCA\FlzDataProtection\BackgroundJob\RetentionExecutionJob</job>
@@ -23,10 +23,12 @@
     <settings>
         <admin>OCA\FlzDataProtection\Settings\Admin</admin>
         <admin-section>OCA\FlzDataProtection\Settings\AdminSection</admin-section>
+        <personal>OCA\FlzDataProtection\Settings\Personal</personal>
+        <personal-section>OCA\FlzDataProtection\Settings\PersonalSection</personal-section>
     </settings>
     <navigations>
         <navigation>
-            <name>Data Protection</name>
+            <name>Datenschutz</name>
             <route>flz_data_protection.page.index</route>
             <order>85</order>
         </navigation>

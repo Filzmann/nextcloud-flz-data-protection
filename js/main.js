@@ -1,28 +1,4 @@
-const loadSelfServiceReport = async (root) => {
-    const results = document.getElementById('data-protection-results');
-    try {
-        const response = await fetch(OC.generateUrl('/apps/flz_data_protection/api/v1/self-service-report'), {
-            credentials: 'same-origin',
-            headers: {
-                Accept: 'application/json',
-                requesttoken: OC.requestToken,
-            },
-        });
-        const report = await response.json();
-        if (!response.ok) {
-            throw new Error('Self-service report unavailable.');
-        }
-        window.FlzDataProtection.reportView.render(results, report);
-    } catch (error) {
-        const message = document.createElement('p');
-        message.setAttribute('role', 'alert');
-        message.textContent = 'Die persönliche Auskunft konnte nicht geladen werden.';
-        results.replaceChildren(message);
-    } finally {
-        root.dataset.ready = 'true';
-    }
-};
-
+const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
 const loadRetentionReview = async (continuation = null, button = null) => {
     const results = document.getElementById('data-protection-retention-results');
     if (!results) return;
@@ -36,7 +12,7 @@ const loadRetentionReview = async (continuation = null, button = null) => {
             headers: { Accept: 'application/json', requesttoken: OC.requestToken },
         });
         const report = await response.json();
-        if (!response.ok) throw new Error('Retention review unavailable.');
+        if (!response.ok) throw new Error(translate('flz_data_protection', 'Retention-Prüfung ist nicht verfügbar.'));
         const continueReview = (token, sourceButton) => loadRetentionReview(token, sourceButton);
         if (continuation === null) {
             window.FlzDataProtection.retentionView.render(results, report, continueReview);
@@ -46,17 +22,49 @@ const loadRetentionReview = async (continuation = null, button = null) => {
     } catch (error) {
         const message = document.createElement('p');
         message.setAttribute('role', 'alert');
-        message.textContent = 'Die REVIEW-Vorschau konnte nicht geladen werden.';
+        message.textContent = translate('flz_data_protection', 'Die REVIEW-Vorschau konnte nicht geladen werden.');
         if (continuation === null) results.replaceChildren(message);
         else results.append(message);
         if (button) button.disabled = false;
     }
 };
 
+const initializeTabs = () => {
+    const tabs = Array.from(document.querySelectorAll('.data-protection-tablist [role="tab"]'));
+    if (tabs.length === 0) return;
+
+    const activate = (activeTab, moveFocus = false) => {
+        tabs.forEach((tab) => {
+            const selected = tab === activeTab;
+            tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+            tab.tabIndex = selected ? 0 : -1;
+            const panelId = tab.getAttribute('aria-controls');
+            const panel = panelId ? document.getElementById(panelId) : null;
+            if (panel) panel.hidden = !selected;
+        });
+        if (moveFocus) activeTab.focus();
+    };
+
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activate(tab));
+        tab.addEventListener('keydown', (event) => {
+            let targetIndex = null;
+            if (event.key === 'ArrowRight') targetIndex = (index + 1) % tabs.length;
+            if (event.key === 'ArrowLeft') targetIndex = (index - 1 + tabs.length) % tabs.length;
+            if (event.key === 'Home') targetIndex = 0;
+            if (event.key === 'End') targetIndex = tabs.length - 1;
+            if (targetIndex === null) return;
+            event.preventDefault();
+            activate(tabs[targetIndex], true);
+        });
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('data-protection-app');
     if (root) {
-        loadSelfServiceReport(root);
+        initializeTabs();
         loadRetentionReview();
+        root.dataset.ready = 'true';
     }
 });

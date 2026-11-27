@@ -120,11 +120,11 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
             summary: 'Kundenprofilrevision gespeichert',
             purpose: 'Nachweis der DPO-bestätigten Rechts-, Backup- und Restore-Konfiguration',
             source: 'Eigene Eingabe in der geschützten Datenschutzkonfiguration',
-            recipientCategories: ['Betroffene Person und aktuelle Mitglieder von Datenschutzbeauftragte'],
+            recipientCategories: ['Betroffene Person und app-lokal berechtigte Datenschutzrollen'],
             retention: 'Die revisionsgeführte Profilhistorie besitzt noch keinen freigegebenen ausführenden Löschpfad.',
             thirdCountryTransfer: 'Durch das Datenschutz-Center sind keine Drittlandübermittlungen vorgesehen.',
             automatedDecision: 'Die Profilkonfiguration aktiviert keine Retention-Ausführung und bleibt REVIEW-only.',
-            thirdPartyContentNotice: 'Die Projektion enthält keine Kennungen anderer Datenschutzbeauftragter und keine externen Evidenzinhalte.',
+            thirdPartyContentNotice: 'Die Projektion enthält keine Kennungen anderer berechtigter Datenschutzrollen und keine externen Evidenzinhalte.',
             attributes: [
                 'Profil' => $entry['profileId'],
                 'Profilrevision' => $entry['profileRevision'],
@@ -194,12 +194,12 @@ final class DataProtectionPersonalDataProvider implements PersonalDataProvider {
         $json = base64_decode(strtr($cursor . str_repeat('=', $padding), '-_', '+/'), true);
         $state = $json === false ? null : json_decode($json, true);
         if (!is_array($state) || !is_string($state['asOf'] ?? null) || !is_int($state['offset'] ?? null) || $state['offset'] < 1 || $state['offset'] > self::MAX_OFFSET) {
-            throw new InvalidArgumentException('Invalid Data Protection privacy cursor.');
+            throw new InvalidArgumentException('Ungültiger Datenschutz-Privacy-Cursor.');
         }
         try {
             $asOf = (new DateTimeImmutable($state['asOf']))->format(DATE_ATOM);
         } catch (\Throwable) {
-            throw new InvalidArgumentException('Invalid Data Protection privacy cursor.');
+            throw new InvalidArgumentException('Ungültiger Datenschutz-Privacy-Cursor.');
         }
         return [$asOf, $state['offset']];
     }

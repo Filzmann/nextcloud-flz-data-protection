@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const viewSource = readFileSync(`${root}/js/retention-view.js`, 'utf8');
+const viewSourcePath = `${root}/js/retention-view.js`;
+const viewSource = readFileSync(viewSourcePath, 'utf8');
 
 class FakeElement {
     constructor(tagName) { this.tagName = tagName.toUpperCase(); this.children = []; this.textContent = ''; this.className = ''; this.listeners = {}; this.dataset = {}; this.parentNode = null; }
@@ -21,7 +22,7 @@ class FakeElement {
 }
 const document = { createElement: (tag) => new FakeElement(tag) };
 const window = { FlzDataProtection: {} };
-vm.runInNewContext(viewSource, { window, document });
+vm.runInNewContext(viewSource, { window, document }, { filename: viewSourcePath });
 
 const container = new FakeElement('div');
 window.FlzDataProtection.retentionView.render(container, {

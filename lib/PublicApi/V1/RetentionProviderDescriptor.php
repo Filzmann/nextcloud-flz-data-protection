@@ -14,10 +14,10 @@ final class RetentionProviderDescriptor {
         private int $maxPageSize,
     ) {
         if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/', $appId) || $displayName === '') {
-            throw new InvalidArgumentException('Invalid retention provider identity.');
+            throw new InvalidArgumentException('Ungültige Retention-Provider-Identität.');
         }
         if (!preg_match('/^[1-9][0-9]*\.[0-9]+$/', $contractVersion) || $maxPageSize < 1 || $maxPageSize > 1000) {
-            throw new InvalidArgumentException('Invalid retention provider contract.');
+            throw new InvalidArgumentException('Ungültiger Retention-Provider-Vertrag.');
         }
     }
 

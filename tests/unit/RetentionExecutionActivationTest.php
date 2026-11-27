@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use OCA\FlzDataProtection\Db\RetentionExecutionActivationRepositoryInterface;
+use OCA\FlzDataProtection\Tests\Support\FakeL10N;
 use OCA\FlzDataProtection\Controller\RetentionExecutionActivationController;
 use OCA\FlzDataProtection\Service\RetentionExecutionActivationService;
 use OCP\AppFramework\Utility\ITimeFactory;
@@ -73,7 +74,7 @@ $clock = new class implements ITimeFactory {
 };
 
 $service = new RetentionExecutionActivationService($repository, $groups, $session, $clock);
-$controller = new RetentionExecutionActivationController(new class implements IRequest {}, $service);
+$controller = new RetentionExecutionActivationController(new class implements IRequest {}, $service, new FakeL10N());
 $recommended = [
     'flzroom:room_booking_delete',
     'flzroom:temporary_admin_access_history_delete',

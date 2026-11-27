@@ -15,16 +15,16 @@ final class RetentionPreviewPage {
         private ?string $nextCursor = null,
     ) {
         if (!in_array($status, ['complete', 'partial', 'not_applicable'], true)) {
-            throw new InvalidArgumentException('Invalid retention preview status.');
+            throw new InvalidArgumentException('Ungültiger Retention-Vorschaustatus.');
         }
         foreach ($candidates as $candidate) {
-            if (!$candidate instanceof RetentionCandidate) throw new InvalidArgumentException('Invalid retention candidate list.');
+            if (!$candidate instanceof RetentionCandidate) throw new InvalidArgumentException('Ungültige Retention-Kandidatenliste.');
         }
         foreach ($warnings as $warning) {
-            if (!is_string($warning) || $warning === '') throw new InvalidArgumentException('Invalid retention warning.');
+            if (!is_string($warning) || $warning === '') throw new InvalidArgumentException('Ungültige Retention-Warnung.');
         }
         if (($status === 'partial') !== ($nextCursor !== null)) {
-            throw new InvalidArgumentException('Partial retention pages require exactly one cursor.');
+            throw new InvalidArgumentException('Teil-Retention-Seiten erfordern genau einen Cursor.');
         }
     }
 

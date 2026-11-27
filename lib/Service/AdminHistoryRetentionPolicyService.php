@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use OCA\FlzDataProtection\AppInfo\Application;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IAppConfig;
-use OCP\IGroupManager;
 use OCP\IUserSession;
 use Throwable;
 
@@ -21,12 +20,10 @@ final class AdminHistoryRetentionPolicyService {
     private const KEY = 'admin_history_retention_policy_v1';
     private const DEFAULT_PERIOD = 'P6M';
 
-    public function __construct(private IAppConfig $config,private IGroupManager $groups,private IUserSession $session,private ITimeFactory $clock) {}
+    public function __construct(private IAppConfig $config,private IUserSession $session,private ITimeFactory $clock,private DataProtectionPermissionChecker $authorization) {}
 
     public function canConfigure(): bool {
-        $uid=$this->session->getUser()?->getUID()??'';
-        if($uid==='') return false;
-        try{return $this->groups->isInGroup($uid,self::CONFIGURATOR_GROUP);}catch(Throwable){return false;}
+        return $this->authorization->has(PermissionAssignmentsService::ADMIN_HISTORY_RETENTION_CONFIGURE);
     }
     public function policy(): array {
         $history=$this->history();$entry=$history===[]?null:$history[array_key_last($history)];

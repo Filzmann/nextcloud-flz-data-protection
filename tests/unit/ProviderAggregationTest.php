@@ -128,7 +128,7 @@ $assertSame(['failing_app', 'reference_app'], array_keys($report->providers()), 
 $assertSame('complete', $report->providers()['reference_app']->status(), 'Der erfolgreiche Providerstatus fehlt.');
 $assertSame('REFERENCE_APP', $report->providers()['reference_app']->displayName(), 'Der verständliche Providername ging bei der Aggregation verloren.');
 $assertSame('failed', $report->providers()['failing_app']->status(), 'Ein Providerfehler wurde nicht isoliert.');
-$assertSame('Provider unavailable.', $report->providers()['failing_app']->restrictions()[0] ?? null, 'Interne Fehlerdetails sind in den Bericht gelangt.');
+$assertSame('Provider ist nicht verfügbar.', $report->providers()['failing_app']->restrictions()[0] ?? null, 'Interne Fehlerdetails sind in den Bericht gelangt.');
 $assertSame(false, $report->isRegistrySnapshotComplete(), 'Ein Teilbericht wurde fälschlich für den Registry-Snapshot als vollständig markiert.');
 
 $unstableDescriptorProvider = new class implements PersonalDataProvider {

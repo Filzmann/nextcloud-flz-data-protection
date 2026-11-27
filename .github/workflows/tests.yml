@@ -2,7 +2,7 @@ name: Tests
 
 on:
   push:
-    branches: [main]
+    branches: [flz-full-rebrand, 'candidate/WO-*']
   pull_request:
 
 permissions:
@@ -97,4 +97,6 @@ jobs:
     uses: Filzmann/br-nextcloud-apps/.github/workflows/deploy-staging.yml@main
     with:
       app-id: flz_data_protection
+      source-ref: ${{ github.sha }}
+      staging-target: teamcloud
     secrets: inherit

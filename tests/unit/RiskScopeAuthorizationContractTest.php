@@ -6,6 +6,8 @@ use OCA\FlzDataProtection\Db\RiskScopeAuthorizationRepositoryInterface;
 use OCA\FlzDataProtection\PublicApi\V1\ScopeAuthorizationQueryEvent;
 use OCA\FlzDataProtection\Listener\ScopeAuthorizationQueryListener;
 use OCA\FlzDataProtection\Service\RiskScopeAuthorizationService;
+use OCA\FlzDataProtection\Service\DataProtectionPermissionChecker;
+use OCA\FlzDataProtection\Service\PermissionAssignmentsService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
@@ -58,7 +60,14 @@ $clock = new class implements ITimeFactory {
     public function now(): DateTimeImmutable { return $this->value; }
 };
 
-$service = new RiskScopeAuthorizationService($repository, $groups, $session, $clock);
+$permissionChecker = new class($session) implements DataProtectionPermissionChecker {
+    public function __construct(private IUserSession $session) {}
+    public function has(string $permission): bool {
+        return $permission === PermissionAssignmentsService::RISK_SCOPE_CONFIGURE
+            && $this->session->getUser()?->getUID() === 'privacy-reviewer';
+    }
+};
+$service = new RiskScopeAuthorizationService($repository, $session, $clock, $permissionChecker);
 $scope = ScopeAuthorizationQueryEvent::FLZROOM_SECRETARIAT_FOREIGN_BOOKING_INTERVENTION;
 $version = ScopeAuthorizationQueryEvent::CONTRACT_VERSION;
 

@@ -37,7 +37,7 @@ final class RetentionPreviewAggregator {
                         $providerPolicies,
                         static fn($policy): bool => $policy->policyId() === $target['policyId'],
                     ));
-                    if ($providerPolicies === []) throw new InvalidArgumentException('Retention continuation policy unavailable.');
+                    if ($providerPolicies === []) throw new InvalidArgumentException('Retention-Fortsetzungsrichtlinie ist nicht verfügbar.');
                 }
                 $policies = array_map(static fn($policy): array => $policy->toArray(), $providerPolicies);
                 $candidates = [];
@@ -53,7 +53,7 @@ final class RetentionPreviewAggregator {
                     ));
                     foreach ($page->candidates() as $candidate) {
                         if ($candidate->policyId() !== $policy->policyId() || $candidate->action() !== 'REVIEW') {
-                            throw new \DomainException('Retention candidate does not match policy.');
+                            throw new \DomainException('Retention-Kandidat stimmt nicht mit der Richtlinie überein.');
                         }
                         $candidates[] = $candidate->toArray();
                     }
@@ -102,7 +102,7 @@ final class RetentionPreviewAggregator {
         ksort($reports);
 
         if ($target !== null && !isset($reports[$target['appId']])) {
-            throw new InvalidArgumentException('Retention continuation provider unavailable.');
+            throw new InvalidArgumentException('Retention-Fortsetzungs-Provider ist nicht verfügbar.');
         }
 
         return [
@@ -120,28 +120,28 @@ final class RetentionPreviewAggregator {
 
     /** @return array{appId:string,policyId:string,evaluatedAt:string,providerCursor:string} */
     private function decodeContinuation(string $continuation): array {
-        if ($continuation === '' || strlen($continuation) > 4096) throw new InvalidArgumentException('Invalid retention continuation.');
+        if ($continuation === '' || strlen($continuation) > 4096) throw new InvalidArgumentException('Ungültige Retention-Fortsetzung.');
         $padding = (4 - strlen($continuation) % 4) % 4;
         $decoded = base64_decode(strtr($continuation . str_repeat('=', $padding), '-_', '+/'), true);
         try {
             $payload = $decoded === false ? null : json_decode($decoded, true, flags: JSON_THROW_ON_ERROR);
             if (!is_array($payload) || array_keys($payload) !== ['appId', 'policyId', 'evaluatedAt', 'providerCursor']) {
-                throw new InvalidArgumentException('Invalid retention continuation.');
+                throw new InvalidArgumentException('Ungültige Retention-Fortsetzung.');
             }
             foreach (['appId', 'policyId', 'evaluatedAt', 'providerCursor'] as $field) {
-                if (!is_string($payload[$field]) || $payload[$field] === '') throw new InvalidArgumentException('Invalid retention continuation.');
+                if (!is_string($payload[$field]) || $payload[$field] === '') throw new InvalidArgumentException('Ungültige Retention-Fortsetzung.');
             }
             if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/', $payload['appId'])
                 || !preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $payload['policyId'])
                 || strlen($payload['providerCursor']) > 2048) {
-                throw new InvalidArgumentException('Invalid retention continuation.');
+                throw new InvalidArgumentException('Ungültige Retention-Fortsetzung.');
             }
             $payload['evaluatedAt'] = (new DateTimeImmutable($payload['evaluatedAt']))->format(DATE_ATOM);
             return $payload;
         } catch (InvalidArgumentException $e) {
             throw $e;
         } catch (\Throwable) {
-            throw new InvalidArgumentException('Invalid retention continuation.');
+            throw new InvalidArgumentException('Ungültige Retention-Fortsetzung.');
         }
     }
 }

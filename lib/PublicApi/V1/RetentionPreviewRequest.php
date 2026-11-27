@@ -15,15 +15,15 @@ final class RetentionPreviewRequest {
         private ?string $cursor = null,
     ) {
         if (!preg_match('/^[a-z][a-z0-9_-]{1,63}$/', $policyId) || $limit < 1 || $limit > 1000) {
-            throw new InvalidArgumentException('Invalid retention preview request.');
+            throw new InvalidArgumentException('Ungültige Retention-Vorschauanfrage.');
         }
         try {
             $this->evaluatedAt = (new DateTimeImmutable($evaluatedAt))->format(DATE_ATOM);
         } catch (\Throwable) {
-            throw new InvalidArgumentException('Invalid retention evaluation date.');
+            throw new InvalidArgumentException('Ungültiges Retention-Bewertungsdatum.');
         }
         if ($cursor !== null && ($cursor === '' || strlen($cursor) > 2048)) {
-            throw new InvalidArgumentException('Invalid retention preview cursor.');
+            throw new InvalidArgumentException('Ungültiger Retention-Vorschau-Cursor.');
         }
     }
 

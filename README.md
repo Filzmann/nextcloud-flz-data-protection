@@ -20,11 +20,21 @@ remain visible and are not replaced by heuristic fallback access.
 - protected Self-Service report API whose subject is derived exclusively from
   the authenticated Nextcloud session;
 - accessible transient Self-Service report UI with visible provider and
-  completeness states and text-only rendering of provider values.
+  completeness states and text-only rendering of provider values. It is
+  exposed only through the personal Nextcloud settings section
+  `Datenschutz`, while the app menu contains no personal Art.-15 report;
 - public V1 retention-preview contract with lazy discovery, provider failure
   isolation and `REVIEW` as the only supported action;
-- a transient operational REVIEW dashboard for configured privacy-review
-  groups. A versioned install/upgrade migration creates the canonical
+- a transient operational REVIEW dashboard and an app-local matrix of eight
+  separately assignable privacy permissions. Every permission defaults to the
+  native `Datenschutzbeauftragte` group and may be reassigned only to current,
+  selectable organization groups from the enabled public V1 contract of
+  `flz_organization`. Missing or incompatible organization providers leave only
+  the app-owned default group available; LocalBase supplies no replacement
+  organization data. The authenticated app menu separates REVIEW
+  and fachliche settings into keyboard-accessible responsive tabs while retaining
+  each server-side permission gate. The native Nextcloud admin section contains
+  only the technical retention activation. A versioned install/upgrade migration creates the canonical
   `Datenschutzbeauftragte` group idempotently through native Nextcloud group
   management without assigning members. Native Nextcloud administration alone
   grants no fachlich access; only current group members may activate or revoke
@@ -32,7 +42,7 @@ remain visible and are not replaced by heuristic fallback access.
   the technical admin settings, and the actual interval remains auditable;
 - a protected-path notice shown only to native administrators without an
   active grant. It links to the app-local grant controls only when the same
-  account is also a member of `Datenschutzbeauftragte`; ordinary and otherwise
+  account also holds `temporary-admin-access.manage`; ordinary and otherwise
   unauthorized accounts receive neither the administrative state nor the
   link;
 - a public PermissionProvider that distinguishes self-service, REVIEW and
@@ -51,13 +61,20 @@ remain visible and are not replaced by heuristic fallback access.
   Holds, policy/version/time integrity, provider compatibility, atomic
   provider execution and concurrency remain fail-closed. No customer legal
   source, BV reference, DPO/BR confirmation or legal evidence is requested by
-  or blocks this activation;
+  or blocks this activation. The isolated Nextcloud 34/PostgreSQL 16 runtime
+  acceptance covers fresh installation, reinstall, provider discovery,
+  technical activation boundaries, real DELETE transactions, holds, job
+  restart and idempotency, concurrent execution, rollback before commit and
+  restore quarantine. A fabricated historical V2 upgrade is deliberately not
+  claimed because no authoritative prior V2 runtime snapshot exists in the
+  development-phase workspace;
 - a public additive V1 `ProcessingMetadataProvider` contract with a
   duplicate- and version-safe lazy registry, strict app/catalog ownership,
   failure isolation and a reusable contract-test kit;
 - a neutral public V1 risk-scope authorization query. Customer-local policy
-  revisions remain private in this app and only current members of
-  `Datenschutzbeauftragte` may configure them through the protected API. A
+  revisions remain private in this app and only accounts holding the app-local
+  `risk-scope.configure` permission may configure them through the protected API;
+  the native `Datenschutzbeauftragte` group is the default. A
   consumer receives only `authorized`, `denied`, `incompatible` or
   `unanswered`; missing, disabled, future, expired, corrupted and incompatible
   states fail closed. The first closed scope guards the future Filzmann Raumplaner
@@ -97,6 +114,7 @@ node tests/run-js.mjs
 ## Dokumentation
 
 - [Architektur](docs/architecture.md)
+- [Lokalisierungsinventar](docs/l10n-inventory.md)
 - [Manuelle Abnahme](docs/manual-acceptance.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)

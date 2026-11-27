@@ -22,23 +22,23 @@ final class ProcessingMetadataCatalog {
     public static function fromArray(array $payload): self {
         self::assertExactFields($payload, ['schema_version', 'app_id', 'processings'], 'catalog');
         if (($payload['schema_version'] ?? null) !== '1.0') {
-            throw new InvalidArgumentException('Unsupported processing metadata schema version.');
+            throw new InvalidArgumentException('Nicht unterstützte Schema-Version des Verarbeitungsmetadaten-Katalogs.');
         }
         self::assertTechnicalId($payload['app_id'] ?? null, 'app ID');
         $processings = $payload['processings'] ?? null;
         if (!is_array($processings) || $processings === [] || !array_is_list($processings)) {
-            throw new InvalidArgumentException('Processing metadata catalog must contain a processing list.');
+            throw new InvalidArgumentException('Der Verarbeitungsmetadaten-Katalog muss eine Verarbeitungsliste enthalten.');
         }
 
         $ids = [];
         foreach ($processings as $processing) {
             if (!is_array($processing)) {
-                throw new InvalidArgumentException('Invalid processing metadata entry.');
+                throw new InvalidArgumentException('Ungültiger Verarbeitungsmetadaten-Eintrag.');
             }
             self::assertProcessing($processing);
             $processingId = $processing['processing_id'];
             if (isset($ids[$processingId])) {
-                throw new InvalidArgumentException('Duplicate processing ID.');
+                throw new InvalidArgumentException('Doppelte Verarbeitungs-ID.');
             }
             $ids[$processingId] = true;
         }
@@ -68,7 +68,7 @@ final class ProcessingMetadataCatalog {
         self::assertText($processing['name'] ?? null, 'processing name');
 
         $controller = $processing['controller'] ?? null;
-        if (!is_array($controller)) throw new InvalidArgumentException('Invalid processing controller.');
+        if (!is_array($controller)) throw new InvalidArgumentException('Ungültiger Verarbeitungsverantwortlicher.');
         self::assertExactFields($controller, ['component', 'business_owner'], 'controller');
         self::assertText($controller['component'] ?? null, 'controller component');
         self::assertDeclaredText($controller['business_owner'] ?? null, 'business owner');
@@ -91,10 +91,10 @@ final class ProcessingMetadataCatalog {
         if (self::isDecisionRequired($value)) return;
         if (!is_array($value) || $value === [] || !array_is_list($value)
             || count($value) !== count(array_unique($value, SORT_REGULAR))) {
-            throw new InvalidArgumentException('Invalid recipients.');
+            throw new InvalidArgumentException('Ungültige Empfänger.');
         }
         foreach ($value as $recipient) {
-            if (!is_array($recipient)) throw new InvalidArgumentException('Invalid recipient.');
+            if (!is_array($recipient)) throw new InvalidArgumentException('Ungültiger Empfänger.');
             $allowed = ['category', 'allowed_disclosures'];
             if (array_key_exists('conditions', $recipient)) $allowed[] = 'conditions';
             self::assertExactFields($recipient, $allowed, 'recipient');
@@ -106,7 +106,7 @@ final class ProcessingMetadataCatalog {
 
     private static function assertRetention(mixed $value): void {
         if (self::isDecisionRequired($value)) return;
-        if (!is_array($value)) throw new InvalidArgumentException('Invalid retention rule.');
+        if (!is_array($value)) throw new InvalidArgumentException('Ungültige Retention-Regel.');
         $allowed = ['policy_id', 'trigger', 'duration_or_deadline', 'action'];
         if (array_key_exists('conditions_or_holds', $value)) $allowed[] = 'conditions_or_holds';
         self::assertExactFields($value, $allowed, 'retention rule');
@@ -114,30 +114,30 @@ final class ProcessingMetadataCatalog {
         self::assertText($value['trigger'] ?? null, 'retention trigger');
         self::assertText($value['duration_or_deadline'] ?? null, 'retention duration');
         if (!in_array($value['action'] ?? null, ['delete', 'anonymize', 'restrict', 'review'], true)) {
-            throw new InvalidArgumentException('Invalid retention action.');
+            throw new InvalidArgumentException('Ungültige Retention-Maßnahme.');
         }
         if (array_key_exists('conditions_or_holds', $value)) self::assertTextList($value['conditions_or_holds'], 'retention conditions');
     }
 
     private static function assertLogging(mixed $value): void {
-        if (!is_array($value)) throw new InvalidArgumentException('Invalid logging metadata.');
+        if (!is_array($value)) throw new InvalidArgumentException('Ungültige Logging-Metadaten.');
         self::assertExactFields($value, ['audit_requirements', 'personal_data_policy'], 'logging');
         self::assertDeclaredList($value['audit_requirements'] ?? null, 'audit requirements');
         self::assertDeclaredText($value['personal_data_policy'] ?? null, 'logging personal data policy');
     }
 
     private static function assertBackup(mixed $value): void {
-        if (!is_array($value)) throw new InvalidArgumentException('Invalid backup metadata.');
+        if (!is_array($value)) throw new InvalidArgumentException('Ungültige Backup-Metadaten.');
         self::assertExactFields($value, ['relevance', 'restore_handling'], 'backup');
         $relevance = $value['relevance'] ?? null;
         if (!in_array($relevance, ['included', 'excluded', 'not_applicable'], true) && !self::isDecisionRequired($relevance)) {
-            throw new InvalidArgumentException('Invalid backup relevance.');
+            throw new InvalidArgumentException('Ungültige Backup-Relevanz.');
         }
         self::assertDeclaredText($value['restore_handling'] ?? null, 'backup restore handling');
     }
 
     private static function assertExports(mixed $value): void {
-        if (!is_array($value)) throw new InvalidArgumentException('Invalid export metadata.');
+        if (!is_array($value)) throw new InvalidArgumentException('Ungültige Export-Metadaten.');
         self::assertExactFields($value, ['article_15_relevance', 'other_outputs', 'minimization'], 'exports and reports');
         self::assertDeclaredText($value['article_15_relevance'] ?? null, 'Article 15 relevance');
         self::assertDeclaredList($value['other_outputs'] ?? null, 'other outputs');
@@ -145,7 +145,7 @@ final class ProcessingMetadataCatalog {
     }
 
     private static function assertRights(mixed $value): void {
-        if (!is_array($value)) throw new InvalidArgumentException('Invalid data subject rights metadata.');
+        if (!is_array($value)) throw new InvalidArgumentException('Ungültige Betroffenenrechte-Metadaten.');
         self::assertExactFields($value, ['article_15', 'rectification', 'restriction', 'erasure_or_anonymization'], 'data subject rights');
         foreach (['article_15', 'rectification', 'restriction', 'erasure_or_anonymization'] as $field) {
             self::assertDeclaredText($value[$field] ?? null, $field);
@@ -167,7 +167,7 @@ final class ProcessingMetadataCatalog {
         $fields = ['status', 'affected_data', 'planned_processing', 'missing_decision', 'reason', 'technical_impact', 'privacy_preserving_alternative', 'responsible_party', 'blocking'];
         self::assertExactFields($value, $fields, 'privacy decision');
         foreach (array_diff($fields, ['status', 'blocking']) as $field) self::assertText($value[$field] ?? null, $field);
-        if (!is_bool($value['blocking'] ?? null)) throw new InvalidArgumentException('Invalid privacy decision blocking state.');
+        if (!is_bool($value['blocking'] ?? null)) throw new InvalidArgumentException('Ungültiger Blockadezustand der Datenschutzentscheidung.');
         return true;
     }
 

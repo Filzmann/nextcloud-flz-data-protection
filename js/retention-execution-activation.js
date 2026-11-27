@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+    const translate = (typeof window !== 'undefined' && typeof window.t === 'function') ? window.t : (_app, text, params) => Object.entries(params || {}).reduce((s, [k, v]) => s.split('{' + k + '}').join(String(v)), text)
+
 
     const form = document.getElementById('data-protection-retention-execution-activation-form');
     const statusElement = document.getElementById('data-protection-retention-execution-activation-status');
@@ -14,7 +16,7 @@
             ...options,
         });
         const body = await response.json();
-        if (!response.ok) throw new Error(body.message || 'Technische Aktivierung fehlgeschlagen.');
+        if (!response.ok) throw new Error(body.message || translate('flz_data_protection', 'Technische Aktivierung fehlgeschlagen.'));
         return body;
     };
     const localDate = value => {
@@ -41,8 +43,8 @@
         updateRequirements();
         statusElement.setAttribute('role', 'status');
         statusElement.textContent = state.executionAvailable === true
-            ? 'Automatische Löschung ist technisch aktiv.'
-            : 'Automatische Löschung ist deaktiviert. Es werden keine DELETE-Provider ausgeführt.';
+            ? translate('flz_data_protection', 'Automatische Löschung ist technisch aktiv.')
+            : translate('flz_data_protection', 'Automatische Löschung ist deaktiviert. Es werden keine DELETE-Provider ausgeführt.');
     };
 
     form.addEventListener('change', updateRequirements);

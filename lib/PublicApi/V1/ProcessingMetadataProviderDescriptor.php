@@ -13,13 +13,13 @@ final class ProcessingMetadataProviderDescriptor {
         private string $contractVersion,
     ) {
         if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/', $appId)) {
-            throw new InvalidArgumentException('Invalid processing metadata provider app ID.');
+            throw new InvalidArgumentException('Ungültige Verarbeitungsmetadaten-Provider-App-ID.');
         }
         if (trim($displayName) === '') {
-            throw new InvalidArgumentException('Processing metadata provider display name must not be empty.');
+            throw new InvalidArgumentException('Der Anzeigename des Verarbeitungsmetadaten-Providers darf nicht leer sein.');
         }
         if (!preg_match('/^[1-9][0-9]*\.[0-9]+$/', $contractVersion)) {
-            throw new InvalidArgumentException('Invalid processing metadata provider contract version.');
+            throw new InvalidArgumentException('Ungültige Vertragsversion des Verarbeitungsmetadaten-Providers.');
         }
     }
 

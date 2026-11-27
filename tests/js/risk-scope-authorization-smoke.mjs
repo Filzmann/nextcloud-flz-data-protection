@@ -3,7 +3,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const source = readFileSync(`${root}/js/risk-scope-authorization.js`, 'utf8');
+const sourcePath = `${root}/js/risk-scope-authorization.js`;
+const source = readFileSync(sourcePath, 'utf8');
 const fields = ['scopeId', 'enabled', 'policyRevision', 'authorizationReference', 'effectiveAt', 'expiresAt', 'dpoConfirmed', 'expectedRevision'];
 const elements = Object.fromEntries(fields.map(name => [name, { value: '', checked: false, disabled: false }]));
 elements.scopeId.value = 'flzroom.secretariat_foreign_booking_intervention';
@@ -47,7 +48,7 @@ const fetch = async (url, options = {}) => {
 };
 const OC = { requestToken: 'synthetic-token', generateUrl: path => path };
 
-vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number });
+vm.runInNewContext(source, { document, FormData, fetch, OC, Date, Error, String, Number }, { filename: sourcePath });
 await new Promise(resolve => setTimeout(resolve, 0));
 if (calls[0]?.[1]?.headers?.requesttoken !== OC.requestToken || elements.expectedRevision.value !== '0') throw new Error('Fehlender Scope-Status wird nicht sitzungsgebunden geladen.');
 if (!status.textContent.includes('nicht konfiguriert') || status.role !== 'status') throw new Error('Ein fehlender Scope wird nicht sicher und zugänglich angezeigt.');

@@ -9,7 +9,6 @@ use DomainException;
 use InvalidArgumentException;
 use OCA\FlzDataProtection\Db\RetentionExecutionProfileRepositoryInterface;
 use OCP\AppFramework\Utility\ITimeFactory;
-use OCP\IGroupManager;
 use OCP\IUserSession;
 use Throwable;
 
@@ -20,20 +19,14 @@ final class RetentionExecutionProfileService {
 
     public function __construct(
         private RetentionExecutionProfileRepositoryInterface $repository,
-        private IGroupManager $groups,
         private IUserSession $session,
         private ITimeFactory $clock,
+        private DataProtectionPermissionChecker $authorization,
     ) {
     }
 
     public function canConfigure(): bool {
-        $uid = $this->session->getUser()?->getUID() ?? '';
-        if ($uid === '') return false;
-        try {
-            return $this->groups->isInGroup($uid, self::CONFIGURATOR_GROUP);
-        } catch (Throwable) {
-            return false;
-        }
+        return $this->authorization->has(PermissionAssignmentsService::EXECUTION_PROFILE_CONFIGURE);
     }
 
     public function status(): array {
