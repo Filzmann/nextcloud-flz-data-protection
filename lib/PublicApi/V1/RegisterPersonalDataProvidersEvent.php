@@ -25,7 +25,7 @@ final class RegisterPersonalDataProvidersEvent extends Event {
         try {
             $this->registry->register($provider);
         } catch (DomainException) {
-            $this->registrationFailures[$appId] = 'Provider incompatible.';
+            $this->registrationFailures[$appId] = 'Personendaten-Provider ist inkompatibel.';
         }
     }
 
